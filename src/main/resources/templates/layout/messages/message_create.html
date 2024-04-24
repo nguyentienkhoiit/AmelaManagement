@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{::#messages-static-resource}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <th:block id="messages-static-resource">
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+    </th:block>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/messages}">Messages</a></li>
+            <li class="breadcrumb-item">Create</li>
+        </ol>
+    </nav>
+    <h3>#Create Messages</h3>
+
+    <form action="" class="row">
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="subjectname" class="form-label">Subject name</label>
+                <input type="text" class="form-control" id="subjectname" placeholder="Subject email">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="firstname" class="form-label">Sender name</label>
+                <input type="text" class="form-control" id="firstname" placeholder="HR Management">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="editor" class="form-label">Message</label>
+                <textarea class="form-control" name="message" id="editor" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="sendtime" class="form-label">Send time</label>
+                <input type="datetime-local" class="form-control" id="sendtime">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="sendtime" class="form-label">Send group or email</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label" for="radiobuttongroup">Group</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radiobuttongroup"
+                               value="option1">
+                    </div>
+                    <div class="form-check form-check-inline ms-5">
+                        <label class="form-check-label" for="radiobuttonemail">Email</label>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radiobuttonemail"
+                               value="option2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="inputemailsending" class="form-label">List email</label>
+                <textarea class="form-control" autocomplete="on" id="inputemailsending" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label for="inputemailsending" class="form-label">Group email (from <a th:href="@{/groups}">here</a>)</label>
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Intership group</option>
+                    <option value="1">Developer faderless</option>
+                    <option value="2">Tester faderless</option>
+                    <option value="3">Soccer faderless</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+</main>
+</body>

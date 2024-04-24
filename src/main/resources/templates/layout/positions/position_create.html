@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Positions</title>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/positions}">Position</a></li>
+            <li class="breadcrumb-item">Create</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <h3>#Create Position</h3>
+    </div>
+    <form action="" class="row">
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <label for="email" class="form-label">Position name</label>
+                <input type="email" class="form-control" id="email" placeholder="email@example.com">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <label for="input-desc" class="form-label">Description</label>
+                <textarea class="form-control" placeholder="Leave a comment here" id="input-desc"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+</body>

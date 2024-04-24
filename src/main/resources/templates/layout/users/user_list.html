@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light py-3">
+    <form th:action="@{/users}" method="get">
+        <div class="table-title">
+            <div class="row justify-content-between">
+                <h3 class="col-sm-4">#List User</h3>
+                <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
+                    <input type="text" class="form-control rounded-start" placeholder="Search..." name="text" th:value="${text}">
+                    <button class="btn btn-primary rounded-end" type="submit" data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <a class="btn btn-success ms-1 rounded" th:href="@{/users/create}" data-bs-toggle="tooltip"
+                       data-bs-placement="top" title="Add">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Code <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">First Name <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Last Name <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Email <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Gender <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Role <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Position <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Active <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.code}">#A159283</td>
+                    <td th:text="${user.firstname}">Nguyen</td>
+                    <td th:text="${user.lastname}">Hong Minh</td>
+                    <td th:text="${user.email}">hongminhsn1812@gmail.com</td>
+                    <td th:text="${user.gender == 1? 'Male': 'Female'}">Male</td>
+                    <td th:text="${user.role}">User</td>
+                    <td th:text="${user.position}">Developer</td>
+                    <td th:text="${user.active ? 'Active': 'Deactive'}">Active</td>
+                    <td>
+                        <a th:href="@{/users/update/{id}(id=${user.id})}" data-bs-toggle="tooltip" data-bs-placement="left"
+                           title="Update">
+                            <i class="fa-solid fa-pencil text-warning"></i>
+                        </a>
+                        <a th:href="@{/users/delete/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
+                           title="Delete">
+                            <i class="fa-solid fa-ban text-danger"></i>
+                        </a>
+                        <a th:href="@{/attendances/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
+                           title="Check In">
+                            <i class="fa-solid fa-check"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/users(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
+                </li>
+                <li class="page-item" th:each="pageNumber : ${totalPage}"
+                    th:classappend="${currentPage == pageNumber ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/users(pageIndex=${pageNumber}, text=${text})}"
+                       th:text="${pageNumber}"></a>
+                </li>
+                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/users(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </form>
+</main>
+</body>

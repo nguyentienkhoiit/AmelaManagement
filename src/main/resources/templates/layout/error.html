@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light py-3">
+    <div class="page-wrap d-flex flex-row align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center">
+                    <span class="display-1 d-block">404</span>
+                    <div class="mb-4 lead">The page you are looking for was not found.</div>
+                    <a th:href="@{/}" class="btn btn-link">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

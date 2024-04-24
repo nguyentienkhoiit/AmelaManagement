@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Attendances</title>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/attendances}">Attendance</a></li>
+            <li class="breadcrumb-item">Create</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <h3>#Create Attendance</h3>
+    </div>
+    <form action="" class="row">
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label for="checkin" class="form-label">Check In</label>
+                <input type="datetime-local" class="form-control" id="checkin">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label for="checkout" class="form-label">Checkout</label>
+                <input type="datetime-local" class="form-control" id="checkout">
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+</body>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+    ~{::title},
+    ~{::main},
+    ~{}
+)}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Group</title>
+</head>
+
+<body>
+<main class="min-vh-100 bg-light">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/groups}">Group</a></li>
+            <li class="breadcrumb-item">Create</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <h3>#Create Group</h3>
+    </div>
+    <form action="" class="row">
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <label for="groupname" class="form-label">Group name</label>
+                <input type="text" class="form-control" id="groupname" placeholder="Faderless">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <label for="input-desc" class="form-label">Description</label>
+                <textarea class="form-control" placeholder="Description" id="input-desc"></textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <label for="listmail" class="form-label">List mail</label>
+                <textarea class="form-control" placeholder="List mail" id="listmail"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 col-md-12">
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </form>
+</main>
+</body>
