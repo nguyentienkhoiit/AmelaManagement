@@ -10,6 +10,10 @@ public class DepartmentMapper {
                 .name(request.getName())
                 .description(request.getDescription())
                 .status(request.isStatus())
+                .createdAt(request.getCreatedAt())
+                .updateAt(request.getUpdateAt())
+                .createdBy(request.getCreatedBy())
+                .updateBy(request.getUpdateBy())
                 .build();
     }
 }

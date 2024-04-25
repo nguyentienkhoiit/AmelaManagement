@@ -9,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 public class RoleDtoRequest {
     String name;
+    String description;
 }

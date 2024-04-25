@@ -15,4 +15,10 @@ public interface UserService {
     void updateProfile(UserDtoRequest request);
 
     UserDtoResponse getUserById(Long id);
+
+    boolean resetPassword(Long id);
+
+    boolean updateUser(UserDtoRequest request, Long id);
+
+    boolean changeStatus(Long id);
 }

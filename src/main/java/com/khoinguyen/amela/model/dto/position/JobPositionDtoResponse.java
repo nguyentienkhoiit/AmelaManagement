@@ -2,6 +2,8 @@ package com.khoinguyen.amela.model.dto.position;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @Setter
@@ -12,4 +14,8 @@ public class JobPositionDtoResponse {
     String name;
     String description;
     boolean status;
+    LocalDateTime createdAt;
+    Long createdBy;
+    LocalDateTime updateAt;
+    Long updateBy;
 }

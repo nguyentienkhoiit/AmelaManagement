@@ -9,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 public class JobPositionDtoRequest {
     String name;
+    String description;
 }

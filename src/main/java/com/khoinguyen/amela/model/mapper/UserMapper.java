@@ -17,13 +17,14 @@ public class UserMapper {
                 .lastname(user.getLastname())
                 .phone(user.getPhone())
                 .status(user.isStatus())
-                .position(user.getJobPosition().getName())
-                .department(user.getDepartment().getName())
-                .role(user.getRole().getName())
+                .position(JobPositionMapper.toJobPosition(user.getJobPosition()))
+                .department(DepartmentMapper.toDepartment(user.getDepartment()))
+                .role(RoleMapper.toRole(user.getRole()))
                 .dateOfBirth(user.getDateOfBirth().toString())
                 .active(user.isStatus())
                 .address(user.getAddress())
                 .username(user.getUsername())
+                .enabled(user.isEnabled())
                 .build();
     }
 

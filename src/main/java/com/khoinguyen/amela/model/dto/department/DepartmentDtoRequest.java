@@ -9,4 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 public class DepartmentDtoRequest {
     String name;
+    String description;
 }

@@ -3,7 +3,6 @@ package com.khoinguyen.amela.service.impl;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
@@ -14,13 +13,16 @@ import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.UserCriteria;
 import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.util.CodeGenerator;
-import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UserHelper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +41,8 @@ public class UserServiceImpl implements UserService {
         return userCriteria.getAllUsers(request);
     }
 
+
+
     @Override
     public void createUser(UserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -49,7 +53,7 @@ public class UserServiceImpl implements UserService {
         user.setDepartment(departmentRepository.findById(request.getDepartmentId()).orElseThrow());
         user.setRole(roleRepository.findById(request.getRoleId()).orElseThrow());
         user.setJobPosition(positionRepository.findById(request.getJobPositionId()).orElseThrow());
-        user.setPassword(passwordEncoder.encode(Constant.PASSWORD_DEFAULT));
+        user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(CodeGenerator.generateCode());
         userRepository.save(user);
     }
@@ -77,5 +81,54 @@ public class UserServiceImpl implements UserService {
     public UserDtoResponse getUserById(Long id) {
         var userOptional = userRepository.findById(id);
         return userOptional.map(UserMapper::toUserDtoResponse).orElse(null);
+    }
+
+    @Override
+    public boolean resetPassword(Long id) {
+        var userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            userOptional.get().setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUser(UserDtoRequest request, Long id) {
+        User userLoggedIn = userHelper.getUserLogin();
+
+        var userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            var user = userOptional.get();
+            user.setFirstname(request.getFirstname());
+            user.setLastname(request.getLastname());
+            user.setGender(request.getGender());
+            user.setAddress(request.getAddress());
+            user.setDateOfBirth(request.getDateOfBirth());
+            user.setPhone(request.getPhone());
+            user.setUsername(request.getUsername());
+            user.setUpdateAt(LocalDateTime.now());
+            user.setUpdateBy(userLoggedIn.getId());
+            user.setDepartment(departmentRepository.findById(request.getDepartmentId()).orElseThrow());
+            user.setRole(roleRepository.findById(request.getRoleId()).orElseThrow());
+            user.setJobPosition(positionRepository.findById(request.getJobPositionId()).orElseThrow());
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean changeStatus(Long id) {
+        var userOptional = userRepository.findById(id);
+        if(userOptional.isPresent()) {
+            var user = userOptional.get();
+            user.setUpdateAt(LocalDateTime.now());
+            user.setUpdateBy(user.getId());
+            user.setEnabled(!user.isEnabled());
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

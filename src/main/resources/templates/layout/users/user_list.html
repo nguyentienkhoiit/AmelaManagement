@@ -58,18 +58,48 @@
                     <td th:text="${user.lastname}">Hong Minh</td>
                     <td th:text="${user.email}">hongminhsn1812@gmail.com</td>
                     <td th:text="${user.gender == 1? 'Male': 'Female'}">Male</td>
-                    <td th:text="${user.role}">User</td>
-                    <td th:text="${user.position}">Developer</td>
-                    <td th:text="${user.active ? 'Active': 'Deactive'}">Active</td>
+                    <td th:text="${user.role.name}">User</td>
+                    <td th:text="${user.position.name}">Developer</td>
+                    <td th:text="${user.enabled ? 'Active': 'Deactive'}">Active</td>
                     <td>
                         <a th:href="@{/users/update/{id}(id=${user.id})}" data-bs-toggle="tooltip" data-bs-placement="left"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <a th:href="@{/users/delete/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
+<!--                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"-->
+<!--                           title="Change status">-->
+<!--                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled?'text-danger':'text-success'}"></i>-->
+<!--                        </a>-->
+
+                        <span class="ms-2" type="button" data-bs-toggle="modal"
+                                th:data-bs-target="'#modal'+${user.id}"
+                                th:classappend="${user.isEnabled == false?'disabled':''}">
+                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
+                               data-bs-toggle="tooltip" data-bs-placement="left" th:title="${user.enabled ? 'Change to deactive' : 'Change to active'}"></i>
+                        </span>
+
+                        <div class="modal fade" th:id="'modal'+${user.id}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Do you want to change status user?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="btn btn-danger">Change</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <a th:href="@{/attendances/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
                            title="Check In">
                             <i class="fa-solid fa-check"></i>

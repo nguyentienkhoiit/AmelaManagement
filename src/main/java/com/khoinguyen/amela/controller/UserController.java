@@ -55,18 +55,7 @@ public class UserController {
 
     @GetMapping("create")
     public String viewCreateUsers(Model model) {
-        var roleDtoResponses = roleService.findAll();
-        var departmentDtoResponses = departmentService.findAll();
-        var jobPositionDtoResponses = jobPositionService.findAll();
-
-        session.setAttribute("roles", roleDtoResponses);
-        session.setAttribute("departments", departmentDtoResponses);
-        session.setAttribute("jobPositions", jobPositionDtoResponses);
-
-        if (!model.containsAttribute("user")) {
-            model.addAttribute("user", UserDtoRequest.builder().build());
-        }
-
+        SetSessionSelectionOption(model);
         return "layout/users/user_create";
     }
 
@@ -132,6 +121,35 @@ public class UserController {
         UserDtoResponse userDtoResponse = userService.getUserById(id);
         if(userDtoResponse == null) return "redirect:/error-page";
 
+        SetSessionSelectionOption(model);
+        model.addAttribute("user", userDtoResponse);
+        return "layout/users/user_update";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateUser(
+            Model model,
+            @Valid @ModelAttribute("user") UserDtoRequest request,
+            BindingResult result,
+            @PathVariable Long id
+    ) {
+        boolean rs = userService.updateUser(request, id);
+        return "redirect:/users";
+    }
+
+    @GetMapping("reset-password/{id}")
+    public String resetPassword(@PathVariable Long id) {
+        boolean rs = userService.resetPassword(id);
+        return "redirect:/users/update/" + id;
+    }
+
+    @GetMapping("/change-status/{id}")
+    public String changeStatus(@PathVariable Long id) {
+        boolean rs = userService.changeStatus(id);
+        return "redirect:/users";
+    }
+
+    private void SetSessionSelectionOption(Model model) {
         var roleDtoResponses = roleService.findAll();
         var departmentDtoResponses = departmentService.findAll();
         var jobPositionDtoResponses = jobPositionService.findAll();
@@ -143,7 +161,5 @@ public class UserController {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", UserDtoRequest.builder().build());
         }
-        model.addAttribute("user", userDtoResponse);
-        return "layout/users/user_update";
     }
 }

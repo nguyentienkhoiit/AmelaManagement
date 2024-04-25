@@ -1,5 +1,9 @@
 package com.khoinguyen.amela.model.dto.user;
 
+import com.khoinguyen.amela.entity.Department;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
+import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import lombok.*;
 
 @Builder
@@ -19,8 +23,9 @@ public class UserDtoResponse {
     String address;
     boolean status;
     String dateOfBirth;
-    String department;
-    String role;
-    String position;
+    DepartmentDtoResponse department;
+    RoleDtoResponse role;
+    JobPositionDtoResponse position;
     boolean active;
+    boolean enabled;
 }
