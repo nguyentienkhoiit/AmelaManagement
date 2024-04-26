@@ -42,6 +42,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         a -> a.requestMatchers(
                                         "/forgot-password",
+                                        "/new-password",
                                         "/register/**",
                                         "/error",
                                         "/login",

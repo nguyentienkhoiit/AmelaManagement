@@ -25,4 +25,9 @@ public class AuthController {
     public String forgotPassword() {
         return "layout/auth/forgot-password";
     }
+
+    @GetMapping("/new-password")
+    public String newPassword() {
+        return "layout/auth/new-password";
+    }
 }

@@ -1,5 +1,7 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.entity.Attendance;
+import com.khoinguyen.amela.service.AttendanceService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AttendanceController {
     HttpSession session;
+    AttendanceService attendanceService;
 
     @GetMapping
     public String viewAttendances(Model model) {
         session.setAttribute("active", "attendance");
+
+
+
         return "layout/attendances/attendance_list";
     }
 
@@ -30,5 +36,11 @@ public class AttendanceController {
     @GetMapping("update")
     public String viewUpdateAttendances(Model model) {
         return "layout/attendances/attendance_update";
+    }
+
+    @GetMapping("/checkin")
+    public String checkAttendance() {
+        boolean rs = attendanceService.checkAttendance();
+        return "layout/auth/home";
     }
 }

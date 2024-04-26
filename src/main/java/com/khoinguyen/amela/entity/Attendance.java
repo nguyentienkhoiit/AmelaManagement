@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Setter
@@ -19,6 +20,7 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     LocalDateTime checkInTime;
+    LocalDate checkDay;
     LocalDateTime checkOutTime;
     boolean status;
     LocalDateTime createdAt;
