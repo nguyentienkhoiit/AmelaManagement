@@ -36,7 +36,10 @@ public class UserController {
     OptionalValidator optionalValidator;
 
     @GetMapping
-    public String viewUsers(Model model, @ModelAttribute PagingDtoRequest pagingDtoRequest) {
+    public String viewUsers(
+            Model model,
+            @ModelAttribute PagingDtoRequest pagingDtoRequest
+    ) {
         session.setAttribute("active", "user");
 
         var pagingDtoResponse = userService.getAllUsers(pagingDtoRequest);
@@ -119,7 +122,7 @@ public class UserController {
     @GetMapping("update/{id}")
     public String viewUpdateUsers(Model model, @PathVariable Long id) {
         UserDtoResponse userDtoResponse = userService.getUserById(id);
-        if(userDtoResponse == null) return "redirect:/error-page";
+        if (userDtoResponse == null) return "redirect:/error-page";
 
         SetSessionSelectionOption(model);
         model.addAttribute("user", userDtoResponse);

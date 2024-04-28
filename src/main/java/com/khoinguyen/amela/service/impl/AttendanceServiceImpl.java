@@ -2,7 +2,11 @@ package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.entity.Attendance;
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.repository.AttendanceRepository;
+import com.khoinguyen.amela.repository.criteria.AttendanceCriteria;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.UserHelper;
 import lombok.AccessLevel;
@@ -20,6 +24,12 @@ import java.util.Optional;
 public class AttendanceServiceImpl implements AttendanceService {
     AttendanceRepository attendanceRepository;
     UserHelper userHelper;
+    AttendanceCriteria attendanceCriteria;
+
+    @Override
+    public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(PagingDtoRequest pagingDtoRequest, Long userId) {
+        return attendanceCriteria.getAttendanceByUserId(pagingDtoRequest, userId);
+    }
 
     @Override
     public boolean checkAttendance() {

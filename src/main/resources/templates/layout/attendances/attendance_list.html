@@ -12,12 +12,12 @@
 
 <body>
 <main class="min-vh-100 bg-light py-3">
-    <form action="#" method="post">
+    <form th:action="@{/attendances}" method="get">
         <div class="table-title">
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Attendance</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input type="date" class="form-control me-2" id="date">
+                    <input type="date" class="form-control me-2" id="date" name="text" th:value="${text}">
 <!--                    <input type="text" class="form-control rounded-start" placeholder="Search...">-->
                     <button class="btn btn-primary rounded-end" type="button" data-bs-toggle="tooltip"
                             data-bs-placement="top" title="Search">
@@ -35,53 +35,21 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th scope="col">Date <i class="fa fa-sort"></i></th>
                     <th scope="col">Check in <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Check out <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Date <i class="fa fa-sort"></i></th>
                     <th scope="col">Active <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>10:20:00</td>
-                    <td>20:11:00</td>
-                    <td>12/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a th:href="@{/attendances/update}" data-bs-toggle="tooltip" data-bs-placement="left"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a href="#" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10:20:00</td>
-                    <td>20:11:00</td>
-                    <td>13/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a th:href="@{/attendances/update}" data-bs-toggle="tooltip" data-bs-placement="left"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a href="#" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10:20:00</td>
-                    <td>20:11:00</td>
-                    <td>14/12/2024</td>
-                    <td>Active</td>
+                <tr th:each="attendance : ${attendances}">
+                    <td th:text="${attendance.checkDay}">12/12/2024</td>
+                    <td th:text="${attendance.checkInTime}">10:20:00</td>
+                    <td th:text="${attendance.checkOutTime}">20:11:00</td>
+                    <td th:text="${attendance.status ? 'Active': 'Deactive'}">Active</td>
                     <td>
                         <a th:href="@{/attendances/update}" data-bs-toggle="tooltip" data-bs-placement="left"
                            title="Update">
