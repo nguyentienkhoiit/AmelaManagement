@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
-    ~{::#messages-static-resource}
+    ~{::#css-static-resource},
+    ~{::#js-static-resource}
 )}">
 
 <head>
     <meta charset="UTF-8">
     <title>Messages</title>
-    <th:block id="messages-static-resource">
+    <th:block id="css-static-resource">
         <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
     </th:block>
 </head>
@@ -85,4 +86,13 @@
         </div>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+</th:block>
 </body>

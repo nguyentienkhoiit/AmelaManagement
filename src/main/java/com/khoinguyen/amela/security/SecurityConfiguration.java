@@ -48,7 +48,8 @@ public class SecurityConfiguration {
                                         "/login",
                                         "/css/**",
                                         "/image/**",
-                                        "js/**"
+                                        "js/**",
+                                        "richtext/**"
                                 )
                                 .permitAll()
                                 .anyRequest()

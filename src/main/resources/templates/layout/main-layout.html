@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
-      th:fragment="main-fragment(title, mainContent, otherStaticResource)"
+      th:fragment="main-fragment(title, mainContent, cssStaticResource, jsStaticResource)"
 >
 
 <head>
@@ -15,13 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="shortcut icon" th:href="@{/image/amela.png}" type="image/x-icon">
-        <th:block th:replace="${otherStaticResource}?:~{}"></th:block>
+    <th:block th:replace="${cssStaticResource}?:~{}"></th:block>
 </head>
 <body id="body-pd">
 <header class="header" id="header">
     <div class="header_toggle"><i class='bx bx-menu' id="header-toggle"></i></div>
-     <a th:href="@{/attendances/checkin}" class="btn btn-success header__right">Check In</a>
-<!--    <a th:href="@{/login}" class="btn btn-primary header__right">Login</a>-->
+    <a th:href="@{/attendances/checkin}" class="btn btn-success header__right">Check In</a>
+    <!--    <a th:href="@{/login}" class="btn btn-primary header__right">Login</a>-->
 </header>
 <div class="l-navbar" id="nav-bar">
     <nav class="nav">
@@ -72,11 +71,6 @@
                     <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
                     <span class="nav_name">Group</span>
                 </a>
-                <a th:href="@{/posts}" class="nav_link"
-                   th:classappend="${session.active == 'post'?'active':''}">
-                    <i class="fa-solid fa-feather nav_icon"></i>
-                    <span class="nav_name">Posts</span>
-                </a>
             </div>
         </div>
         <a th:href="@{/logout}" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">Log
@@ -102,5 +96,6 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 <script th:src="@{/js/main.js}"></script>
+<th:block th:replace="${jsStaticResource}?:~{}"></th:block>
 </body>
 </html>

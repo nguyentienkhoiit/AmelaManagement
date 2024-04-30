@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
-    ~{}
+    ~{},
+    ~{::#js-static-resource}
 )}">
 
 <head>
@@ -14,4 +15,9 @@
 <main class="min-vh-100 bg-light py-3">
     <h1>#This is Dashboard</h1>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        console.log('This is dashboard')
+    </script>
+</th:block>
 </body>
