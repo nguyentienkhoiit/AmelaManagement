@@ -19,9 +19,8 @@
                 <h3 class="col-sm-4">#List Attendance</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
                     <input class="form-control me-2" id="date" name="text" th:value="${text}" type="date">
-                    <!--                    <input type="text" class="form-control rounded-start" placeholder="Search...">-->
                     <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search" type="button">
+                            title="Search" type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
@@ -66,18 +65,20 @@
             </table>
         </div>
 
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/attendances(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li aria-current="page" class="page-item active">
-                    <span class="page-link">2</span>
+                <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
+                    th:each="pageNumber : ${totalPage}">
+                    <a class="page-link" th:href="@{/attendances(pageIndex=${pageNumber}, text=${text})}"
+                       th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/attendances(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
             </ul>
         </nav>

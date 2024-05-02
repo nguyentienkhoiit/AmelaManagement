@@ -5,6 +5,7 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
+import com.khoinguyen.amela.util.DateTimeHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +31,12 @@ public class AttendanceCriteria {
         StringBuilder sql = new StringBuilder("select a from Attendance a where a.user.id = :userId");
         params.put("userId", userId);
 
-//        LocalDate checkDay = request.getText() != null ? DateTimeHelper.parseStringToDate(request.getText()) : null;
-//        if (checkDay != null) {
-//            sql.append(" where a.checkDay = :checkDay");
-//            params.put("checkDay", checkDay);
-//        }
+        LocalDate checkDay = request.getText() != null ? DateTimeHelper.parseStringToDate(request.getText()) : null;
+        if (checkDay != null) {
+            sql.append(" and a.checkDay = :checkDay");
+            params.put("checkDay", checkDay);
+        }
+
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select a", "select count(a.id)"));
