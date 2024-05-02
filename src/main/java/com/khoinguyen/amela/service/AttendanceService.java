@@ -7,6 +7,8 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 public interface AttendanceService {
     boolean checkAttendance();
 
-    public PagingDtoResponse<AttendanceDtoResponse>
+    PagingDtoResponse<AttendanceDtoResponse>
     getAttendanceByUserId(PagingDtoRequest pagingDtoRequest, Long userId);
+
+    boolean changeStatus(Long id);
 }

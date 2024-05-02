@@ -74,4 +74,12 @@ public class AttendanceController {
         boolean rs = attendanceService.checkAttendance();
         return "redirect:/" + referrer;
     }
+
+    @GetMapping("/change-status/{id}")
+    public String changeStatus(@PathVariable Long id, HttpServletRequest request) {
+        String referrer = request.getHeader("referer")
+                .replace(HOST, "");
+        boolean rs =  attendanceService.changeStatus(id);
+        return "redirect:/" + referrer;
+    }
 }

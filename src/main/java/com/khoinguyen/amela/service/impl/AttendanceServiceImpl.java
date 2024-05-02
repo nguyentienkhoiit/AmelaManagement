@@ -32,6 +32,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    public boolean changeStatus(Long id) {
+        var attendanceOptional = attendanceRepository.findById(id);
+        if (attendanceOptional.isPresent()) {
+            var attendance = attendanceOptional.get();
+            attendance.setUpdateAt(LocalDateTime.now());
+            attendance.setUpdateBy(attendance.getId());
+            attendance.setStatus(!attendance.isStatus());
+            attendanceRepository.save(attendance);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
         Optional<Attendance> attendanceOptional = attendanceRepository
