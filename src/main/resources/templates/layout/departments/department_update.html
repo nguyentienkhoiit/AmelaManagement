@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -25,20 +25,20 @@
     <form action="" class="row">
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="name" class="form-label">Department name</label>
-                <input type="text" class="form-control" id="name" placeholder="Hades">
+                <label class="form-label" for="name">Department name</label>
+                <input class="form-control" id="name" placeholder="Hades" type="text">
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="input-desc" class="form-label">Description</label>
-                <textarea class="form-control" placeholder="Description here" id="input-desc"></textarea>
+                <label class="form-label" for="input-desc">Description</label>
+                <textarea class="form-control" id="input-desc" placeholder="Description here"></textarea>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-12">
-                <button type="submit" class="btn btn-primary">Update</button>
+                <button class="btn btn-primary" type="submit">Update</button>
             </div>
         </div>
     </form>

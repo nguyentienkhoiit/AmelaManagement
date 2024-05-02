@@ -45,12 +45,10 @@ public class AttendanceServiceImpl implements AttendanceService {
                     .user(userLoggedIn)
                     .status(true)
                     .createdBy(userLoggedIn.getId())
-                    .createdAt(LocalDateTime.now())
                     .updateBy(userLoggedIn.getId())
                     .updateAt(LocalDateTime.now())
                     .build();
-        }
-        else {
+        } else {
             attendance = attendanceOptional.orElseThrow();
             attendance.setCheckOutTime(LocalDateTime.now());
         }

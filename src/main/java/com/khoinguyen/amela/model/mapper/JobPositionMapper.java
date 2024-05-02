@@ -1,8 +1,6 @@
 package com.khoinguyen.amela.model.mapper;
 
-import com.khoinguyen.amela.entity.Department;
 import com.khoinguyen.amela.entity.JobPosition;
-import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 
 public class JobPositionMapper {

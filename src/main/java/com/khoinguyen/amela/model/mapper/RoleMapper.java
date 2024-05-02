@@ -1,8 +1,6 @@
 package com.khoinguyen.amela.model.mapper;
 
-import com.khoinguyen.amela.entity.JobPosition;
 import com.khoinguyen.amela.entity.Role;
-import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 
 public class RoleMapper {

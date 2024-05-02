@@ -6,12 +6,13 @@ import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class AttendanceMapper {
     public static AttendanceDtoResponse toAttendanceDtoResponse(Attendance request) {
+        String checkoutTime = request.getCheckOutTime() != null ?
+                DateTimeHelper.formatLocalDateTime(request.getCheckOutTime()) : "";
         return AttendanceDtoResponse.builder()
                 .id(request.getId())
                 .status(request.isStatus())
                 .user(UserMapper.toUserDtoResponse(request.getUser()))
-                .checkOutTime(DateTimeHelper.formatLocalDateTime(request.getCheckOutTime()))
-                .createdAt(request.getCreatedAt())
+                .checkOutTime(checkoutTime)
                 .createdBy(request.getCreatedBy())
                 .checkInTime(DateTimeHelper.formatLocalDateTime(request.getCheckInTime()))
                 .updateBy(request.getUpdateBy())

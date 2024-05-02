@@ -3,7 +3,6 @@ package com.khoinguyen.amela.model.dto.attendance;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder

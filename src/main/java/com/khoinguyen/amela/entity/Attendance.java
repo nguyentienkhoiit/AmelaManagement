@@ -23,7 +23,6 @@ public class Attendance {
     LocalDate checkDay;
     LocalDateTime checkOutTime;
     boolean status;
-    LocalDateTime createdAt;
     Long createdBy;
     LocalDateTime updateAt;
     Long updateBy;

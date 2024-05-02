@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{::#blog-static-resource},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -16,11 +16,11 @@
 
 <body>
 <main class="min-vh-100 bg-light">
-    <form action="#" method="post" class="container">
+    <form action="#" class="container" method="post">
         <div class="row justify-content-center" style="padding-top: 50px">
             <div class="d-flex blog__search">
-                <input class="form-control" type="search" style="border-radius: 0.3rem 0 0 0.3rem!important;"
-                       placeholder="Search title post...">
+                <input class="form-control" placeholder="Search title post..." style="border-radius: 0.3rem 0 0 0.3rem!important;"
+                       type="search">
                 <button class="btn btn-success rounded-end" style="border-radius: 0 0.3rem 0.3rem 0!important;"
                         type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -156,7 +156,7 @@
                     <span class="page-link">Previous</span>
                 </li>
                 <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
+                <li aria-current="page" class="page-item active">
                     <span class="page-link">2</span>
                 </li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>

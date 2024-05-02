@@ -557,7 +557,11 @@
 
             $editor = $('<div />', {class: "richText"});
             var $toolbar = $('<div />', {class: "richText-toolbar"});
-            var $editorView = $('<div />', {class: "richText-editor", id: editorID, contenteditable: !settings.preview});
+            var $editorView = $('<div />', {
+                class: "richText-editor",
+                id: editorID,
+                contenteditable: !settings.preview
+            });
 
             $editorView.on('clear', () => {
                 var $editor = $('#' + editorID);
@@ -755,13 +759,16 @@
                 }));
             }
 
-            $bottomToolbar.append($('<a />', {class: 'richText-help', html: '<span class="fa fa-question-circle"></span>'}));
+            $bottomToolbar.append($('<a />', {
+                class: 'richText-help',
+                html: '<span class="fa fa-question-circle"></span>'
+            }));
             $editor.append($bottomToolbar);
 
-			var maxlength = settings.maxlength;
-			if (!maxlength && $inputElement.attr("maxlength")) {
-				maxlength = $inputElement.attr("maxlength");
-			}
+            var maxlength = settings.maxlength;
+            if (!maxlength && $inputElement.attr("maxlength")) {
+                maxlength = $inputElement.attr("maxlength");
+            }
             if (maxlength > 0) {
                 // display max length in editor toolbar
                 $editor.data('maxlength', maxlength);
@@ -1411,7 +1418,7 @@
 
         /** INTERNAL METHODS **/
 
-        function focusNextElement () {
+        function focusNextElement() {
             // add all elements we want to include in our selection
             var focussableElements = 'a:not([disabled]):not(.richText-btn,.richText-undo,.richText-redo,.richText-help), button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
             if (document.activeElement) {
@@ -1474,6 +1481,7 @@
             }
             return content;
         }
+
         /**
          * Update textarea when updating editor
          * @private

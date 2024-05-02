@@ -14,6 +14,11 @@ public class DateTimeHelper {
         return dateTime.format(formatter);
     }
 
+    public static String formatLocalDateTimeFullText(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return dateTime.format(formatter);
+    }
+
     public static String formatDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return date.format(formatter);

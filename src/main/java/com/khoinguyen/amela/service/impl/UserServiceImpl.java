@@ -42,7 +42,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public void createUser(UserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -121,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean changeStatus(Long id) {
         var userOptional = userRepository.findById(id);
-        if(userOptional.isPresent()) {
+        if (userOptional.isPresent()) {
             var user = userOptional.get();
             user.setUpdateAt(LocalDateTime.now());
             user.setUpdateBy(user.getId());

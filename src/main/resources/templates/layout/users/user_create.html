@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -22,68 +22,68 @@
     <div class="row">
         <h3>#Create User</h3>
     </div>
-    <form th:action="@{/users/create}" class="row" method="post" th:object="${user}">
+    <form class="row" method="post" th:action="@{/users/create}" th:object="${user}">
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="email" class="form-label">Email <i class="text-danger">*</i></label>
-                <input type="text" class="form-control" id="email" placeholder="email@example.com" th:field="*{email}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                <label class="form-label" for="email">Email <i class="text-danger">*</i></label>
+                <input class="form-control" id="email" placeholder="email@example.com" th:field="*{email}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
             </div>
             <div class="mb-3 col-md-6">
-                <label for="firstname" class="form-label">First name <i class="text-danger">*</i></label>
-                <input type="text" class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('firstname')}"
-                     th:errors="*{firstname}"></div>
+                <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
+                <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{firstname}"
+                     th:if="${#fields.hasErrors('firstname')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="lastname" class="form-label">Last name <i class="text-danger">*</i></label>
-                <input type="text" class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+                <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
+                <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{lastname}" th:if="${#fields.hasErrors('lastname')}"></div>
             </div>
             <div class="mb-3 col-md-6">
-                <label for="username" class="form-label">Username <i class="text-danger">*</i></label>
-                <input type="text" class="form-control" id="username" placeholder="khoi" th:field="*{username}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                <label class="form-label" for="username">Username <i class="text-danger">*</i></label>
+                <input class="form-control" id="username" placeholder="khoi" th:field="*{username}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{username}" th:if="${#fields.hasErrors('username')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="phone" class="form-label">Phone <i class="text-danger">*</i></label>
-                <input type="tel" class="form-control" id="phone" placeholder="0355166404" th:field="*{phone}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                <label class="form-label" for="phone">Phone <i class="text-danger">*</i></label>
+                <input class="form-control" id="phone" placeholder="0355166404" th:field="*{phone}" type="tel">
+                <div class="text-danger h6 mt-1" th:errors="*{phone}" th:if="${#fields.hasErrors('phone')}"></div>
             </div>
             <div class="mb-3 col-md-6">
-                <label for="dateOfBirth" class="form-label">Date of birth <i class="text-danger">*</i></label>
-                <input type="date" class="form-control" id="dateOfBirth" value="2001-09-15" th:field="*{dateOfBirth}">
-                <div class="text-danger h6 mt-1" th:if="${#fields.hasErrors('dateOfBirth')}"
-                     th:errors="*{dateOfBirth}"></div>
+                <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
+                <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date" value="2001-09-15">
+                <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
+                     th:if="${#fields.hasErrors('dateOfBirth')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="address" class="form-label">Address</label>
-                <input type="tel" class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}">
+                <label class="form-label" for="address">Address</label>
+                <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="gender" class="form-label">Gender</label>
+                <label class="form-label" for="gender">Gender</label>
                 <select class="form-select" id="gender" name="gender" th:field="*{gender}">
-                    <option value="1" selected>Male</option>
+                    <option selected value="1">Male</option>
                     <option value="0">Female</option>
                 </select>
             </div>
             <div class="mb-3 col-md-6">
-                <label for="jobPosition" class="form-label">Job Position</label>
+                <label class="form-label" for="jobPosition">Job Position</label>
                 <select class="form-select" id="jobPosition" name="jobPosition" th:field="*{jobPositionId}">
-                    <option th:each="position: ${session.jobPositions}" th:value="${position.id}"
-                            th:text="${position.name}">
+                    <option th:each="position: ${session.jobPositions}" th:text="${position.name}"
+                            th:value="${position.id}">
                         BA
                     </option>
                 </select>
@@ -92,23 +92,23 @@
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="department" class="form-label">Department</label>
+                <label class="form-label" for="department">Department</label>
                 <select class="form-select" id="department" name="department" th:field="*{departmentId}">
-                    <option th:each="department: ${session.departments}" th:value="${department.id}"
-                            th:text="${department.name}">Department 1
+                    <option th:each="department: ${session.departments}" th:text="${department.name}"
+                            th:value="${department.id}">Department 1
                     </option>
                 </select>
             </div>
             <div class="mb-3 col-md-6">
-                <label for="role" class="form-label">Role</label>
+                <label class="form-label" for="role">Role</label>
                 <select class="form-select" id="role" name="role" th:field="*{roleId}">
-                    <option th:each="role: ${session.roles}" th:value="${role.id}" th:text="${role.name}">User</option>
+                    <option th:each="role: ${session.roles}" th:text="${role.name}" th:value="${role.id}">User</option>
                 </select>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-12">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button class="btn btn-primary" type="submit">Create</button>
             </div>
         </div>
     </form>

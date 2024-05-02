@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -22,30 +22,35 @@
     <div class="row">
         <h3>#Create Group</h3>
     </div>
-    <form action="" class="row">
+    <form class="row" method="post" th:action="@{/groups/create}" th:object="${group}">
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="groupname" class="form-label">Group name</label>
-                <input type="text" class="form-control" id="groupname" placeholder="Faderless">
+                <label class="form-label" for="name">Group name</label>
+                <input class="form-control" id="name" name="name" placeholder="Faderless" th:field="*{name}"
+                       type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="input-desc" class="form-label">Description</label>
-                <textarea class="form-control" placeholder="Description" id="input-desc"></textarea>
+                <label class="form-label" for="input-desc">Description</label>
+                <textarea class="form-control" id="input-desc" name="description" placeholder="Description"
+                          th:field="*{description}"></textarea>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label for="listmail" class="form-label">List mail</label>
-                <textarea class="form-control" placeholder="List mail" id="listmail"></textarea>
+                <label class="form-label" for="listMail">List mail</label>
+                <textarea class="form-control" id="listMail" name="listMail" placeholder="List mail"
+                          th:field="*{listMail}"></textarea>
+                <div class="text-danger h6 mt-1" th:errors="*{listMail}" th:if="${#fields.hasErrors('listMail')}"></div>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-12">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button class="btn btn-primary" type="submit">Create</button>
             </div>
         </div>
     </form>

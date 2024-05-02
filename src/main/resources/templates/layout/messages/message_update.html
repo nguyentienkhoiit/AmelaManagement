@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{::#css-static-resource},
     ~{::#js-static-resource}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -27,36 +27,36 @@
     <form action="" class="row">
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="subjectname" class="form-label">Subject name</label>
-                <input type="text" class="form-control" id="subjectname" placeholder="Subject email">
+                <label class="form-label" for="subjectname">Subject name</label>
+                <input class="form-control" id="subjectname" placeholder="Subject email" type="text">
             </div>
             <div class="mb-3 col-md-6">
-                <label for="firstname" class="form-label">Sender name</label>
-                <input type="text" class="form-control" id="firstname" placeholder="HR Management">
+                <label class="form-label" for="firstname">Sender name</label>
+                <input class="form-control" id="firstname" placeholder="HR Management" type="text">
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 mb-3">
-                <label for="editor" class="form-label">Message [{{name}}: full name, {{age}}: age]</label>
-                <textarea class="form-control" name="message" id="editor" rows="3"></textarea>
+                <label class="form-label" for="editor">Message [{{name}}: full name, {{age}}: age]</label>
+                <textarea class="form-control" id="editor" name="message" rows="3"></textarea>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label for="sendtime" class="form-label">Send time</label>
-                <input type="datetime-local" class="form-control" id="sendtime">
+                <label class="form-label" for="sendtime">Send time</label>
+                <input class="form-control" id="sendtime" type="datetime-local">
             </div>
             <div class="mb-3 col-md-6">
-                <label for="sendtime" class="form-label">Send group or email</label>
+                <label class="form-label" for="sendtime">Send group or email</label>
                 <div>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label" for="radiobuttongroup">Group</label>
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radiobuttongroup"
+                        <input class="form-check-input" id="radiobuttongroup" name="inlineRadioOptions" type="radio"
                                value="option1">
                     </div>
                     <div class="form-check form-check-inline ms-5">
                         <label class="form-check-label" for="radiobuttonemail">Email</label>
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="radiobuttonemail"
+                        <input class="form-check-input" id="radiobuttonemail" name="inlineRadioOptions" type="radio"
                                value="option2">
                     </div>
                 </div>
@@ -64,14 +64,15 @@
         </div>
         <div class="row">
             <div class="col-md-12 mb-3">
-                <label for="inputemailsending" class="form-label">List email</label>
-                <textarea class="form-control" autocomplete="on" id="inputemailsending" rows="3"></textarea>
+                <label class="form-label" for="inputemailsending">List email</label>
+                <textarea autocomplete="on" class="form-control" id="inputemailsending" rows="3"></textarea>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 mb-3">
-                <label for="inputemailsending" class="form-label">Group email (from <a th:href="@{/groups}">here</a>)</label>
-                <select class="form-select" aria-label="Default select example">
+                <label class="form-label" for="inputemailsending">Group email (from <a
+                        th:href="@{/groups}">here</a>)</label>
+                <select aria-label="Default select example" class="form-select">
                     <option selected>Intership group</option>
                     <option value="1">Developer faderless</option>
                     <option value="2">Tester faderless</option>
@@ -81,7 +82,7 @@
         </div>
         <div class="row">
             <div class="mb-3 col-md-6">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button class="btn btn-primary" type="submit">Submit</button>
             </div>
         </div>
     </form>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
+    ~{},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -12,19 +13,19 @@
 
 <body>
 <main class="min-vh-100 bg-light py-3">
-    <form th:action="@{/attendances}" method="get">
+    <form method="get" th:action="@{/attendances}">
         <div class="table-title">
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Attendance</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input type="date" class="form-control me-2" id="date" name="text" th:value="${text}">
-<!--                    <input type="text" class="form-control rounded-start" placeholder="Search...">-->
-                    <button class="btn btn-primary rounded-end" type="button" data-bs-toggle="tooltip"
-                            data-bs-placement="top" title="Search">
+                    <input class="form-control me-2" id="date" name="text" th:value="${text}" type="date">
+                    <!--                    <input type="text" class="form-control rounded-start" placeholder="Search...">-->
+                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
+                            title="Search" type="button">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
-                    <a class="btn btn-success ms-1 rounded" th:href="@{/attendances/create}" data-bs-toggle="tooltip"
-                       data-bs-placement="top" title="Add">
+                    <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
+                       th:href="@{/attendances/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
                     </a>
                 </div>
@@ -36,10 +37,10 @@
                 <thead>
                 <tr>
                     <th scope="col">Date <i class="fa fa-sort"></i></th>
-                    <th scope="col">Check in <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
-                    <th scope="col">Check out <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Check in <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Check out <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Active <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Action</th>
                 </tr>
@@ -51,11 +52,11 @@
                     <td th:text="${attendance.checkOutTime}">20:11:00</td>
                     <td th:text="${attendance.status ? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a th:href="@{/attendances/update}" data-bs-toggle="tooltip" data-bs-placement="left"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/attendances/update}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <a href="#" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
+                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
                            title="Delete">
                             <i class="fa-solid fa-ban text-danger"></i>
                         </a>
@@ -71,7 +72,7 @@
                     <span class="page-link">Previous</span>
                 </li>
                 <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
+                <li aria-current="page" class="page-item active">
                     <span class="page-link">2</span>
                 </li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>

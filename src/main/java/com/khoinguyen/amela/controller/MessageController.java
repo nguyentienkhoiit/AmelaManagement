@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.entity.MessageSchedule;
 import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -34,7 +36,7 @@ public class MessageController {
     }
 
     @PostMapping("/create")
-    public String createMessages(Model model) {
+    public String createMessages(Model model, @ModelAttribute MessageSchedule message) {
         return "layout/messages/message_create";
     }
 
@@ -43,7 +45,7 @@ public class MessageController {
         return "layout/messages/message_update";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/update")
     public String updateMessages(Model model) {
         return "layout/messages/message_create";
     }

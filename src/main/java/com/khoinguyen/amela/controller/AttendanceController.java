@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.khoinguyen.amela.util.Constant.HOST;
+
 @Slf4j
 @Controller
 @RequestMapping("/attendances")
@@ -66,8 +68,10 @@ public class AttendanceController {
     }
 
     @GetMapping("/checkin")
-    public String checkAttendance() {
+    public String checkAttendance(HttpServletRequest request) {
+        String referrer = request.getHeader("referer")
+                .replace(HOST, "");
         boolean rs = attendanceService.checkAttendance();
-        return "layout/auth/home";
+        return "redirect:/" + referrer;
     }
 }

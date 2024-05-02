@@ -192,12 +192,12 @@ a {
 }
 
 #update-right {
-    text-align: right!important;
+    text-align: right !important;
 }
 
 @media screen and (max-width: 576px) {
     #update-right {
-        text-align: left!important;
+        text-align: left !important;
     }
 }
 

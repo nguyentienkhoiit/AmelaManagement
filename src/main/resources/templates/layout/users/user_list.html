@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout:: main-fragment(
+<html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
     ~{},
     ~{}
-)}">
+)}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -13,19 +13,20 @@
 
 <body>
 <main class="min-vh-100 bg-light py-3">
-    <form th:action="@{/users}" method="get">
+    <form method="get" th:action="@{/users}">
         <div class="table-title">
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List User</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input type="text" class="form-control rounded-start" placeholder="Search..." name="text" th:value="${text}">
-                    <button class="btn btn-primary rounded-end" type="submit" data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="Search">
+                    <input class="form-control rounded-start" name="text" placeholder="Search..." th:value="${text}"
+                           type="text">
+                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
+                            title="Search"
+                            type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
-                    <a class="btn btn-success ms-1 rounded" th:href="@{/users/create}" data-bs-toggle="tooltip"
-                       data-bs-placement="top" title="Add">
+                    <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
+                       th:href="@{/users/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
                     </a>
                 </div>
@@ -36,18 +37,18 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Code <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
-                    <th scope="col">First Name <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Code <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">First Name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Last Name <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Last Name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Email <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
-                    <th scope="col">Gender <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Email <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Gender <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Role <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a></th>
-                    <th scope="col">Position <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Role <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Position <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Active <a href="#" class="text-secondary"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Action</th>
                 </tr>
@@ -63,45 +64,49 @@
                     <td th:text="${user.position.name}">Developer</td>
                     <td th:text="${user.enabled ? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a th:href="@{/users/update/{id}(id=${user.id})}" data-bs-toggle="tooltip" data-bs-placement="left"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/users/update/{id}(id=${user.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
-                         </a>
-<!--                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"-->
-<!--                           title="Change status">-->
-<!--                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled?'text-danger':'text-success'}"></i>-->
-<!--                        </a>-->
+                        </a>
+                        <!--                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"-->
+                        <!--                           title="Change status">-->
+                        <!--                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled?'text-danger':'text-success'}"></i>-->
+                        <!--                        </a>-->
 
-                        <span class="ms-2" type="button" data-bs-toggle="modal"
-                                th:data-bs-target="'#modal'+${user.id}"
-                                th:classappend="${user.isEnabled == false?'disabled':''}">
-                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
-                               data-bs-toggle="tooltip" data-bs-placement="left" th:title="${user.enabled ? 'Change to deactive' : 'Change to active'}"></i>
+                        <span class="ms-2" data-bs-toggle="modal" th:classappend="${user.isEnabled == false?'disabled':''}"
+                              th:data-bs-target="'#modal'+${user.id}"
+                              type="button">
+                            <i class="fa-solid fa-circle-check"
+                               data-bs-placement="left"
+                               data-bs-toggle="tooltip" th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
+                               th:title="${user.enabled ? 'Change to deactive' : 'Change to active'}"></i>
                         </span>
 
-                        <div class="modal fade" th:id="'modal'+${user.id}" tabindex="-1"
-                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                             tabindex="-1" th:id="'modal'+${user.id}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
                                     </div>
                                     <div class="modal-body">
                                         Do you want to change status user?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
                                             Close
                                         </button>
-                                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="btn btn-danger">Change</a>
+                                        <a class="btn btn-danger" th:href="@{/users/change-status/{id}(id=${user.id})}">Change</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <a th:href="@{/attendances/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"
+                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/attendances/{id}(id=${user.id})}"
                            title="Check In">
                             <i class="fa-solid fa-check"></i>
                         </a>
@@ -117,8 +122,8 @@
                     <a class="page-link"
                        th:href="@{/users(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
-                <li class="page-item" th:each="pageNumber : ${totalPage}"
-                    th:classappend="${currentPage == pageNumber ? 'active' : ''}">
+                <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
+                    th:each="pageNumber : ${totalPage}">
                     <a class="page-link" th:href="@{/users(pageIndex=${pageNumber}, text=${text})}"
                        th:text="${pageNumber}"></a>
                 </li>
