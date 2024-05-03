@@ -2,15 +2,19 @@ package com.khoinguyen.amela.service;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
 
 public interface UserService {
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest pagingDtoRequest);
 
-    void createUser(UserDtoRequest request);
+    ServiceResponse<String> createUser(UserDtoRequest request);
 
     UserDtoResponse getProfile();
+
+    ServiceResponse<String> updateUser(UserDtoUpdate request);
 
     void updateProfile(UserDtoRequest request);
 
@@ -18,7 +22,6 @@ public interface UserService {
 
     boolean resetPassword(Long id);
 
-    boolean updateUser(UserDtoRequest request, Long id);
 
     boolean changeStatus(Long id);
 }

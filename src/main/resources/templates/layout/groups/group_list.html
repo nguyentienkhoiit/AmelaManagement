@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -18,12 +18,12 @@
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Group</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control rounded-start" name="text" placeholder="Search..." th:value="${text}"
+                    <input class="form-control rounded" onchange="submitForm()" name="text" placeholder="Search..." th:value="${text}"
                            type="text">
-                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search" type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+<!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
+<!--                            title="Search" type="submit">-->
+<!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+<!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
                        th:href="@{/groups/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
@@ -56,12 +56,14 @@
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
 
-                        <span class="ms-2" data-bs-toggle="modal" th:classappend="${group.status == false?'disabled':''}"
+                        <span class="ms-2" data-bs-toggle="modal"
+                              th:classappend="${group.status == false?'disabled':''}"
                               th:data-bs-target="'#modal'+${group.id}"
                               type="button">
                             <i class="fa-solid fa-circle-check"
                                data-bs-placement="left"
-                               data-bs-toggle="tooltip" th:classappend="${group.status ? 'text-danger' : 'text-success'}"
+                               data-bs-toggle="tooltip"
+                               th:classappend="${group.status ? 'text-danger' : 'text-success'}"
                                th:title="${group.status ? 'Change to deactive' : 'Change to active'}"></i>
                         </span>
 
@@ -112,4 +114,11 @@
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>

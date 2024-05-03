@@ -14,6 +14,7 @@ import com.khoinguyen.amela.repository.UserGroupRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.GroupCriteria;
 import com.khoinguyen.amela.service.GroupService;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,12 @@ public class GroupServiceImpl implements GroupService {
     UserRepository userRepository;
     UserHelper userHelper;
     GroupCriteria groupCriteria;
+    OptionalValidator optionalValidator;
 
     @Override
     public ServiceResponse<String> createGroups(GroupDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, null);
+        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         //cut email to list
         Set<String> listEmail = Arrays.stream(request.getListMail()
@@ -53,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
 
         //list of email empty
         if (listEmail.isEmpty()) {
-            response = new ServiceResponse<>(false, "List of email must be at least one");
+            response = new ServiceResponse<>(false, "listMail", "List of email must be at least one");
             return response;
         }
 
@@ -66,10 +68,17 @@ public class GroupServiceImpl implements GroupService {
             }
         }
 
+        //check group name duplicate
+        var groupOptional = optionalValidator.findByGroupName(request.getName(), 0L);
+        if (groupOptional.isPresent()) {
+            response = new ServiceResponse<>(false, "name", "Group name already exists");
+            return response;
+        }
+
         //mail is not exist
         if (!messages.isEmpty()) {
             String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-            response = new ServiceResponse<>(false, msg);
+            response = new ServiceResponse<>(false, "listMail", msg);
             return response;
         }
 
@@ -103,11 +112,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ServiceResponse<String> updateGroups(GroupDtoRequest request, Long id) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, null);
+        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         Group groupExist = groupRepository.findById(id).orElse(null);
         if (groupExist == null) {
-            response = new ServiceResponse<>(false, "Group not found: " + id);
+            response = new ServiceResponse<>(false, "id", "Group not found: " + id);
             return response;
         }
 
@@ -120,9 +129,16 @@ public class GroupServiceImpl implements GroupService {
                 .filter(s -> s.contains("@"))
                 .collect(Collectors.toSet());
 
+        //check group name duplicate
+        var groupOptional = optionalValidator.findByGroupName(request.getName(), request.getId());
+        if (groupOptional.isPresent()) {
+            response = new ServiceResponse<>(false, "name", "Group name already exists");
+            return response;
+        }
+
         //list of email empty
         if (listEmail.isEmpty()) {
-            response = new ServiceResponse<>(false, "List of email must be at least one");
+            response = new ServiceResponse<>(false, "listMail", "List of email must be at least one");
             return response;
         }
 
@@ -138,7 +154,7 @@ public class GroupServiceImpl implements GroupService {
         //list of mail is not exist
         if (!messages.isEmpty()) {
             String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-            response = new ServiceResponse<>(false, msg);
+            response = new ServiceResponse<>(false, "listMail", msg);
             return response;
         }
 

@@ -19,9 +19,14 @@ public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    //    @Temporal(TemporalType.TIME)
     LocalDateTime checkInTime;
     LocalDate checkDay;
+
+    //    @Temporal(TemporalType.TIME)
     LocalDateTime checkOutTime;
+    String note;
     boolean status;
     Long createdBy;
     LocalDateTime updateAt;

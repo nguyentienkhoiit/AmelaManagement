@@ -58,7 +58,7 @@
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
-                <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date" value="2001-09-15">
+                <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date">
                 <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
                      th:if="${#fields.hasErrors('dateOfBirth')}"></div>
             </div>
@@ -87,6 +87,7 @@
                         BA
                     </option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{position}" th:if="${#fields.hasErrors('position')}"></div>-->
             </div>
         </div>
 
@@ -98,12 +99,14 @@
                             th:value="${department.id}">Department 1
                     </option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{department}" th:if="${#fields.hasErrors('department')}"></div>-->
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="role">Role</label>
                 <select class="form-select" id="role" name="role" th:field="*{roleId}">
                     <option th:each="role: ${session.roles}" th:text="${role.name}" th:value="${role.id}">User</option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{role}" th:if="${#fields.hasErrors('role')}"></div>-->
             </div>
         </div>
         <div class="row">

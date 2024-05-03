@@ -21,41 +21,37 @@
     </nav>
     <div class="table-title">
         <div class="row justify-content-between">
-            <h3 class="col-sm-7">#Update User <span th:text="${user.code}"></span></h3>
-            <!--            <div class="mb-2 col-sm-5" style="max-width: 400px;" id="update-right">-->
-            <!--                <a class="btn btn-success me-4 rounded" href="#" type="button"-->
-            <!--                   id="button-addon3"><i class="fa-solid fa-circle-info"></i></a>-->
-            <!--            </div>-->
+            <h3 class="col-sm-7">#Update User</h3>
         </div>
     </div>
 
 
-    <form class="row" method="post" th:action="@{/users/update/{id}(id=${user.id})}" th:object="${user}">
-        <input class="form-control" id="id" name="id" th:field="*{id}" type="hidden">
+    <form class="row" method="post" th:action="@{/users/update}" th:object="${user}">
         <div class="row">
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="email">Email <i class="text-danger">*</i></label>
-                <input class="form-control" disabled id="email" placeholder="email@example.com" th:field="*{email}"
+                <input class="form-control" disabled id="email" name="email" placeholder="email@example.com"
+                       th:field="*{email}"
                        type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="code">Code<i class="text-danger">*</i></label>
-                <input class="form-control" disabled id="code" placeholder="A153249" th:field="*{code}" type="tel">
+                <input class="form-control" disabled id="code" name="code" placeholder="A153249" th:field="*{code}"
+                       type="text">
             </div>
         </div>
 
         <div class="row">
-            <div class="mb-3 col-md-6">
-                <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
-                <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{lastname}" th:if="${#fields.hasErrors('lastname')}"></div>
-            </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
                 <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
                 <div class="text-danger h6 mt-1" th:errors="*{firstname}"
                      th:if="${#fields.hasErrors('firstname')}"></div>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
+                <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{lastname}" th:if="${#fields.hasErrors('lastname')}"></div>
             </div>
         </div>
 
@@ -67,7 +63,7 @@
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
-                <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date" value="2001-09-15">
+                <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date">
                 <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
                      th:if="${#fields.hasErrors('dateOfBirth')}"></div>
             </div>
@@ -101,6 +97,7 @@
                         BA
                     </option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{position}" th:if="${#fields.hasErrors('position')}"></div>-->
             </div>
         </div>
 
@@ -108,11 +105,13 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="department">Department</label>
                 <select class="form-select" id="department" name="departmentId">
-                    <option th:each="department: ${session.departments}" th:selected="${department.id == user.department.id}"
+                    <option th:each="department: ${session.departments}"
+                            th:selected="${department.id == user.department.id}"
                             th:text="${department.name}" th:value="${department.id}">Department
                         1
                     </option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{department}" th:if="${#fields.hasErrors('department')}"></div>-->
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="role">Role</label>
@@ -121,11 +120,13 @@
                             th:text="${role.name}" th:value="${role.id}">User
                     </option>
                 </select>
+                <!--                <div class="text-danger h6 mt-1" th:errors="*{role}" th:if="${#fields.hasErrors('role')}"></div>-->
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-12">
                 <button class="btn btn-primary" type="submit">Update</button>
+                <input name="id" th:field="*{id}" type="hidden">
                 <a class="btn btn-success ms-1" th:href="@{/users/reset-password/{id}(id=${user.id})}">Reset
                     password</a>
             </div>

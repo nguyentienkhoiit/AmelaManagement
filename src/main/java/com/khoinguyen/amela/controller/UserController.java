@@ -1,8 +1,10 @@
 package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
 import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
@@ -18,9 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.Period;
 
 @Slf4j
 @Controller
@@ -45,7 +44,7 @@ public class UserController {
         var pagingDtoResponse = userService.getAllUsers(pagingDtoRequest);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
         if (pagingDtoRequest.getText() != null) {
-            model.addAttribute("text", pagingDtoRequest.getText());
+            model.addAttribute("text", pagingDtoRequest.getText().trim());
         }
         model.addAttribute("users", pagingDtoResponse.data());
         model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
@@ -72,51 +71,49 @@ public class UserController {
         if (result.hasErrors()) {
             return "layout/users/user_create";
         }
-
-        if (optionalValidator.findByEmailExist(request.getEmail()).isPresent()) {
-            result.rejectValue("email", "email.exist", "Email already exists");
-            return "layout/users/user_create";
-        }
-
-        if (optionalValidator.findByUsernameExist(request.getUsername()).isPresent()) {
-            result.rejectValue("username", "username.exist", "Username already exists");
-            return "layout/users/user_create";
-        }
-
-        if (optionalValidator.findByPhoneExist(request.getPhone()).isPresent()) {
-            result.rejectValue("phone", "phone.exist", "Phone already exists");
-            return "layout/users/user_create";
-        }
-
-        LocalDate dateOfBirth = request.getDateOfBirth();
-        LocalDate now = LocalDate.now();
-        Period period = Period.between(dateOfBirth, now);
-        if (period.getYears() < 18) {
-            result.rejectValue("dateOfBirth", "dateOfBirth.badRequest", "Date of birth must be greater than 18");
-            return "layout/users/user_create";
-        }
-
-        if (optionalValidator.findByJobPositionId(request.getJobPositionId()).isEmpty()) {
-            return "redirect:/users/create";
-        }
-
-        if (optionalValidator.findByDepartmentId(request.getDepartmentId()).isEmpty()) {
-            return "redirect:/users/create";
-        }
-
-        if (optionalValidator.findByRoleId(request.getRoleId()).isEmpty()) {
-            return "redirect:/users/create";
-        }
-
         //save to database
-        userService.createUser(request);
+        ServiceResponse<String> serviceResponse = userService.createUser(request);
+
+        if (!serviceResponse.status()) {
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            return "layout/users/user_create";
+        }
 
         //remove session
         session.removeAttribute("roles");
         session.removeAttribute("departments");
         session.removeAttribute("jobPositions");
 
-        return "redirect:/users";
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
+    }
+
+    @PostMapping("/update")
+    public String updateUser(
+            Model model,
+            @Valid @ModelAttribute("user") UserDtoUpdate request,
+            BindingResult result
+    ) {
+        //check validate
+        if (result.hasErrors()) {
+            return "layout/users/user_update";
+        }
+
+        //save to database
+        ServiceResponse<String> serviceResponse = userService.updateUser(request);
+
+        if (!serviceResponse.status()) {
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            return "layout/users/user_update";
+        }
+
+        //remove session
+        session.removeAttribute("roles");
+        session.removeAttribute("departments");
+        session.removeAttribute("jobPositions");
+
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
     }
 
     @GetMapping("update/{id}")
@@ -129,17 +126,6 @@ public class UserController {
         return "layout/users/user_update";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateUser(
-            Model model,
-            @Valid @ModelAttribute("user") UserDtoRequest request,
-            BindingResult result,
-            @PathVariable Long id
-    ) {
-        boolean rs = userService.updateUser(request, id);
-        return "redirect:/users";
-    }
-
     @GetMapping("reset-password/{id}")
     public String resetPassword(@PathVariable Long id) {
         boolean rs = userService.resetPassword(id);
@@ -149,7 +135,8 @@ public class UserController {
     @GetMapping("/change-status/{id}")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = userService.changeStatus(id);
-        return "redirect:/users";
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
     }
 
     private void SetSessionSelectionOption(Model model) {

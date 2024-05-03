@@ -15,7 +15,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDtoRequest {
+public class UserDtoUpdate {
+    Long id = 0L;
+
+    String code;
+
     @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "Email is invalid")
     String email;
 

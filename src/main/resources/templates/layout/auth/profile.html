@@ -53,7 +53,8 @@
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="department">Department</label>
                                     <select class="form-select" disabled id="department" name="department">
-                                        <option th:each="department: ${session.departments}" th:text="${department.name}"
+                                        <option th:each="department: ${session.departments}"
+                                                th:text="${department.name}"
                                                 th:value="${department.id}">Department 1
                                         </option>
                                     </select>
@@ -122,7 +123,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="mb-1" for="inputBirthday">Date of birth</label>
-                                    <input class="form-control" id="inputBirthday" name="birthday" placeholder="Enter your birthday"
+                                    <input class="form-control" id="inputBirthday" name="birthday"
+                                           placeholder="Enter your birthday"
                                            th:field="*{dateOfBirth}" type="date">
                                     <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
                                          th:if="${#fields.hasErrors('dateOfBirth')}"></div>

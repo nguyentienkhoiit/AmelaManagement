@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -18,14 +18,19 @@
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Attendance</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control me-2" id="date" name="text" th:value="${text}" type="date">
-                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search" type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                    <input class="form-control" id="date" onchange="submitForm()"
+                           name="text" th:value="${text}" type="month">
+                    <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
+                    <!--                            title="Search" type="submit">-->
+                    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+                    <!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
-                       th:href="@{/attendances/create}" title="Add">
+                       th:href="@{/attendances/create/{id}(id=${userId})}" title="Add">
                         <i class="fa-solid fa-plus"></i>
+                    </a>
+                    <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
+                       th:href="@{/attendances/exports/{id}(id=${userId})}" title="Export exel">
+                        <i class="fa-solid fa-file-export"></i>
                     </a>
                 </div>
             </div>
@@ -35,9 +40,15 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Date <i class="fa fa-sort"></i></th>
+                    <th scope="col">Code <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Full name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Department <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Date <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Day <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Check in <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Check out <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Work time <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
@@ -46,21 +57,29 @@
                 </thead>
                 <tbody>
                 <tr th:each="attendance : ${attendances}">
+                    <td th:text="${attendance.user.code}">12/12/2024</td>
+                    <td th:text="${attendance.fullName}">12/12/2024</td>
+                    <td th:text="${attendance.user.department.name}">12/12/2024</td>
                     <td th:text="${attendance.checkDay}">12/12/2024</td>
+                    <td th:text="${attendance.day}">12/12/2024</td>
                     <td th:text="${attendance.checkInTime}">10:20:00</td>
                     <td th:text="${attendance.checkOutTime}">20:11:00</td>
+                    <td th:text="${attendance.workTime}">20:11:00</td>
                     <td th:text="${attendance.status ? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/attendances/update}"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/attendances/update/{id}(id=${attendance.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <span class="ms-2" data-bs-toggle="modal" th:classappend="${attendance.status == false?'disabled':''}"
+                        <span class="ms-2" data-bs-toggle="modal"
+                              th:classappend="${attendance.status == false?'disabled':''}"
                               th:data-bs-target="'#modal'+${attendance.id}"
                               type="button">
                             <i class="fa-solid fa-circle-check"
                                data-bs-placement="left"
-                               data-bs-toggle="tooltip" th:classappend="${attendance.status ? 'text-danger' : 'text-success'}"
+                               data-bs-toggle="tooltip"
+                               th:classappend="${attendance.status ? 'text-danger' : 'text-success'}"
                                th:title="${attendance.status ? 'Change to deactive' : 'Change to active'}"></i>
                         </span>
 
@@ -86,7 +105,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </td>
                 </tr>
                 </tbody>
@@ -95,21 +113,30 @@
 
         <nav aria-label="Page navigation example" class="d-flex justify-content-center">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                <li class="page-item" th:classappend="${(currentPage == 1 || totalPage.size() == 0) ? 'disabled' : ''}">
                     <a class="page-link"
-                       th:href="@{/attendances(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
+                       th:href="@{/attendances/{id}(id=${userId},pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
                     th:each="pageNumber : ${totalPage}">
-                    <a class="page-link" th:href="@{/attendances(pageIndex=${pageNumber}, text=${text})}"
+                    <a class="page-link"
+                       th:href="@{/attendances/{id}(id=${userId}, pageIndex=${pageNumber}, text=${text})}"
                        th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                <li class="page-item"
+                    th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
                     <a class="page-link"
-                       th:href="@{/attendances(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
+                       th:href="@{/attendances/{id}(id=${userId}, pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
             </ul>
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>

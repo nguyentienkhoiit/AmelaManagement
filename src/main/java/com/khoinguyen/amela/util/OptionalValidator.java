@@ -1,13 +1,7 @@
 package com.khoinguyen.amela.util;
 
-import com.khoinguyen.amela.entity.Department;
-import com.khoinguyen.amela.entity.JobPosition;
-import com.khoinguyen.amela.entity.Role;
-import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.repository.DepartmentRepository;
-import com.khoinguyen.amela.repository.JobPositionRepository;
-import com.khoinguyen.amela.repository.RoleRepository;
-import com.khoinguyen.amela.repository.UserRepository;
+import com.khoinguyen.amela.entity.*;
+import com.khoinguyen.amela.repository.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,17 +17,22 @@ public class OptionalValidator {
     DepartmentRepository departmentRepository;
     RoleRepository roleRepository;
     JobPositionRepository jobPositionRepository;
+    GroupRepository groupRepository;
 
-    public Optional<User> findByEmailExist(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<Group> findByGroupName(String name, Long groupId) {
+        return groupRepository.findByName(name, groupId);
     }
 
-    public Optional<User> findByUsernameExist(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findByEmailExist(String email, Long userId) {
+        return userRepository.findByEmail(email, userId);
     }
 
-    public Optional<User> findByPhoneExist(String phone) {
-        return userRepository.findByPhone(phone);
+    public Optional<User> findByUsernameExist(String username, Long userId) {
+        return userRepository.findByUsername(username, userId);
+    }
+
+    public Optional<User> findByPhoneExist(String phone, Long userId) {
+        return userRepository.findByPhone(phone, userId);
     }
 
     public Optional<Department> findByDepartmentId(long departmentId) {

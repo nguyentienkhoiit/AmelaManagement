@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +25,15 @@ public class AttendanceCriteria {
     EntityManager em;
 
     public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(PagingDtoRequest request, Long userId) {
-        System.out.println(userId);
         Map<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder("select a from Attendance a where a.user.id = :userId");
         params.put("userId", userId);
 
-        LocalDate checkDay = request.getText() != null ? DateTimeHelper.parseStringToDate(request.getText()) : null;
-        if (checkDay != null) {
-            sql.append(" and a.checkDay = :checkDay");
-            params.put("checkDay", checkDay);
+        Map<String, Integer> map = DateTimeHelper.getYearMonthDetail(request.getText());
+        if (map != null) {
+            sql.append(" and YEAR(a.checkDay) = :year and MONTH(a.checkDay) = :month");
+            params.put("year", map.get("year"));
+            params.put("month", map.get("month"));
         }
 
         //filter search

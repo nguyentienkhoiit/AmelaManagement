@@ -66,7 +66,7 @@ public class GroupController {
         ServiceResponse<String> serviceResponse = groupService.createGroups(request);
 
         if (!serviceResponse.status()) {
-            result.rejectValue("listMail", "listMail.not-exist", serviceResponse.data());
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
             return "layout/groups/group_create";
         }
 
@@ -99,7 +99,7 @@ public class GroupController {
         ServiceResponse<String> serviceResponse = groupService.updateGroups(request, request.getId());
 
         if (!serviceResponse.status()) {
-            result.rejectValue("listMail", "listMail.not-exist", serviceResponse.data());
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
             return "layout/groups/group_update";
         }
 

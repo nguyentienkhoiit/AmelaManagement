@@ -6,9 +6,43 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DateTimeHelper {
+    public static String getDateFromMinus(int totalMinutes) {
+        int hours = totalMinutes / 60;
+        int minutes = totalMinutes % 60;
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    public static int getMinus(String time) {
+        String[] timeParts = time.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        return hours * 60 + minutes;
+    }
+
+    public static String toDayOfWeek(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return switch (dayOfWeek) {
+            case SATURDAY -> "Thứ Bảy";
+            case SUNDAY -> "Chủ Nhật";
+            case MONDAY -> "Thứ Hai";
+            case TUESDAY -> "Thứ Ba";
+            case WEDNESDAY -> "Thứ Tư";
+            case THURSDAY -> "Thứ Năm";
+            case FRIDAY -> "Thứ sáu";
+        };
+    }
+
+    public static boolean compareDateGreaterThan(LocalDate date, Long age) {
+        LocalDate now = LocalDate.now();
+        Period period = Period.between(date, now);
+        return period.getYears() <= age;
+    }
+
     public static String formatLocalDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return dateTime.format(formatter);
@@ -19,8 +53,8 @@ public class DateTimeHelper {
         return dateTime.format(formatter);
     }
 
-    public static String formatDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static String formatDate(LocalDate date, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatter);
     }
 
@@ -100,4 +134,33 @@ public class DateTimeHelper {
         return formatDate(unix, "yyyy-MM-dd");
     }
 
+    public static Map<String, Integer> getYearMonthDetail(String dateStr) {
+        if(dateStr == null) return null;
+
+        Map<String, Integer> map = new HashMap<>();
+        try {
+            LocalDate date = LocalDate.parse(dateStr + "-01");
+            int year = date.getYear();
+            int month = date.getMonthValue();
+
+            map.put("year", year);
+            map.put("month", month);
+
+            return map;
+        }
+        catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
+    public static boolean isExpiredDay(LocalDateTime l1, LocalDateTime l2, int numberOfDays) {
+        LocalDateTime dateTime1 = LocalDateTime.of(2024, 5, 1, 18, 34); // Thời điểm 1
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, 4, 1, 12, 12); // Thời điểm 2
+
+        Duration duration = Duration.between(dateTime1, dateTime2);
+
+        long absSeconds = Math.abs(duration.getSeconds()); // Đối với giá trị âm (nếu dateTime1 trước dateTime2)
+        long numberOfSeconds = Duration.ofDays(numberOfDays).getSeconds();
+        return absSeconds >= numberOfSeconds;
+    }
 }

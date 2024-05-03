@@ -50,4 +50,8 @@ public class PagingDtoRequest {
         else if ("desc".equalsIgnoreCase(sort)) return "desc";
         else return "asc";
     }
+
+    public String getText() {
+        return text == null ? "" : text;
+    }
 }

@@ -26,4 +26,8 @@ public class GroupDtoRequest {
     public String getName() {
         return StringUtil.formatString(name, true);
     }
+
+    public Long getId() {
+        return id == null ? 0 : id;
+    }
 }

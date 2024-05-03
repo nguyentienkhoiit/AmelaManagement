@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -18,13 +18,14 @@
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List User</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control rounded-start" name="text" placeholder="Search..." th:value="${text}"
+                    <input class="form-control rounded" onchange="submitForm()" name="text"
+                           placeholder="Search..." th:value="${text}"
                            type="text">
-                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search"
-                            type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+<!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
+<!--                            title="Search"-->
+<!--                            type="submit">-->
+<!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+<!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
                        th:href="@{/users/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
@@ -45,6 +46,7 @@
                     <th scope="col">Email <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Gender <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
+                    <th scope="col">Department <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Role <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Position <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
@@ -60,6 +62,7 @@
                     <td th:text="${user.lastname}">Hong Minh</td>
                     <td th:text="${user.email}">hongminhsn1812@gmail.com</td>
                     <td th:text="${user.gender == 1? 'Male': 'Female'}">Male</td>
+                    <td th:text="${user.department.name}">User</td>
                     <td th:text="${user.role.name}">User</td>
                     <td th:text="${user.position.name}">Developer</td>
                     <td th:text="${user.enabled ? 'Active': 'Deactive'}">Active</td>
@@ -69,17 +72,14 @@
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <!--                        <a th:href="@{/users/change-status/{id}(id=${user.id})}" class="ms-2" data-bs-toggle="tooltip" data-bs-placement="left"-->
-                        <!--                           title="Change status">-->
-                        <!--                            <i class="fa-solid fa-circle-check" th:classappend="${user.enabled?'text-danger':'text-success'}"></i>-->
-                        <!--                        </a>-->
-
-                        <span class="ms-2" data-bs-toggle="modal" th:classappend="${user.isEnabled == false?'disabled':''}"
+                        <span class="ms-2" data-bs-toggle="modal"
+                              th:classappend="${user.isEnabled == false?'disabled':''}"
                               th:data-bs-target="'#modal'+${user.id}"
                               type="button">
                             <i class="fa-solid fa-circle-check"
                                data-bs-placement="left"
-                               data-bs-toggle="tooltip" th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
+                               data-bs-toggle="tooltip"
+                               th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
                                th:title="${user.enabled ? 'Change to deactive' : 'Change to active'}"></i>
                         </span>
 
@@ -135,4 +135,11 @@
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>

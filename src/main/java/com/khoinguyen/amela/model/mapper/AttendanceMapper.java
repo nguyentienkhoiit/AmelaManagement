@@ -1,13 +1,26 @@
 package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.Attendance;
+import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
+import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
+
+import java.time.Duration;
 
 public class AttendanceMapper {
     public static AttendanceDtoResponse toAttendanceDtoResponse(Attendance request) {
         String checkoutTime = request.getCheckOutTime() != null ?
-                DateTimeHelper.formatLocalDateTime(request.getCheckOutTime()) : "";
+                DateTimeHelper.formatLocalDateTime(request.getCheckOutTime()) : "00:00:00";
+        String workTime = "00:00";
+        if (request.getCheckOutTime() != null) {
+            Duration duration = Duration.between(request.getCheckInTime(), request.getCheckOutTime());
+            long hours = duration.toHours();
+            long minutes = duration.toMinutesPart();
+            workTime = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+        }
+        User user = request.getUser();
+        String fullName = String.format("%s %s", user.getFirstname(), user.getLastname());
         return AttendanceDtoResponse.builder()
                 .id(request.getId())
                 .status(request.isStatus())
@@ -17,7 +30,21 @@ public class AttendanceMapper {
                 .checkInTime(DateTimeHelper.formatLocalDateTime(request.getCheckInTime()))
                 .updateBy(request.getUpdateBy())
                 .updateAt(request.getUpdateAt())
-                .checkDay(DateTimeHelper.formatDate(request.getCheckDay()))
+                .day(DateTimeHelper.toDayOfWeek(request.getCheckDay()))
+                .checkDay(DateTimeHelper.formatDate(request.getCheckDay(), "dd/MM/yyyy"))
+                .workTime(workTime)
+                .fullName(fullName)
+                .note(request.getNote())
+                .build();
+    }
+
+    public static AttendanceDtoUpdateResponse toAttendanceDtoUpdateResponse(Attendance request) {
+        return AttendanceDtoUpdateResponse.builder()
+                .attendanceId(request.getId())
+                .userId(request.getUser().getId())
+                .checkInTime(request.getCheckInTime())
+                .checkOutTime(request.getCheckOutTime())
+                .note(request.getNote())
                 .build();
     }
 }
