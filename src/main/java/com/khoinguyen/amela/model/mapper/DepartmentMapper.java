@@ -2,18 +2,20 @@ package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.Department;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
+import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class DepartmentMapper {
-    public static DepartmentDtoResponse toDepartment(Department request) {
+    public static DepartmentDtoResponse toDepartmentDtoResponse(Department request) {
         return DepartmentDtoResponse.builder()
                 .id(request.getId())
                 .name(request.getName())
                 .description(request.getDescription())
                 .status(request.isStatus())
-                .createdAt(request.getCreatedAt())
-                .updateAt(request.getUpdateAt())
+                .createdAt(DateTimeHelper.formatLocalDateTimeFullText(request.getCreatedAt()))
+                .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))
                 .createdBy(request.getCreatedBy())
                 .updateBy(request.getUpdateBy())
                 .build();
     }
+
 }

@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -13,16 +13,17 @@
 
 <body>
 <main class="min-vh-100 bg-light py-3">
-    <form action="#" method="post">
+    <form method="get" th:action="@{/departments}">
         <div class="table-title">
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Department</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control rounded-start" placeholder="Search..." type="text">
-                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search" type="button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                    <input class="form-control rounded" name="text" onchange="submitForm()" placeholder="Search..."
+                           th:value="${text}" type="text">
+                    <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
+                    <!--                            title="Search" type="button">-->
+                    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+                    <!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
                        th:href="@{/departments/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
@@ -44,70 +45,80 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Faderless</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
+                <tr th:each="department: ${departments}">
+                    <td th:text="${department.name}">Faderless</td>
+                    <td th:text="${department.createdAt}">20:11:00 12/12/2024</td>
+                    <td th:text="${department.status == true? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/departments/update}"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/departments/update/{id}(id=${department.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Faderless</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/departments/update}"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Faderless</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/departments/update}"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
+
+                        <span class="ms-2" data-bs-toggle="modal"
+                              th:classappend="${department.status == false?'disabled':''}"
+                              th:data-bs-target="'#modal'+${department.id}"
+                              type="button">
+                            <i class="fa-solid fa-circle-check"
+                               data-bs-placement="left"
+                               data-bs-toggle="tooltip"
+                               th:classappend="${department.status ? 'text-danger' : 'text-success'}"
+                               th:title="${department.status ? 'Change to deactive' : 'Change to active'}"></i>
+                        </span>
+
+                        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                             tabindex="-1" th:id="'modal'+${department.id}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Do you want to change status department?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                                            Close
+                                        </button>
+                                        <a class="btn btn-danger"
+                                           th:href="@{/departments/change-status/{id}(id=${department.id})}">Change</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/departments(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li aria-current="page" class="page-item active">
-                    <span class="page-link">2</span>
+                <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
+                    th:each="pageNumber : ${totalPage}">
+                    <a class="page-link" th:href="@{/departments(pageIndex=${pageNumber}, text=${text})}"
+                       th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/departments(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
             </ul>
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>

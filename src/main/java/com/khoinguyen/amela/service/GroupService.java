@@ -9,7 +9,7 @@ import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 public interface GroupService {
     ServiceResponse<String> createGroups(GroupDtoRequest request);
 
-    ServiceResponse<String> updateGroups(GroupDtoRequest request, Long id);
+    ServiceResponse<String> updateGroups(GroupDtoRequest request);
 
     GroupDtoResponse getGroupById(Long id);
 

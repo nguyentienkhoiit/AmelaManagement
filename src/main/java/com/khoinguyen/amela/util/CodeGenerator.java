@@ -3,11 +3,11 @@ package com.khoinguyen.amela.util;
 import java.util.Random;
 
 public class CodeGenerator {
+    private static final String PREFIX = "A";
+
     public static String generateCode() {
         return Constant.PREFIX + System.currentTimeMillis();
     }
-
-    private static final String PREFIX = "A";
 
     public static void main(String[] args) {
         System.out.println(generateEmployeeCode());

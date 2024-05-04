@@ -22,18 +22,21 @@
     <div class="row">
         <h3>#Create Position</h3>
     </div>
-    <form action="" class="row">
+    <form class="row" method="post" th:action="@{/positions/create}" th:object="${position}">
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label class="form-label" for="email">Position name</label>
-                <input class="form-control" id="email" placeholder="email@example.com" type="email">
+                <label class="form-label" for="name">Position name</label>
+                <input class="form-control" id="name" name="name" placeholder="IT Comtor" th:field="*{name}"
+                       type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
                 <label class="form-label" for="input-desc">Description</label>
-                <textarea class="form-control" id="input-desc" placeholder="Leave a comment here"></textarea>
+                <textarea class="form-control" id="input-desc" name="description" placeholder="Leave a comment here"
+                          th:field="*{description}"></textarea>
             </div>
         </div>
         <div class="row">

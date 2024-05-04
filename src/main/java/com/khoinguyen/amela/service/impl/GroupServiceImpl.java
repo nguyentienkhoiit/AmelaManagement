@@ -110,13 +110,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ServiceResponse<String> updateGroups(GroupDtoRequest request, Long id) {
+    public ServiceResponse<String> updateGroups(GroupDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
-        Group groupExist = groupRepository.findById(id).orElse(null);
+        Group groupExist = groupRepository.findById(request.getId()).orElse(null);
         if (groupExist == null) {
-            response = new ServiceResponse<>(false, "id", "Group not found: " + id);
+            response = new ServiceResponse<>(false, "id", "Group not found: " + request.getId());
             return response;
         }
 
@@ -216,11 +216,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public boolean changeStatus(Long id) {
+        User userLoggedIn = userHelper.getUserLogin();
         var groupOptional = groupRepository.findById(id);
         if (groupOptional.isPresent()) {
             var group = groupOptional.get();
             group.setUpdateAt(LocalDateTime.now());
-            group.setUpdateBy(group.getId());
+            group.setUpdateBy(userLoggedIn.getId());
             group.setStatus(!group.isStatus());
             groupRepository.save(group);
             return true;

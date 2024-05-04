@@ -23,6 +23,14 @@ public class OptionalValidator {
         return groupRepository.findByName(name, groupId);
     }
 
+    public Optional<Department> findByDepartmentName(String name, Long departmentId) {
+        return departmentRepository.findByName(name, departmentId);
+    }
+
+    public Optional<JobPosition> findByPositionName(String name, Long positionId) {
+        return jobPositionRepository.findByName(name, positionId);
+    }
+
     public Optional<User> findByEmailExist(String email, Long userId) {
         return userRepository.findByEmail(email, userId);
     }

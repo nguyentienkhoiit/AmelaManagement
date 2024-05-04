@@ -48,6 +48,7 @@ public class GroupController {
     @GetMapping("/create")
     public String viewCreateGroups(Model model) {
         session.setAttribute("active", "group");
+
         model.addAttribute("group", new GroupDtoRequest());
         return "layout/groups/group_create";
     }
@@ -58,7 +59,6 @@ public class GroupController {
             BindingResult result,
             Model model
     ) {
-
         if (result.hasErrors()) {
             return "layout/groups/group_create";
         }
@@ -70,7 +70,8 @@ public class GroupController {
             return "layout/groups/group_create";
         }
 
-        return "redirect:/groups";
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
     }
 
 
@@ -80,6 +81,7 @@ public class GroupController {
             @PathVariable Long id
     ) {
         session.setAttribute("active", "group");
+
         GroupDtoResponse response = groupService.getGroupById(id);
         model.addAttribute("group", response);
         return "layout/groups/group_update";
@@ -96,19 +98,21 @@ public class GroupController {
             return "layout/groups/group_update";
         }
 
-        ServiceResponse<String> serviceResponse = groupService.updateGroups(request, request.getId());
+        ServiceResponse<String> serviceResponse = groupService.updateGroups(request);
 
         if (!serviceResponse.status()) {
             result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
             return "layout/groups/group_update";
         }
 
-        return "redirect:/groups";
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
     }
 
     @GetMapping("/change-status/{id}")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = groupService.changeStatus(id);
+
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }

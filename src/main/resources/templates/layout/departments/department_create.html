@@ -22,18 +22,20 @@
     <div class="row">
         <h3>#Create Department</h3>
     </div>
-    <form action="" class="row">
+    <form class="row" method="post" th:action="@{/departments/create}" th:object="${department}">
         <div class="row">
             <div class="mb-3 col-md-12">
                 <label class="form-label" for="name">Department name</label>
-                <input class="form-control" id="name" placeholder="Hades" type="text">
+                <input class="form-control" id="name" name="name" placeholder="Hades" th:field="*{name}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-12">
                 <label class="form-label" for="input-desc">Description</label>
-                <textarea class="form-control" id="input-desc" placeholder="Description here"></textarea>
+                <textarea class="form-control" id="input-desc" name="description" placeholder="Description here"
+                          th:field="*{description}"></textarea>
             </div>
         </div>
         <div class="row">

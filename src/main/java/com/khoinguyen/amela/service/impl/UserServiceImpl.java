@@ -205,11 +205,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean changeStatus(Long id) {
+        User userLoggedIn = userHelper.getUserLogin();
         var userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             var user = userOptional.get();
             user.setUpdateAt(LocalDateTime.now());
-            user.setUpdateBy(user.getId());
+            user.setUpdateBy(userLoggedIn.getId());
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
             return true;

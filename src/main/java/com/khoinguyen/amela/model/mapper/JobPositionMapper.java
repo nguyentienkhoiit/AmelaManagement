@@ -2,16 +2,17 @@ package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.JobPosition;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class JobPositionMapper {
-    public static JobPositionDtoResponse toJobPosition(JobPosition request) {
+    public static JobPositionDtoResponse toJobPositionDtoResponse(JobPosition request) {
         return JobPositionDtoResponse.builder()
                 .id(request.getId())
                 .name(request.getName())
                 .description(request.getDescription())
                 .status(request.isStatus())
-                .createdAt(request.getCreatedAt())
-                .updateAt(request.getUpdateAt())
+                .createdAt(DateTimeHelper.formatLocalDateTimeFullText(request.getCreatedAt()))
+                .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))
                 .createdBy(request.getCreatedBy())
                 .updateBy(request.getUpdateBy())
                 .build();
