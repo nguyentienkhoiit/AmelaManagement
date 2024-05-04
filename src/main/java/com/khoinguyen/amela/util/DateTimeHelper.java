@@ -135,7 +135,7 @@ public class DateTimeHelper {
     }
 
     public static Map<String, Integer> getYearMonthDetail(String dateStr) {
-        if(dateStr == null) return null;
+        if (dateStr == null) return null;
 
         Map<String, Integer> map = new HashMap<>();
         try {
@@ -147,17 +147,13 @@ public class DateTimeHelper {
             map.put("month", month);
 
             return map;
-        }
-        catch (DateTimeParseException e) {
+        } catch (DateTimeParseException e) {
             return null;
         }
     }
 
     public static boolean isExpiredDay(LocalDateTime l1, LocalDateTime l2, int numberOfDays) {
-        LocalDateTime dateTime1 = LocalDateTime.of(2024, 5, 1, 18, 34); // Thời điểm 1
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, 4, 1, 12, 12); // Thời điểm 2
-
-        Duration duration = Duration.between(dateTime1, dateTime2);
+        Duration duration = Duration.between(l1, l2);
 
         long absSeconds = Math.abs(duration.getSeconds()); // Đối với giá trị âm (nếu dateTime1 trước dateTime2)
         long numberOfSeconds = Duration.ofDays(numberOfDays).getSeconds();

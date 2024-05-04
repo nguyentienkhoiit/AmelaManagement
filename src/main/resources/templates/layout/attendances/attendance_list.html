@@ -18,8 +18,8 @@
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Attendance</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control" id="date" onchange="submitForm()"
-                           name="text" th:value="${text}" type="month">
+                    <input class="form-control" id="date" name="text"
+                           onchange="submitForm()" th:value="${text}" type="month">
                     <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
                     <!--                            title="Search" type="submit">-->
                     <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
@@ -29,7 +29,7 @@
                         <i class="fa-solid fa-plus"></i>
                     </a>
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
-                       th:href="@{/attendances/exports/{id}(id=${userId})}" title="Export exel">
+                       th:href="@{/attendances/exports/{id}(id=${userId},text=${text})}" title="Export exel">
                         <i class="fa-solid fa-file-export"></i>
                     </a>
                 </div>

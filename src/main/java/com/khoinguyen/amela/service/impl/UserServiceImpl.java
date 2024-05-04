@@ -93,6 +93,7 @@ public class UserServiceImpl implements UserService {
         user.setJobPosition(positionOptional.get());
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(CodeGenerator.generateCode());
+
         userRepository.save(user);
 
         return response;
@@ -196,6 +197,7 @@ public class UserServiceImpl implements UserService {
         user.setDepartment(departmentOptional.get());
         user.setRole(roleOptional.get());
         user.setJobPosition(positionOptional.get());
+        user.setEnabled(false);
         userRepository.save(user);
 
         return response;

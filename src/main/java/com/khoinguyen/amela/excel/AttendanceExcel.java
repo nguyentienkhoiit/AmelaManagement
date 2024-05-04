@@ -25,7 +25,23 @@ public class AttendanceExcel {
     }
 
     private void writeHeaderRow() {
-        Row row = sheet.createRow(0);
+        CellStyle cellStyle = workbook.createCellStyle();
+        Font fontHeader = workbook.createFont();
+        fontHeader.setBold(true);
+        fontHeader.setFontHeightInPoints((short) 15);
+        fontHeader.setColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setFont(fontHeader);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        Row rowHeader = sheet.createRow(0);
+        Cell cellHeader = rowHeader.createCell(0);
+        cellHeader.setCellValue("Personal timekeeping report");
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 8));
+        cellHeader.setCellStyle(cellStyle);
+        rowHeader.setHeightInPoints(30);
+
+        Row row = sheet.createRow(1);
 
         CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
@@ -75,7 +91,7 @@ public class AttendanceExcel {
     }
 
     private void writeDataRows() {
-        int rowCount = 1;
+        int rowCount = 2;
         for (AttendanceDtoResponse attendance : attendanceDtoResponses) {
             if (!attendance.isStatus()) continue;
 
@@ -121,7 +137,7 @@ public class AttendanceExcel {
         sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 1, 6));
 
         int totalMinus = attendanceDtoResponses.stream()
-                .mapToInt(a -> DateTimeHelper.getMinus(a.getWorkTime())) // Chuyển đổi thành int
+                .mapToInt(a -> DateTimeHelper.getMinus(a.getWorkTime()))
                 .sum();
         cell = row.createCell(7);
         cell.setCellValue(DateTimeHelper.getDateFromMinus(totalMinus));

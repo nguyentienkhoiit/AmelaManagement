@@ -16,12 +16,12 @@ public class UserMapper {
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .phone(user.getPhone())
-                .status(user.isStatus())
+                .status(user.isEnabled())
                 .position(JobPositionMapper.toJobPosition(user.getJobPosition()))
                 .department(DepartmentMapper.toDepartment(user.getDepartment()))
                 .role(RoleMapper.toRole(user.getRole()))
                 .dateOfBirth(user.getDateOfBirth().toString())
-                .active(user.isStatus())
+                .active(user.isEnabled())
                 .address(user.getAddress())
                 .username(user.getUsername())
                 .enabled(user.isEnabled())
@@ -41,7 +41,7 @@ public class UserMapper {
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
                 .avatar("/image/avatar.jpg")
-                .status(true)
+                .enabled(true)
                 .username(request.getUsername())
                 .build();
     }

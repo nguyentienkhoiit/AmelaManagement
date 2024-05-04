@@ -19,7 +19,9 @@
 <body id="body-pd">
 <header class="header" id="header">
     <div class="header_toggle"><i class='bx bx-menu' id="header-toggle"></i></div>
-    <a class="btn btn-success header__right" th:href="@{/attendances/checkin}">Check In</a>
+    <a class="btn btn-outline-success header__right" data-bs-placement="left" data-bs-toggle="tooltip"
+       th:href="@{/attendances/checkin}"
+       title="Timekeeping"><i class="fa-solid fa-camera"></i></a>
     <!--    <a th:href="@{/login}" class="btn btn-primary header__right">Login</a>-->
 </header>
 <div class="l-navbar" id="nav-bar">

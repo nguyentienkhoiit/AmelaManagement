@@ -164,7 +164,11 @@ public class AttendanceController {
     }
 
     @GetMapping("/exports/{userId}")
-    public void exportAttendances(HttpServletResponse response, @PathVariable Long userId) throws IOException {
+    public void exportAttendances(
+            HttpServletResponse response,
+            @PathVariable Long userId,
+            @RequestParam(name = "text") String text
+    ) throws IOException {
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=attendances.xlsx";
@@ -173,6 +177,7 @@ public class AttendanceController {
         PagingDtoRequest request = PagingDtoRequest.builder()
                 .pageIndex("1")
                 .pageSize("1000")
+                .text(text)
                 .build();
         List<AttendanceDtoResponse> attendanceDtoResponses = attendanceService.getAttendanceByUserId(request, userId).data();
         AttendanceExcel attendanceExcel = new AttendanceExcel(attendanceDtoResponses);

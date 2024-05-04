@@ -48,8 +48,6 @@ public class User {
 
     String phone;
 
-    boolean status;
-
     LocalDateTime createdAt;
 
     Long createdBy;
