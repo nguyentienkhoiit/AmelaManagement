@@ -32,7 +32,6 @@ public class UserController {
     RoleService roleService;
     DepartmentService departmentService;
     JobPositionService jobPositionService;
-    OptionalValidator optionalValidator;
 
     @GetMapping
     public String viewUsers(

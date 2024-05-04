@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
@@ -31,8 +32,6 @@ public class HomeController {
     RoleService roleService;
     DepartmentService departmentService;
     JobPositionService jobPositionService;
-    OptionalValidator optionalValidator;
-    UserHelper userHelper;
 
     @GetMapping
     public String home() {
@@ -67,27 +66,21 @@ public class HomeController {
             BindingResult result,
             Model model
     ) {
-        User userLoggedIn = userHelper.getUserLogin();
-
         if (result.hasErrors()) {
             return "layout/auth/profile";
         }
 
-//        var userOptional = optionalValidator.findByPhoneExist(request.getPhone());
-//        if(userOptional.isPresent() && !Objects.equals(userOptional.get().getId(), userLoggedIn.getId())) {
-//            result.rejectValue("phone", "phone.exist", "Phone already exists");
-//            return "layout/auth/profile";
-//        }
-//
-//        LocalDate dateOfBirth = request.getDateOfBirth();
-//        LocalDate now = LocalDate.now();
-//        Period period = Period.between(dateOfBirth, now);
-//        if (period.getYears() < 18) {
-//            result.rejectValue("dateOfBirth", "dateOfBirth.badRequest", "Date of birth must be greater than 18");
-//            return "layout/auth/profile";
-//        }
+        ServiceResponse<String> serviceResponse = userService.updateProfile(request);
+        if (!serviceResponse.status()) {
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            return "layout/auth/profile";
+        }
 
-        userService.updateProfile(request);
+        //remove session
+        session.removeAttribute("roles");
+        session.removeAttribute("departments");
+        session.removeAttribute("jobPositions");
+
         return "redirect:/profile";
     }
 

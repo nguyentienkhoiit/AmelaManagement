@@ -106,8 +106,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateProfile(UserDtoRequest request) {
+    public ServiceResponse<String> updateProfile(UserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
+        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
+
+        var userOptional = optionalValidator.findByPhoneExist(request.getPhone(), userLoggedIn.getId());
+        if (userOptional.isPresent()) {
+            response = new ServiceResponse<>(false, "phone", "Phone already existed");
+            return response;
+        }
+
+        if (DateTimeHelper.compareDateGreaterThan(request.getDateOfBirth(), 18L)) {
+            response = new ServiceResponse<>(false, "dateOfBirth", "Date of birth must be greater than 18");
+            return response;
+        }
+
         userLoggedIn.setUpdateBy(userLoggedIn.getId());
         userLoggedIn.setPhone(request.getPhone());
         userLoggedIn.setFirstname(request.getFirstname());
@@ -116,6 +129,8 @@ public class UserServiceImpl implements UserService {
         userLoggedIn.setAddress(request.getAddress());
         userLoggedIn.setDateOfBirth(request.getDateOfBirth());
         userRepository.save(userLoggedIn);
+
+        return response;
     }
 
     @Override

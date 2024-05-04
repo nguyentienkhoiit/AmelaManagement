@@ -16,7 +16,7 @@ public interface UserService {
 
     ServiceResponse<String> updateUser(UserDtoUpdate request);
 
-    void updateProfile(UserDtoRequest request);
+    ServiceResponse<String> updateProfile(UserDtoRequest request);
 
     UserDtoResponse getUserById(Long id);
 
