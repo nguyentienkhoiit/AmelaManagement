@@ -18,24 +18,25 @@
   * [Diagram](https://github.com/nguyentienkhoiit/AmelaManagement/blob/master/diagram.pdf)
 ## Description system
 * Hệ thống sẽ có 2 role chính là admin và user
-* Những chức năng chung:
+* Những feature chung:
   * Login
   * Logout
   * Forgot password
   * View Profile
-* Những chức năng của admin: 
+* Những feature của admin: 
   * Quản lí user
   * Quản lí department
-  * Quản lí job description
+  * Quản lí job position
   * Quản lí messages schedule
   * Quản lí attendance
   * Quản lí group
   * View dashboard
-* Những chức năng của user:
+* Những feature của user:
   * Checkin/out
   * View message detail
+  * View and search message
   * Search message (from home)
-  * View user trong cùng công ty
+  * View user trong công ty
   * View attendance
 ## Show your support
 
