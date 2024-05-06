@@ -71,9 +71,9 @@ public class User {
     List<Attendance> attendances;
 
     @OneToMany(mappedBy = "user")
-    List<MessageSchedule> messageSchedules;
+    List<UserMessageSchedule> userMessageSchedules;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "job_position_id")
     JobPosition jobPosition;
 

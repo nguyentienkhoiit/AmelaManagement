@@ -228,4 +228,11 @@ public class GroupServiceImpl implements GroupService {
         }
         return false;
     }
+
+    @Override
+    public List<GroupDtoResponse> getAll() {
+        return groupRepository.findAllByStatusTrue().stream()
+                .map(GroupMapper::toGroupDtoResponse)
+                .toList();
+    }
 }

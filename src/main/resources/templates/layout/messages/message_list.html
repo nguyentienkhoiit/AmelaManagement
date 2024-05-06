@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -13,16 +13,17 @@
 
 <body>
 <main class="min-vh-100 bg-light py-3">
-    <form action="#" method="post">
+    <form method="get" th:action="@{/messages}">
         <div class="table-title">
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Messages</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control rounded-start" placeholder="Search..." type="text">
-                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"
-                            title="Search" type="button">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
+                    <input class="form-control rounded-start" name="text" onchange="submitForm()" placeholder="Search..."
+                           th:value="${text}" type="text">
+                    <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
+                    <!--                            title="Search" type="button">-->
+                    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
+                    <!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
                        th:href="@{/messages/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
@@ -36,7 +37,10 @@
                 <thead>
                 <tr>
                     <th scope="col">Subject name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Transportation <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    </th>
                     <th scope="col">Send At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    <th scope="col">Sender name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
@@ -44,48 +48,55 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Send to Amela</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
+                <tr th:each="message: ${messages}">
+                    <td th:text="${message.subject}">Send to Amela</td>
+                    <td th:text="${message.choice == true? 'Group': 'Email'}">Send to Amela</td>
+                    <td th:text="${message.publishAt}">20:11:00 12/12/2024</td>
+                    <td th:text="${message.senderName}">Administrator</td>
+                    <td th:text="${message.status ? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/messages/update}"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/messages/update/{id}(id=${message.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>
                         </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Send to Amela</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/messages/update}"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Send to Amela</td>
-                    <td>20:11:00 12/12/2024</td>
-                    <td>Active</td>
-                    <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/messages/update}"
-                           title="Update">
-                            <i class="fa-solid fa-pencil text-warning"></i>
-                        </a>
-                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip" href="#"
-                           title="Delete">
-                            <i class="fa-solid fa-ban text-danger"></i>
+                        <span class="ms-2" data-bs-toggle="modal"
+                              th:classappend="${message.status == false?'disabled':''}"
+                              th:data-bs-target="'#modal'+${message.id}"
+                              type="button">
+                            <i class="fa-solid fa-circle-check"
+                               data-bs-placement="left"
+                               data-bs-toggle="tooltip"
+                               th:classappend="${message.status ? 'text-danger' : 'text-success'}"
+                               th:title="${message.status ? 'Change to deactive' : 'Change to active'}"></i>
+                        </span>
+
+                        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                             tabindex="-1" th:id="'modal'+${message.id}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                                type="button"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Do you want to change status group?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                                            Close
+                                        </button>
+                                        <a class="btn btn-danger"
+                                           th:href="@{/messages/change-status/{id}(id=${message.id})}">Change</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/messages/detail/{id}(id=${message.id})}" title="Preview">
+                            <i class="fa-solid fa-eye text-secondary"></i>
                         </a>
                     </td>
                 </tr>
@@ -93,21 +104,30 @@
             </table>
         </div>
 
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/messages(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li aria-current="page" class="page-item active">
-                    <span class="page-link">2</span>
+                <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
+                    th:each="pageNumber : ${totalPage}">
+                    <a class="page-link" th:href="@{/messages(pageIndex=${pageNumber}, text=${text})}"
+                       th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/messages(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
             </ul>
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>

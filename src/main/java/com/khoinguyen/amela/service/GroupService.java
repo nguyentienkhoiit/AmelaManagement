@@ -6,6 +6,8 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
+import java.util.List;
+
 public interface GroupService {
     ServiceResponse<String> createGroups(GroupDtoRequest request);
 
@@ -16,4 +18,6 @@ public interface GroupService {
     PagingDtoResponse<GroupDtoResponse> getAllGroups(PagingDtoRequest request);
 
     boolean changeStatus(Long id);
+
+    List<GroupDtoResponse> getAll();
 }

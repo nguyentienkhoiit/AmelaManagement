@@ -7,5 +7,13 @@ public class Constant {
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PREFIX = "A";
     public static final String HOST = "http://localhost:8080/";
-    public static String[] LIST_PERMIT_ALL = new String[]{};
+    public static String[] LIST_PERMIT_ALL = new String[]{
+            "/forgot-password",
+            "/new-password",
+            "/register/**",
+            "/error",
+            "/login",
+            "/css/**",
+            "/image/**",
+            "js/**"};
 }

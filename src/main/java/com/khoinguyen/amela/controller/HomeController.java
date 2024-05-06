@@ -1,14 +1,11 @@
 package com.khoinguyen.amela.controller;
 
-import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
 import com.khoinguyen.amela.service.UserService;
-import com.khoinguyen.amela.util.OptionalValidator;
-import com.khoinguyen.amela.util.UserHelper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

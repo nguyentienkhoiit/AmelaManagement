@@ -24,61 +24,73 @@
     </nav>
     <h3>#Create Messages</h3>
 
-    <form class="row" method="post" th:action="@{/messages/create}">
+    <form class="row" method="post" th:action="@{/messages/create}" th:object="${message}">
         <div class="row">
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="subjectname">Subject name</label>
-                <input class="form-control" id="subjectname" name="subjectName" placeholder="Subject email" type="text">
+                <input class="form-control" id="subjectname" name="subject" placeholder="Subject email"
+                       th:field="*{subject}" type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{subject}" th:if="${#fields.hasErrors('subject')}"></div>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="senderName">Sender name</label>
-                <input class="form-control" id="senderName" placeholder="HR Management" type="text">
+                <input class="form-control" id="senderName" placeholder="HR Management" th:field="*{senderName}"
+                       type="text">
+                <div class="text-danger h6 mt-1" th:errors="*{senderName}"
+                     th:if="${#fields.hasErrors('senderName')}"></div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 mb-3">
-                <label class="form-label" for="editor">Message</label>
-                <textarea class="form-control" id="editor" name="message" rows="3"></textarea>
+                <label class="form-label" for="editor">Message [{{name}}: full name, {{age}}: age]</label>
+                <textarea class="form-control" id="editor" name="message" rows="3" th:field="*{message}"></textarea>
+                <div class="text-danger h6 mt-1" th:errors="*{message}" th:if="${#fields.hasErrors('message')}"></div>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="sendtime">Send time</label>
-                <input class="form-control" id="sendtime" name="sendTime" type="datetime-local">
+                <label class="form-label" for="sendTime">Send time</label>
+                <input class="form-control" id="sendTime" name="publishAt" th:field="*{publishAt}" type="datetime-local">
+                <div class="text-danger h6 mt-1" th:errors="*{publishAt}" th:if="${#fields.hasErrors('publishAt')}"></div>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="sendtime">Send group or email</label>
                 <div>
                     <div class="form-check form-check-inline">
-                        <label class="form-check-label" for="radiobuttongroup">Group</label>
-                        <input class="form-check-input" id="radiobuttongroup" name="optionUser" type="radio"
-                               value="option1">
+                        <label class="form-check-label" for="radio-btn-group">Group</label>
+                        <input checked class="form-check-input" id="radio-btn-group" name="choice"
+                               th:field="*{choice}" type="radio"
+                               value="true">
                     </div>
                     <div class="form-check form-check-inline ms-5">
-                        <label class="form-check-label" for="radiobuttonemail">Email</label>
-                        <input class="form-check-input" id="radiobuttonemail" name="optionUser" type="radio"
-                               value="option2">
+                        <label class="form-check-label" for="radio-btn-email">Email</label>
+                        <input class="form-check-input" id="radio-btn-email" name="choice" th:field="*{choice}"
+                               type="radio"
+                               value="false">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="emailValue">
             <div class="col-md-12 mb-3">
-                <label class="form-label" for="inputemailsending">List email</label>
-                <textarea autocomplete="on" class="form-control" id="inputemailsending" name="listEmail"
-                          rows="3"></textarea>
+                <label class="form-label" for="list-email">List email</label>
+                <textarea autocomplete="on" class="form-control" id="list-email" name="listEmail" rows="3"
+                          th:field="*{listMail}"></textarea>
+                <div class="text-danger h6 mt-1" th:errors="*{listMail}" th:if="${#fields.hasErrors('listMail')}"></div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="groupValue">
             <div class="col-md-12 mb-3">
-                <label class="form-label" for="inputemailsending">Group email (from <a
+                <label class="form-label" for="group-email">Group email (from <a
                         th:href="@{/groups}">here</a>)</label>
-                <select aria-label="Default select example" class="form-select">
-                    <option selected>Intership group</option>
-                    <option value="1">Developer faderless</option>
-                    <option value="2">Tester faderless</option>
-                    <option value="3">Soccer faderless</option>
+                <select aria-label="Default select example" class="form-select" id="group-email" name="groupId"
+                        th:field="*{groupId}">
+                    <option value="0">Choose a group</option>
+                    <option th:each="group: ${session.groups}" th:text="${group.name}" th:value="${group.id}">
+                        Intership group
+                    </option>
                 </select>
+                <div class="text-danger h6 mt-1" th:errors="*{groupId}" th:if="${#fields.hasErrors('groupId')}"></div>
             </div>
         </div>
         <div class="row">
@@ -95,6 +107,43 @@
             .catch(error => {
                 console.error(error);
             });
+
+        var now = new Date();
+        // Định dạng ngày và giờ hiện tại thành chuỗi cho trường datetime-local
+        var formattedNow = now.toISOString().slice(0, 16);
+        // Đặt minDate cho trường datetime-local
+        document.getElementById("sendTime").min = formattedNow;
+
+        var radioGroup = document.getElementById("radio-btn-group");
+        var radioEmail = document.getElementById("radio-btn-email");
+        var emailValue = document.getElementById("emailValue");
+        var groupValue = document.getElementById("groupValue");
+
+        if (radioGroup.checked) {
+            groupValue.style.display = "block";
+            emailValue.style.display = "none";
+            document.getElementById('list-email').value = ''
+        } else if (radioEmail.checked) {
+            emailValue.style.display = "block";
+            groupValue.style.display = "none";
+            document.getElementById('group-email').value = 0
+        }
+
+        radioGroup.addEventListener("change", function () {
+            if (radioGroup.checked) {
+                groupValue.style.display = "block";
+                emailValue.style.display = "none";
+                document.getElementById('list-email').value = ''
+            }
+        });
+
+        radioEmail.addEventListener("change", function () {
+            if (radioEmail.checked) {
+                emailValue.style.display = "block";
+                groupValue.style.display = "none";
+                document.getElementById('group-email').value = 0
+            }
+        });
     </script>
 </th:block>
 </body>

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -19,17 +20,19 @@ public class MessageSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String subject;
+
+    @Column(columnDefinition = "text")
     String message;
     String senderName;
     boolean status;
+    LocalDateTime publishAt;
     LocalDateTime createdAt;
     Long createdBy;
     LocalDateTime updateAt;
     Long updateBy;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    User user;
+    @OneToMany(mappedBy = "messageSchedule")
+    List<UserMessageSchedule> userMessageSchedules;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "group_id")

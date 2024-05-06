@@ -9,7 +9,6 @@ import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
 import com.khoinguyen.amela.service.UserService;
-import com.khoinguyen.amela.util.OptionalValidator;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;

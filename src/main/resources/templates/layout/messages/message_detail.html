@@ -10,86 +10,123 @@
     <meta charset="UTF-8">
     <title>Posts</title>
     <th:block id="messages-detail-static-resource">
-        <link rel="stylesheet" th:href="@{/css/blog.css}">
+        <link rel="stylesheet" th:href="@{/css/blog-detail.css}">
     </th:block>
 </head>
 
 <body>
 <main class="min-vh-100 bg-light py-5">
-    <div class="container">
-        <h3 class="title">China sees foreign threats ‘everywhere’ as powerful spy agency takes center stage</h3>
-        <div class="post">
-            <p>Hong Kong
-                CNN
-                —
-                In a slick video marking the National Security Education Day, China’s top spy agency has a stern
-                message for Chinese people: foreign spies are everywhere.
-
-                As ominous music plays, a broad-faced, beady-eyed man disguises himself as a street fashion
-                photographer, a lab technician, a businessman and a food delivery driver – he even sets up an online
-                honey trap – to glean sensitive state secrets in various places and industries.
-
-                “In the sea of people, you may have never noticed him. His identity is changeable and his
-                whereabouts are hard to find,” a narrator says. “They are everywhere, cunning… and sneaky, and they
-                may be right here in our lives.”
-
-                Eventually, Chinese police catch the spy in a dramatic ambush after state security authorities
-                receive multiple tip-offs from the public.
-
-                “They can disguise as anyone. But among the crowds you and I together are protecting national
-                security,” the narrator concludes. “We 1.4 billion people are 1.4 billion lines of defense.”
-
-                The three-minute video is the latest propaganda push by China’s powerful civilian spy agency, the
-                Ministry of State Security (MSS), to mentally arm the Chinese public against what it sees as the
-                growing threat of foreign espionage.
-
-                Under Xi Jinping, China’s most authoritarian leader in decades, the country’s notoriously secretive
-                spy agency has drastically raised its public profile and broadened its remit.
-
-                From a shadowy organization without any discernable public face, the MSS has been transformed into a
-                highly visible presence in public life.
-
-                In Chinese cities, posters and slogans promoting national security are now a common sight on
-                sidewalks, subway trains, campuses and billboards. On social media, the ministry commands a massive
-                following with near-daily commentaries, short videos or even comic strips sounding the alarm about
-                supposedly ubiquitous threats to the country. According to the MSS, foreign spies are omnipresent
-                and infiltrating everything – from mapping apps to weather stations. The ministry has also posted
-                details of what it claims are espionage activities carried out by American and British spy agencies,
-                and detailed how Chinese nationals studying or working abroad have allegedly been recruited by the
-                CIA.
-
-                Last week, as part of a documentary to mark National Security Education Day, the MSS revealed that a
-                Chinese scientist convicted of selling state secrets to a foreign intelligence agency was executed
-                in 2016. The documentary did not explicitly mention which country, but its images show an American
-                flag and the US Capitol building.
-
-                The MSS’ transformation is part of Xi’s sweeping pivot to ramp up national security in the face of
-                heightened geopolitical tensions and mounting domestic challenges.
-
-                03 us citizen john tang china intl hnk
-                RELATED ARTICLE
-                Beijing claims US citizen jailed for life in China was decorated spy who worked undetected for
-                decades
-                As US-China relations fray, the MSS has undertaken significant efforts to provide guidance to other
-                government agencies and broader society, said Xuezhi Guo, a professor of political science at
-                Guilford College in the US.
-
-                “These endeavors aim to foster anti-espionage awareness and enhance security measures in light of
-                the evolving landscape of espionage threats,” he said. “The goal is to empower Chinese citizens and
-                entities with the knowledge and skills required to bolster their vigilance and preempt espionage
-                activities effectively.”
-
-                The emphasis on external threats also helps Beijing deflect criticism at home over its own policies
-                by shifting blame onto “foreign forces” – a playbook the Chinese government has repeatedly applied
-                during periods of public discontent, most recently over protests in late 2022 against Xi’s hardline
-                measures to prevent Covid.
-
-                And the spy agency’s extending reach is a sign of the increasing securitization of Chinese life and
-                society under Xi, where “an incredibly wide array of issues can be viewed as threats to national
-                security,” said Sheena Chestnut Greitens, director of the Asia Policy Program at the University of
-                Texas at Austin.
-
-            </p>
+    <div class="blog-single gray-bg">
+        <div class="container">
+            <div class="row align-items-start">
+                <div class="col-lg-8 m-15px-tb">
+                    <article class="article">
+                        <div class="article-img">
+                            <img alt="" height="350" src="https://www.bootdey.com/image/800x350/87CEFA/000000"
+                                 th:src="@{/image/blog.jpg}" title="" width="800">
+                        </div>
+                        <div class="article-title">
+                            <h2 th:text="${message.subject}">They Now Bade Farewell To The Kind But Unseen People</h2>
+                            <div class="media">
+                                <div class="media-body">
+                                    <label th:text="${message.senderName}">Administrator</label>
+                                    <span th:text="${message.publishAt}">10:10:00 23/03/2024</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="article-content" th:utext="${message.message}">
+                            <p>Aenean eleifend ante maecenas pulvinar montes lorem et pede dis dolor pretium donec
+                                dictum. Vici consequat justo enim. Venenatis eget adipiscing luctus lorem. Adipiscing
+                                veni amet luctus enim sem libero tellus viverra venenatis aliquam. Commodo natoque quam
+                                pulvinar elit.</p>
+                            <p>Eget aenean tellus venenatis. Donec odio tempus. Felis arcu pretium metus nullam quam
+                                aenean sociis quis sem neque vici libero. Venenatis nullam fringilla pretium magnis
+                                aliquam nunc vulputate integer augue ultricies cras. Eget viverra feugiat cras ut. Sit
+                                natoque montes tempus ligula eget vitae pede rhoncus maecenas consectetuer commodo
+                                condimentum aenean.</p>
+                            <h4>What are my payment options?</h4>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <blockquote>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                                <p class="blockquote-footer">Someone famous in <cite title="Source Title">Dick
+                                    Grayson</cite></p>
+                            </blockquote>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+                                dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                                mollit anim id est laborum.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-4 m-15px-tb blog-aside">
+                    <div class="widget widget-latest-post">
+                        <div class="widget-title">
+                            <h3>Latest Messages</h3>
+                        </div>
+                        <div class="widget-body">
+                            <div class="latest-post-aside media" style="display: flex; justify-content: space-between">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
+                                            google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <small>Administrator</small>
+                                        <small class="ms-3">10:10:00 23/03/2024</small>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img alt="" height="50" src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
+                                             th:src="@{/image/blog.jpg}" title="" width="100">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="latest-post-aside media" style="display: flex;; justify-content: space-between">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
+                                            google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <small>Administrator</small>
+                                        <small class="ms-3">10:10:00 23/03/2024</small>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img alt="" height="50" src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
+                                             th:src="@{/image/blog.jpg}" title="" width="100">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="latest-post-aside media" style="display: flex;; justify-content: space-between">
+                                <div class="lpa-left media-body">
+                                    <div class="lpa-title">
+                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
+                                            google analytics</a></h5>
+                                    </div>
+                                    <div class="lpa-meta">
+                                        <small>Administrator</small>
+                                        <small class="ms-3">10:10:00 23/03/2024</small>
+                                    </div>
+                                </div>
+                                <div class="lpa-right">
+                                    <a href="#">
+                                        <img alt="" height="50" src="https://www.bootdey.com/image/400x200/FFB6C1/000000"
+                                             th:src="@{/image/blog.jpg}" title="" width="100">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
