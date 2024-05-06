@@ -2,13 +2,25 @@
 <html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
-    ~{},
+     ~{::#messages-detail-static-resource},
     ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <title>Messages</title>
+    <th:block id="messages-detail-static-resource">
+        <style>
+            .truncate-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 200px;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                display: -webkit-box;
+            }
+        </style>
+    </th:block>
 </head>
 
 <body>
@@ -18,7 +30,8 @@
             <div class="row justify-content-between">
                 <h3 class="col-sm-4">#List Messages</h3>
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
-                    <input class="form-control rounded-start" name="text" onchange="submitForm()" placeholder="Search..."
+                    <input class="form-control rounded-start" name="text" onchange="submitForm()"
+                           placeholder="Search..."
                            th:value="${text}" type="text">
                     <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
                     <!--                            title="Search" type="button">-->
@@ -49,7 +62,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="message: ${messages}">
-                    <td th:text="${message.subject}">Send to Amela</td>
+                    <td>
+                        <a class="truncate-text" data-bs-placement="top" data-bs-toggle="tooltip"
+                           th:title="${message.subject}" th:href="@{/messages/detail/{id}(id=${message.id})}"
+                           th:text="${message.subject}"></a>
+                    </td>
                     <td th:text="${message.choice == true? 'Group': 'Email'}">Send to Amela</td>
                     <td th:text="${message.publishAt}">20:11:00 12/12/2024</td>
                     <td th:text="${message.senderName}">Administrator</td>

@@ -9,6 +9,7 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.service.AttendanceService;
+import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UrlUtil;
 import com.khoinguyen.amela.util.UserHelper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +52,7 @@ public class AttendanceController {
         session.setAttribute("active", "attendance");
         User userLoggedIn = userHelper.getUserLogin();
 
-        userId = (userLoggedIn.getRole().getId() == 2 || userId == null) ? userLoggedIn.getId() : userId;
+        userId = (userLoggedIn.getRole().getName().equals(Constant.USER_NAME) || userId == null) ? userLoggedIn.getId() : userId;
 
         var pagingDtoResponse = attendanceService.getAttendanceByUserId(pagingDtoRequest, userId);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());

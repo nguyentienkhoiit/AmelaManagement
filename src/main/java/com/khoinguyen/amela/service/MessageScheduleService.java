@@ -12,7 +12,7 @@ public interface MessageScheduleService {
 
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesAdmin(PagingDtoRequest pagingDtoRequest);
 
-    MessageScheduleUpdateResponse getByMessageScheduleId(Long id);
+    MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type);
 
     ServiceResponse<String> updateMessages(MessageScheduleDtoRequest request);
 }

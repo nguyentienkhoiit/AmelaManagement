@@ -16,13 +16,16 @@ import com.khoinguyen.amela.repository.UserMessageScheduleRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.MessageScheduleCriteria;
 import com.khoinguyen.amela.service.MessageScheduleService;
+import com.khoinguyen.amela.util.StringUtil;
 import com.khoinguyen.amela.util.UserHelper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -122,10 +125,49 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         return messageScheduleCriteria.getAllMessagesAdmin(pagingDtoRequest);
     }
 
+    public MessageScheduleUpdateResponse setMessage(MessageScheduleUpdateResponse response) {
+        User userLoggedIn = userHelper.getUserLogin();
+        String messages = response.getMessage();
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("{{name}}", String.format("%s %s", userLoggedIn.getFirstname(), userLoggedIn.getLastname()));
+
+        int age = Period.between(userLoggedIn.getDateOfBirth(), LocalDate.now()).getYears();
+        placeholders.put("{{age}}", Integer.toString(age));
+
+        placeholders.put("{{address}}", userLoggedIn.getAddress());
+        placeholders.put("{{code}}", userLoggedIn.getCode());
+        placeholders.put("{{email}}", userLoggedIn.getEmail());
+        placeholders.put("{{phone}}", userLoggedIn.getPhone());
+        placeholders.put("{{username}}", userLoggedIn.getUsername());
+        placeholders.put("{{department}}", userLoggedIn.getDepartment().getName());
+        placeholders.put("{{position}}", userLoggedIn.getJobPosition().getName());
+
+        if (userLoggedIn.getRole().getName().equalsIgnoreCase("ADMIN")) {
+            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                entry.setValue(entry.getKey());
+            }
+        }
+
+        response.setMessage(replacePlaceholders(messages, placeholders));
+        return response;
+    }
+
+    private String replacePlaceholders(String message, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            String placeholder = entry.getKey();
+            String value = entry.getValue() != null ? entry.getValue() : "";
+            message = message.replace(placeholder, value);
+        }
+        return message;
+    }
+
     @Override
-    public MessageScheduleUpdateResponse getByMessageScheduleId(Long id) {
-        Optional<MessageSchedule> messageScheduleOptional = messageScheduleRepository.findById(id);
-        return messageScheduleOptional.map(MessageScheduleMapper::toMessageScheduleUpdateResponse).orElse(null);
+    public MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type) {
+        return messageScheduleRepository.findById(id)
+                .map(MessageScheduleMapper::toMessageScheduleUpdateResponse)
+                .map(res -> "detail".equalsIgnoreCase(type) ? setMessage(res) : res)
+                .orElse(null);
     }
 
     @Override
@@ -144,6 +186,13 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             response = new ServiceResponse<>(false, "message", "Message is not found");
             return response;
         }
+
+        Set<String> messageInvalid = StringUtil.extractAttributeNameInvalid(request.getMessage());
+        if (!messageInvalid.isEmpty()) {
+            response = new ServiceResponse<>(false, "message", messageInvalid + " is invalid attribute");
+            return response;
+        }
+
         //update message schedule
         messageSchedule.setMessage(request.getMessage());
         messageSchedule.setPublishAt(request.getPublishAt());
@@ -197,7 +246,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
             MessageSchedule messageScheduleResult = messageScheduleRepository.save(messageSchedule);
 
-            if(!MessageScheduleMapper.getListMailString(messageSchedule).equalsIgnoreCase(listEmail.toString())) {
+            if (!MessageScheduleMapper.getListMailString(messageSchedule).equalsIgnoreCase(listEmail.toString())) {
                 userMessageScheduleRepository.deleteAll(userMessageScheduleRepository.findByMessageScheduleId(messageSchedule.getId()));
             }
 

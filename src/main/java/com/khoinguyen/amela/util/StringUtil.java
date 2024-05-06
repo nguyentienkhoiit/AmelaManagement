@@ -1,7 +1,13 @@
 package com.khoinguyen.amela.util;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class StringUtil {
     public static String formatString(String request, boolean isUpperCaseFirst) {
@@ -36,4 +42,28 @@ public class StringUtil {
         return replaceSpecialChars(result);
     }
 
+    public static Set<String> extractAttributeName(String input) {
+        Pattern pattern = Pattern.compile("\\{\\{([^{}]+)}}");
+        Matcher matcher = pattern.matcher(input);
+
+        Set<String> result = new HashSet<>();
+        while (matcher.find()) {
+            String extractedText = matcher.group(0);
+            result.add(extractedText);
+        }
+        return result;
+    }
+
+    public static Set<String> extractAttributeNameInvalid(String input) {
+        Set<String> attributes = extractAttributeName(input);
+        Set<String> sources = new HashSet<>(Constant.LIST_ATTRIBUTE_NAME);
+
+        Set<String> listErrors = new HashSet<>();
+        for (String item : attributes) {
+            if (!sources.contains(item)) {
+                listErrors.add(item);
+            }
+        }
+        return listErrors;
+    }
 }

@@ -6,6 +6,7 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.GroupService;
 import com.khoinguyen.amela.service.MessageScheduleService;
+import com.khoinguyen.amela.util.PermissionMessages;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -24,6 +25,7 @@ public class MessageController {
     HttpSession session;
     MessageScheduleService messageScheduleService;
     GroupService groupService;
+    PermissionMessages permissionMessages;
 
     @GetMapping
     public String viewMessagesAdmin(
@@ -51,7 +53,12 @@ public class MessageController {
             Model model,
             @PathVariable long id
     ) {
-        MessageScheduleUpdateResponse response = messageScheduleService.getByMessageScheduleId(id);
+        //check permission
+        if(!permissionMessages.checkPermission(id)) {
+            return "redirect:/error-page";
+        }
+
+        MessageScheduleUpdateResponse response = messageScheduleService.getByMessageScheduleId(id, "detail");
         model.addAttribute("message", response);
         return "layout/messages/message_detail";
     }
@@ -89,7 +96,7 @@ public class MessageController {
 
     @GetMapping("update/{id}")
     public String viewUpdateMessages(Model model, @PathVariable Long id) {
-        MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService.getByMessageScheduleId(id);
+        MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService.getByMessageScheduleId(id, "id");
         model.addAttribute("message", messageScheduleDtoResponse);
 
         var groups = groupService.getAll();

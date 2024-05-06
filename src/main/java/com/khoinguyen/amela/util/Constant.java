@@ -1,5 +1,8 @@
 package com.khoinguyen.amela.util;
 
+import java.util.Collection;
+import java.util.List;
+
 public class Constant {
     public static final Long EMAIL_WAITING_EXPIRATION = 60L;
     public static final Long PAGE_INDEX = 1L;
@@ -16,4 +19,12 @@ public class Constant {
             "/css/**",
             "/image/**",
             "js/**"};
+    public static Collection<String> LIST_ATTRIBUTE_NAME = List.of(
+            "{{name}}", "{{age}}", "{{address}}",
+            "{{code}}", "{{email}}", "{{phone}}",
+            "{{username}}", "{{username}}", "{{username}}",
+            "{{department}}", "{{position}}"
+    );
+    public static String ADMIN_NAME = "ADMIN";
+    public static String USER_NAME = "USER";
 }

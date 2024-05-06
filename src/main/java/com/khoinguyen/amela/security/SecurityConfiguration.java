@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                         l -> l.loginPage("/login").usernameParameter("email")
                                 .successHandler((request, response, authentication) -> {
                                     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-                                    if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ADMIN"))) {
+                                    if (authorities.stream().anyMatch(a -> a.getAuthority().equals(Constant.ADMIN_NAME))) {
                                         response.sendRedirect("/dashboard");
                                     } else {
                                         response.sendRedirect("/");
