@@ -13,6 +13,7 @@ public class MessageScheduleDtoResponse {
     String subject;
     String message;
     String senderName;
+    Long viewers;
     boolean status;
     String publishAt;
     String createdAt;

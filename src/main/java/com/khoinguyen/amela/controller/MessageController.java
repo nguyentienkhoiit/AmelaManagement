@@ -54,7 +54,7 @@ public class MessageController {
             @PathVariable long id
     ) {
         //check permission
-        if(!permissionMessages.checkPermission(id)) {
+        if (!permissionMessages.checkPermission(id)) {
             return "redirect:/error-page";
         }
 

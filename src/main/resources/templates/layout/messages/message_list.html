@@ -64,8 +64,8 @@
                 <tr th:each="message: ${messages}">
                     <td>
                         <a class="truncate-text" data-bs-placement="top" data-bs-toggle="tooltip"
-                           th:title="${message.subject}" th:href="@{/messages/detail/{id}(id=${message.id})}"
-                           th:text="${message.subject}"></a>
+                           th:href="@{/messages/detail/{id}(id=${message.id})}" th:text="${message.subject}"
+                           th:title="${message.subject}"></a>
                     </td>
                     <td th:text="${message.choice == true? 'Group': 'Email'}">Send to Amela</td>
                     <td th:text="${message.publishAt}">20:11:00 12/12/2024</td>

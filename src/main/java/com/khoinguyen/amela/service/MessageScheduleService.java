@@ -15,4 +15,6 @@ public interface MessageScheduleService {
     MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type);
 
     ServiceResponse<String> updateMessages(MessageScheduleDtoRequest request);
+
+    PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest);
 }

@@ -25,6 +25,7 @@ public class MessageSchedule {
     String message;
     String senderName;
     boolean status;
+    Long viewers = 0L;
     LocalDateTime publishAt;
     LocalDateTime createdAt;
     Long createdBy;

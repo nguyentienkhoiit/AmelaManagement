@@ -42,7 +42,9 @@
         </div>
         <div class="row">
             <div class="col-md-12 mb-3">
-                <label class="form-label" for="editor">Message <small>[{{name}}, {{age}}, {{address}}, {{code}}, {{email}}, {{phone}}, {{username}}, {{username}}, {{username}}, {{department}}, {{position}}]</small> </label>
+                <label class="form-label" for="editor">Message <small>[{{name}}, {{age}}, {{address}}, {{code}},
+                    {{email}}, {{phone}}, {{username}}, {{username}}, {{username}}, {{department}},
+                    {{position}}]</small> </label>
                 <textarea class="form-control" id="editor" name="message" rows="3" th:field="*{message}"></textarea>
                 <div class="text-danger h6 mt-1" th:errors="*{message}" th:if="${#fields.hasErrors('message')}"></div>
             </div>

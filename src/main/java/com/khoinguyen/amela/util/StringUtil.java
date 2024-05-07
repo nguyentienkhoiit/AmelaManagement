@@ -1,13 +1,10 @@
 package com.khoinguyen.amela.util;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class StringUtil {
     public static String formatString(String request, boolean isUpperCaseFirst) {

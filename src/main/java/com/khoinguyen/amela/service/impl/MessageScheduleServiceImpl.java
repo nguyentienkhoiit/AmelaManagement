@@ -57,6 +57,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .senderName(request.getSenderName())
                 .status(true)
                 .subject(request.getSubject())
+                .viewers(0L)
                 .updateAt(LocalDateTime.now())
                 .updateBy(userLoggedIn.getId())
                 .build();
@@ -165,8 +166,22 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     @Override
     public MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type) {
         return messageScheduleRepository.findById(id)
-                .map(MessageScheduleMapper::toMessageScheduleUpdateResponse)
-                .map(res -> "detail".equalsIgnoreCase(type) ? setMessage(res) : res)
+                .map(messageSchedule -> {
+                    if ("detail".equalsIgnoreCase(type)) {
+                        messageSchedule.setViewers(messageSchedule.getViewers() + 1);
+                        return messageScheduleRepository.save(messageSchedule);
+                    } else {
+                        return messageSchedule;
+                    }
+                })
+                .map(messageSchedule -> {
+                    MessageScheduleUpdateResponse response = MessageScheduleMapper.toMessageScheduleUpdateResponse(messageSchedule);
+                    if ("detail".equalsIgnoreCase(type)) {
+                        return setMessage(response);
+                    } else {
+                        return response;
+                    }
+                })
                 .orElse(null);
     }
 
@@ -262,5 +277,10 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             userMessageScheduleRepository.saveAll(userMessageScheduleList);
         }
         return response;
+    }
+
+    @Override
+    public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest) {
+        return messageScheduleCriteria.getAllMessagesUser(pagingDtoRequest);
     }
 }

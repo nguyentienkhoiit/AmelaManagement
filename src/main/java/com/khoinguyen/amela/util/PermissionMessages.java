@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -17,17 +19,20 @@ public class PermissionMessages {
 
     public boolean checkPermission(Long id) {
         MessageSchedule messageSchedule = messageScheduleRepository.findById(id).orElse(null);
-        if (messageSchedule == null) {
-            return false;
-        }
+        if (messageSchedule == null) return false;
 
+
+        //là admin
         User userLoggedIn = userHelper.getUserLogin();
         String userRole = userLoggedIn.getRole().getName();
-
         if (Constant.ADMIN_NAME.equalsIgnoreCase(userRole)) {
             return true;
         }
 
+        //chưa đến hạn
+        if (messageSchedule.getPublishAt().isAfter(LocalDateTime.now())) return false;
+
+        //xem choose group hay choose email
         boolean isInGroup = messageSchedule.getGroup() != null;
 
         if (isInGroup) {

@@ -1,11 +1,9 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
-import com.khoinguyen.amela.service.DepartmentService;
-import com.khoinguyen.amela.service.JobPositionService;
-import com.khoinguyen.amela.service.RoleService;
-import com.khoinguyen.amela.service.UserService;
+import com.khoinguyen.amela.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -29,10 +27,26 @@ public class HomeController {
     RoleService roleService;
     DepartmentService departmentService;
     JobPositionService jobPositionService;
+    MessageScheduleService messageScheduleService;
 
     @GetMapping
-    public String home() {
+//    @PreAuthorize("hasRole('USER')")
+    public String home(
+            Model model,
+            @ModelAttribute PagingDtoRequest pagingDtoRequest
+    ) {
         session.setAttribute("active", "home");
+        var pagingDtoResponse = messageScheduleService.getAllMessagesUser(pagingDtoRequest);
+        var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
+        if (pagingDtoRequest.getText() != null) {
+            model.addAttribute("text", pagingDtoRequest.getText().trim());
+        }
+        model.addAttribute("messages", pagingDtoResponse.data());
+        model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
+        model.addAttribute("totalPage", totalPage);
+
+        session.setAttribute("url", "?pageIndex=" + pagingDtoRequest.getPageIndex() +
+                "&text=" + pagingDtoRequest.getText());
         return "layout/auth/home";
     }
 

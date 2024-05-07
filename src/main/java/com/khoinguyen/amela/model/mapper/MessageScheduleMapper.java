@@ -15,6 +15,7 @@ public class MessageScheduleMapper {
                 .status(request.isStatus())
                 .choice(request.getGroup() != null)
                 .subject(request.getSubject())
+                .viewers(request.getViewers())
                 .createdBy(request.getCreatedBy())
                 .senderName(request.getSenderName())
                 .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))

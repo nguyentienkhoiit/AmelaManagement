@@ -19,8 +19,10 @@
                 <div class="col-md-12 text-center">
                     <span class="display-1 d-block">404</span>
                     <div class="mb-4 lead">The page you are looking for was not found.</div>
-                    <a class="btn btn-link" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/dashboard}">Back to Dashboard</a>
-                    <a class="btn btn-link" th:unless="${#authorization.expression('hasRole(''USER'')')}" th:href="@{/}">Back to Home</a>
+                    <a class="btn btn-link" th:href="@{/dashboard}"
+                       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Back to Dashboard</a>
+                    <a class="btn btn-link" th:href="@{/}"
+                       th:unless="${#authorization.expression('hasRole(''USER'')')}">Back to Home</a>
                 </div>
             </div>
         </div>

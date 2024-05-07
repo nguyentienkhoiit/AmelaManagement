@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{::#blog-static-resource},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -16,156 +16,61 @@
 
 <body>
 <main class="min-vh-100 bg-light">
-    <form action="#" class="container" method="post">
+    <form class="container" method="get" th:action="@{/}">
         <div class="row justify-content-center" style="padding-top: 50px">
             <div class="d-flex blog__search">
-                <input class="form-control" placeholder="Search title post..."
-                       style="border-radius: 0.3rem 0 0 0.3rem!important;"
-                       type="search">
-                <button class="btn btn-success rounded-end" style="border-radius: 0 0.3rem 0.3rem 0!important;"
-                        type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <input class="form-control" name="text" onchange="submitForm()" placeholder="Search title post..."
+                       th:value="${text}" type="search">
             </div>
         </div>
-        <div class="row mt-n5">
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".2s"
-                 style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+        <div class="row mt-n5 mb-3">
+            <div class="col-md-6 col-lg-4 mt-5" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;"
+                 th:each="message: ${messages}">
                 <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
                     <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">China sees foreign threats</a></h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+                        <h3 class="h5 mb-3"><a class="text-secondary"
+                                               th:href="@{/messages/detail/{id}(id=${message.id})}"
+                                               th:text="${message.subject}"></a></h3>
                         <div class="meta meta-style2">
                             <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 10 Jul,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <li><a href="#!"><i class="fas fa-user"></i> User</a></li>
-                                <!--                                <li><a href="#!"><i class="fas fa-comments"></i> 38</a></li>-->
+                                <li><i class="fas fa-calendar-alt text-secondary"></i><span class="text-secondary"
+                                                                                            th:text="${message.publishAt}"></span>
+                                </li>
+                                <li><i class="fas fa-user text-secondary"></i><span class="text-secondary"
+                                                                                    th:text="${message.senderName}"></span>
+                                </li>
+                                <li><i class="fa-solid fa-eye"></i><span class="text-secondary"
+                                                                         th:text="${message.viewers}"></span></li>
                             </ul>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".4s"
-                 style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;">
-                <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
-                    <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">Growth your business strategy</a></h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-                        <div class="meta meta-style2">
-                            <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 25 Jun,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <!-- <li><a href="#!"><i class="fas fa-user"></i> User</a></li>
-                                <li><a href="#!"><i class="fas fa-comments"></i> 68</a></li> -->
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".6s"
-                 style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp;">
-                <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
-                    <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">Business people success master plan</a>
-                        </h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-                        <div class="meta meta-style2">
-                            <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 16 May,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <!-- <li><a href="#!"><i class="fas fa-user"></i> User</a></li> -->
-                                <!-- <li><a href="#!"><i class="fas fa-comments"></i> 58</a></li> -->
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".8s"
-                 style="visibility: visible; animation-delay: 0.8s; animation-name: fadeInUp;">
-                <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
-                    <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">Results professional report</a></h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-                        <div class="meta meta-style2">
-                            <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 02 Apr,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <!-- <li><a href="#!"><i class="fas fa-user"></i> User</a></li>
-                                <li><a href="#!"><i class="fas fa-comments"></i> 38</a></li> -->
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay="1s"
-                 style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
-                <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
-                    <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">Business strategy concept</a></h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-                        <div class="meta meta-style2">
-                            <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 25 Mar,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <!-- <li><a href="#!"><i class="fas fa-user"></i> User</a></li>
-                                <li><a href="#!"><i class="fas fa-comments"></i> 68</a></li> -->
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay="1.2s"
-                 style="visibility: visible; animation-delay: 1.2s; animation-name: fadeInUp;">
-                <div class="blog-grid">
-                    <div class="blog-grid-img position-relative"><img alt="img" th:src="@{/image/blog.jpg}"></div>
-                    <div class="blog-grid-text p-4">
-                        <h3 class="h5 mb-3"><a th:href="@{/messages/detail}">Business people meeting</a></h3>
-                        <p class="display-30">Exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
-                        <div class="meta meta-style2">
-                            <ul>
-                                <li><a href="#!"><i class="fas fa-calendar-alt"></i> 10 Feb,
-                                    <script>document.write(new Date().getFullYear())</script>
-                                    2022</a></li>
-                                <!-- <li><a href="#!"><i class="fas fa-user"></i> User</a></li>
-                                <li><a href="#!"><i class="fas fa-comments"></i> 58</a></li> -->
-                            </ul>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center my-3">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li aria-current="page" class="page-item active">
-                    <span class="page-link">2</span>
+                <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
+                    th:each="pageNumber : ${totalPage}">
+                    <a class="page-link" th:href="@{/(pageIndex=${pageNumber}, text=${text})}"
+                       th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                    <a class="page-link"
+                       th:href="@{/(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
             </ul>
         </nav>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        function submitForm() {
+            document.querySelector('form').submit();
+        }
+    </script>
+</th:block>
 </body>
