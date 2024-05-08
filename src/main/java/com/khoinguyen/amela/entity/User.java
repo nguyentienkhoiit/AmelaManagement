@@ -65,7 +65,7 @@ public class User {
     Department department;
 
     @OneToMany(mappedBy = "user")
-    List<VerifyToken> verifyTokens;
+    List<Verification> verifications;
 
     @OneToMany(mappedBy = "user")
     List<Attendance> attendances;

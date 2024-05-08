@@ -93,6 +93,7 @@ public class UserServiceImpl implements UserService {
         user.setJobPosition(positionOptional.get());
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(CodeGenerator.generateCode());
+        user.setEnabled(false);
 
         userRepository.save(user);
 

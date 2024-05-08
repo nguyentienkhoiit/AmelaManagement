@@ -63,6 +63,11 @@ public class SecurityConfiguration {
                                         response.sendRedirect("/");
                                     }
                                 })
+                                .failureHandler((request, response, exception) -> {
+                                    String email = request.getParameter("email");
+                                    String redirectUrl = "/login?error=true&email=" + email;
+                                    response.sendRedirect(redirectUrl);
+                                })
                                 .permitAll()
                 )
                 .logout(

@@ -41,7 +41,6 @@ public class UserMapper {
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
                 .avatar("/image/avatar.jpg")
-                .enabled(true)
                 .username(request.getUsername())
                 .build();
     }
