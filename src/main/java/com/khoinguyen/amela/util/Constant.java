@@ -13,6 +13,7 @@ public class Constant {
     public static String[] LIST_PERMIT_ALL = new String[]{
             "/forgot-password",
             "/new-password",
+            "/user-new-password",
             "/register/**",
             "/error",
             "/login",

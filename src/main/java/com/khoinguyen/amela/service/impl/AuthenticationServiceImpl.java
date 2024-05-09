@@ -75,4 +75,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return new ServiceResponse<>(false, "error", "Something is went wrong");
     }
+
+    @Override
+    public ServiceResponse<String> submitCreateNewPassword(PasswordDtoRequest request) {
+        ServiceResponse<String> response;
+
+        //validate token
+        response = verificationService.validateToken(request.getToken());
+        if (!response.status()) return response;
+
+        //submit password
+        Optional<Verification> theVerification = verificationRepository.findByToken(request.getToken());
+        Optional<User> theUser = theVerification.map(Verification::getUser);
+        if (theUser.isPresent()) {
+            User user = theUser.get();
+            String password = passwordEncoder.encode(request.getPassword());
+            user.setPassword(password);
+            user.setEnabled(true);
+            userRepository.save(user);
+            verificationRepository.delete(theVerification.get());
+            return response;
+        }
+        return new ServiceResponse<>(false, "error", "Something is went wrong");
+    }
 }

@@ -27,14 +27,16 @@ public class EmailHandler {
         String subject = "Password Reset Request Verification";
         String senderName = "Users Verification Service";
         String receiverName = user.getFirstname() + " " + user.getLastname();
-//        String mailContent = "<p> Hi, " + receiverName + ", </p>" +
-//                "<p><b>You recently requested to reset your password,</b>" +
-//                " Please follow the link below to complete the action.</p>" +
-//                "<a href=\"" + url + "\">Reset password</a>" +
-//                "<p> Users Registration Portal Service";
+        String mailContent = TemplateEmailGenerate.getHtmlForgotPassword(receiverName, url);
+        emailMessage(subject, senderName, mailContent, javaMailSender, user);
+    }
 
-        String mailContent = TemplateEmailGenerate.getHtml(receiverName, url);
-
+    @Async
+    public void sendTokenCreateUser(User user, String url) throws MessagingException, UnsupportedEncodingException {
+        String subject = "New Password Request Verification";
+        String senderName = "Users Verification Service";
+        String receiverName = user.getFirstname() + " " + user.getLastname();
+        String mailContent = TemplateEmailGenerate.getHtmlNewPassword(receiverName, url);
         emailMessage(subject, senderName, mailContent, javaMailSender, user);
     }
 

@@ -11,17 +11,18 @@ import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.UserCriteria;
 import com.khoinguyen.amela.service.UserService;
-import com.khoinguyen.amela.util.CodeGenerator;
-import com.khoinguyen.amela.util.DateTimeHelper;
-import com.khoinguyen.amela.util.OptionalValidator;
-import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.service.VerificationService;
+import com.khoinguyen.amela.util.*;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
 
@@ -34,6 +35,8 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;
     OptionalValidator optionalValidator;
+    VerificationService verificationService;
+    EmailHandler emailHandler;
 
     @Override
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
@@ -95,7 +98,10 @@ public class UserServiceImpl implements UserService {
         user.setCode(CodeGenerator.generateCode());
         user.setEnabled(false);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        //Send mail
+        response = sendMailCreateUser(user);
 
         return response;
     }
@@ -217,6 +223,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return response;
+    }
+
+    public ServiceResponse<String> sendMailCreateUser(User user) {
+        String token = UUID.randomUUID().toString();
+        verificationService.createTokenUser(user, token);
+        //send password reset verification email to the user
+        String url = Constant.HOST + "user-new-password?token=" + token;
+        verificationService.createTokenUser(user, token);
+        //send mail
+        try {
+            emailHandler.sendTokenCreateUser(user, url);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            return new ServiceResponse<>(false, "error", "Something is went wrong");
+        }
+        return new ServiceResponse<>(true, "success", "User created");
     }
 
     @Override

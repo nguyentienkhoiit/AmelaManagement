@@ -99,4 +99,41 @@ public class AuthController {
         }
         return "redirect:/login";
     }
+
+    @GetMapping("/user-new-password")
+    public String createNewPassword(
+            @RequestParam("token") String token,
+            Model model
+    ) {
+        PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
+                .token(token)
+                .build();
+        model.addAttribute("passwordDto", passwordDtoRequest);
+        return "/layout/users/user_new_password";
+    }
+
+    @PostMapping("/user-new-password")
+    public String submitCreateNewPassword(
+            Model model,
+            @Valid @ModelAttribute("passwordDto") PasswordDtoRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return "layout/users/user_new_password";
+        }
+
+        if(!request.getPassword().equals(request.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "confirmPassword",
+                    "Password and confirm password does not match");
+            return "layout/users/user_new_password";
+        }
+
+        //submit new password
+        ServiceResponse<String> serviceResponse = authenticationService.submitCreateNewPassword(request);
+        if(!serviceResponse.status()) {
+            model.addAttribute(serviceResponse.column(), serviceResponse.data());
+            return "layout/users/user_new_password";
+        }
+        return "redirect:/login";
+    }
 }

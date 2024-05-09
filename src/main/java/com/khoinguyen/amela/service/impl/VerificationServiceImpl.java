@@ -20,7 +20,6 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VerificationServiceImpl implements VerificationService {
     VerificationRepository verificationRepository;
-    UserRepository userRepository;
 
     @Override
     public void createTokenUser(User user, String token) {

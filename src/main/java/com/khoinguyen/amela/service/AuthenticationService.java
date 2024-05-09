@@ -9,4 +9,6 @@ public interface AuthenticationService {
     ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl);
 
     ServiceResponse<String> submitNewPassword(PasswordDtoRequest request);
+
+    ServiceResponse<String> submitCreateNewPassword(PasswordDtoRequest request);
 }
