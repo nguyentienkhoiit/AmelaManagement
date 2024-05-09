@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +31,7 @@ public class HomeController {
     MessageScheduleService messageScheduleService;
 
     @GetMapping
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     public String home(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest
@@ -51,12 +52,14 @@ public class HomeController {
     }
 
     @GetMapping("/dashboard")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String dashboard() {
         session.setAttribute("active", "dashboard");
         return "layout/auth/dashboard";
     }
 
     @GetMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewProfile(Model model) {
         var user = userService.getProfile();
         var roleDtoResponses = roleService.findAll();
@@ -72,6 +75,7 @@ public class HomeController {
     }
 
     @PostMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String updateProfile(
             @Valid @ModelAttribute("user") UserDtoRequest request,
             BindingResult result,
@@ -95,9 +99,33 @@ public class HomeController {
         return "redirect:/profile";
     }
 
-    @GetMapping("error-page")
-    public String viewError() {
+    @GetMapping("/notFound")
+    public String notFound404() {
         session.setAttribute("active", "error");
-        return "layout/error";
+        return "layout/errorPages/not_found_404";
+    }
+
+    @GetMapping("/forbidden")
+    public String forbidden403() {
+        session.setAttribute("active", "error");
+        return "layout/errorPages/forbidden_403";
+    }
+
+    @GetMapping("/badRequest")
+    public String badRequest400() {
+        session.setAttribute("active", "error");
+        return "layout/errorPages/bad_request_400";
+    }
+
+    @GetMapping("/methodNotAllowed")
+    public String methodNotAllowed403() {
+        session.setAttribute("active", "error");
+        return "layout/errorPages/method_not_allow_405";
+    }
+
+    @GetMapping("/internalServerError")
+    public String internalServerError500() {
+        session.setAttribute("active", "error");
+        return "layout/errorPages/internal_server_error_500";
     }
 }

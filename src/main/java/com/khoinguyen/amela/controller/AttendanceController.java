@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,7 @@ public class AttendanceController {
     UserRepository userRepository;
 
     @GetMapping(value = {"", "/{userId}"})
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewAttendances(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest,
@@ -71,12 +73,14 @@ public class AttendanceController {
     }
 
     @GetMapping("/create/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateAttendances(Model model, @PathVariable Long userId) {
         model.addAttribute("attendance", AttendanceDtoRequest.builder().userId(userId).build());
         return "layout/attendances/attendance_create";
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createAttendances(
             Model model,
             @Valid @ModelAttribute AttendanceDtoRequest request,
@@ -108,6 +112,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateAttendances(
             Model model,
             @PathVariable Long id
@@ -118,6 +123,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateAttendances(
             Model model,
             @Valid @ModelAttribute AttendanceDtoRequest request,
@@ -149,12 +155,14 @@ public class AttendanceController {
     }
 
     @GetMapping("/checkin")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String checkAttendance(HttpServletRequest request) {
         boolean rs = attendanceService.checkAttendance();
         return "redirect:/" + UrlUtil.getReferer(request);
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(
             @PathVariable Long id
     ) {
@@ -164,6 +172,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/exports/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void exportAttendances(
             HttpServletResponse response,
             @PathVariable Long userId,

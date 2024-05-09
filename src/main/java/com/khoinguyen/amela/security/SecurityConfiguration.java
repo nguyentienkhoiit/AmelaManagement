@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.security;
 
+import com.khoinguyen.amela.configuration.InterceptorRequest;
 import com.khoinguyen.amela.util.Constant;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collection;
 
@@ -28,8 +31,13 @@ import static com.khoinguyen.amela.util.Constant.LIST_PERMIT_ALL;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SecurityConfiguration {
+public class SecurityConfiguration implements WebMvcConfigurer {
     UserDetailsService userDetailsService;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new InterceptorRequest());
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

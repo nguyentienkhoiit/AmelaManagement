@@ -7,6 +7,8 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
+import java.util.List;
+
 public interface MessageScheduleService {
     ServiceResponse<String> createMessages(MessageScheduleDtoRequest request);
 
@@ -19,4 +21,6 @@ public interface MessageScheduleService {
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest);
 
     boolean changeStatus(Long id);
+
+    List<MessageScheduleDtoResponse> getTopMessagesScheduleForUser(Long topElement, Long id);
 }

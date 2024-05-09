@@ -4,7 +4,7 @@
     ~{::main},
     ~{},
     ~{::#js-static-resource}
-)}" xmlns:th="http://www.thymeleaf.org">
+)}" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -21,12 +21,8 @@
                     <input class="form-control rounded" name="text" onchange="submitForm()"
                            placeholder="Search..." th:value="${text}"
                            type="text">
-                    <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
-                    <!--                            title="Search"-->
-                    <!--                            type="submit">-->
-                    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
-                    <!--                    </button>-->
-                    <a class="btn btn-success ms-1 rounded" data-bs-placement="top" data-bs-toggle="tooltip"
+                    <a class="btn btn-success ms-1 rounded" data-bs-placement="top"
+                       data-bs-toggle="tooltip" sec:authorize="hasAuthority('ADMIN')"
                        th:href="@{/users/create}" title="Add">
                         <i class="fa-solid fa-plus"></i>
                     </a>
@@ -52,7 +48,7 @@
                     </th>
                     <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Action</th>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -66,7 +62,7 @@
                     <td th:text="${user.role.name}">User</td>
                     <td th:text="${user.position.name}">Developer</td>
                     <td th:text="${user.enabled ? 'Active': 'Deactive'}">Active</td>
-                    <td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/users/update/{id}(id=${user.id})}"
                            title="Update">

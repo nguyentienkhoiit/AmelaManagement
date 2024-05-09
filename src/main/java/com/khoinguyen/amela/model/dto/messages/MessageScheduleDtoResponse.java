@@ -21,4 +21,5 @@ public class MessageScheduleDtoResponse {
     String updateAt;
     Long updateBy;
     boolean choice;
+    boolean isPublished;
 }

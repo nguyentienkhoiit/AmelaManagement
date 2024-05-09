@@ -37,12 +37,12 @@ public class VerificationServiceImpl implements VerificationService {
 
         Optional<Verification> theToken = verificationRepository.findByToken(token);
         if (theToken.isEmpty()) {
-            response = new ServiceResponse<>(false, "error", "Token is not found");
+            response = new ServiceResponse<>(false, "error", "This link is not exist");
             return response;
         }
 
         if (theToken.get().getExpireAt().isBefore(LocalDateTime.now())) {
-            response = new ServiceResponse<>(false, "error", "Token is expired");
+            response = new ServiceResponse<>(false, "error", "This link is expired");
             return response;
         }
 

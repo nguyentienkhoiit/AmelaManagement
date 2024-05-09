@@ -39,39 +39,19 @@
                             <h3>Latest Messages</h3>
                         </div>
                         <div class="widget-body">
-                            <div class="latest-post-aside media" style="display: flex; justify-content: space-between">
+                            <div class="latest-post-aside media" style="display: flex; justify-content: space-between"
+                                 th:each="mess: ${topMessages}">
                                 <div class="lpa-left media-body">
                                     <div class="lpa-title">
-                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
+                                        <h5><a style="text-decoration: none;"
+                                               th:href="@{/messages/detail/{id}(id=${mess.id})}"
+                                               th:text="${mess.subject}">Prevent 75% of
+                                            visitors from
                                             google analytics</a></h5>
                                     </div>
                                     <div class="lpa-meta">
-                                        <small>Administrator</small>
-                                        <small class="ms-3">10:10:00 23/03/2024</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="latest-post-aside media" style="display: flex;; justify-content: space-between">
-                                <div class="lpa-left media-body">
-                                    <div class="lpa-title">
-                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
-                                            google analytics</a></h5>
-                                    </div>
-                                    <div class="lpa-meta">
-                                        <small>Administrator</small>
-                                        <small class="ms-3">10:10:00 23/03/2024</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="latest-post-aside media" style="display: flex;; justify-content: space-between">
-                                <div class="lpa-left media-body">
-                                    <div class="lpa-title">
-                                        <h5><a href="#" style="text-decoration: none;">Prevent 75% of visitors from
-                                            google analytics</a></h5>
-                                    </div>
-                                    <div class="lpa-meta">
-                                        <small>Administrator</small>
-                                        <small class="ms-3">10:10:00 23/03/2024</small>
+                                        <small th:text="${mess.senderName}">Administrator</small>
+                                        <small class="ms-3" th:text="${mess.publishAt}">10:10:00 23/03/2024</small>
                                     </div>
                                 </div>
                             </div>

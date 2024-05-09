@@ -4,7 +4,7 @@
     ~{::main},
     ~{},
     ~{}
-)}" xmlns:th="http://www.thymeleaf.org">
+)}" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -17,12 +17,11 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-12 text-center">
-                    <span class="display-1 d-block">404</span>
-                    <div class="mb-4 lead">The page you are looking for was not found.</div>
-                    <a class="btn btn-link" th:href="@{/dashboard}"
-                       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Back to Dashboard</a>
-                    <a class="btn btn-link" th:href="@{/}"
-                       th:unless="${#authorization.expression('hasRole(''USER'')')}">Back to Home</a>
+                    <span class="display-1 d-block fw-bold">405 Method Not Allow</span>
+                    <div class="mb-4 lead">This method is not allowed for the requested URL</div>
+                    <a class="btn btn-link" sec:authorize="hasAuthority('ADMIN')" th:href="@{/dashboard}">Back to
+                        Dashboard</a>
+                    <a class="btn btn-link" sec:authorize="hasAuthority('USER')" th:href="@{/}">Back to Home</a>
                 </div>
             </div>
         </div>

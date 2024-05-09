@@ -123,7 +123,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
     @Override
     public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesAdmin(PagingDtoRequest pagingDtoRequest) {
-        return messageScheduleCriteria.getAllMessagesAdmin(pagingDtoRequest);
+        return messageScheduleCriteria.getAllMessages(pagingDtoRequest);
     }
 
     public MessageScheduleUpdateResponse setMessage(MessageScheduleUpdateResponse response) {
@@ -281,7 +281,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
     @Override
     public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest) {
-        return messageScheduleCriteria.getAllMessagesUser(pagingDtoRequest);
+        return messageScheduleCriteria.getAllMessages(pagingDtoRequest);
     }
 
     @Override
@@ -297,5 +297,18 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<MessageScheduleDtoResponse> getTopMessagesScheduleForUser(Long topElement, Long id) {
+        PagingDtoRequest pagingDtoRequest = PagingDtoRequest.builder()
+                .pageIndex("1")
+                .pageSize(topElement.toString())
+                .build();
+        return messageScheduleCriteria
+                .getAllMessages(pagingDtoRequest).data()
+                .stream()
+                .filter(response -> !response.getId().equals(id))
+                .collect(Collectors.toList());
     }
 }

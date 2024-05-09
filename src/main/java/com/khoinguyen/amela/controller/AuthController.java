@@ -5,6 +5,7 @@ import com.khoinguyen.amela.model.dto.authentication.LoginDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
+import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.UrlUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class AuthController {
     AuthenticationService authenticationService;
+    VerificationService verificationService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -68,9 +70,11 @@ public class AuthController {
             @RequestParam("token") String token,
             Model model
     ) {
+        ServiceResponse<String> serviceResponse = verificationService.validateToken(token);
         PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
                 .token(token)
                 .build();
+        model.addAttribute(serviceResponse.column(), serviceResponse.data());
         model.addAttribute("passwordDto", passwordDtoRequest);
         return "layout/auth/new-password";
     }

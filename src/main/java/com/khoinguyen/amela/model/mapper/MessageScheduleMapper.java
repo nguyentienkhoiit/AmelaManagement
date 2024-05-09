@@ -5,6 +5,8 @@ import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
+import java.time.LocalDateTime;
+
 public class MessageScheduleMapper {
     public static MessageScheduleDtoResponse toMessageScheduleDtoResponse(MessageSchedule request) {
         return MessageScheduleDtoResponse.builder()
@@ -16,6 +18,7 @@ public class MessageScheduleMapper {
                 .choice(request.getGroup() != null)
                 .subject(request.getSubject())
                 .viewers(request.getViewers())
+                .isPublished(request.getPublishAt().isBefore(LocalDateTime.now()))
                 .createdBy(request.getCreatedBy())
                 .senderName(request.getSenderName())
                 .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))

@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,7 @@ public class UserController {
     JobPositionService jobPositionService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewUsers(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest
@@ -54,12 +56,14 @@ public class UserController {
     }
 
     @GetMapping("create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateUsers(Model model) {
         SetSessionSelectionOption(model);
         return "layout/users/user_create";
     }
 
     @PostMapping("create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createUser(
             @Valid @ModelAttribute("user") UserDtoRequest request,
             BindingResult result,
@@ -87,6 +91,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateUser(
             Model model,
             @Valid @ModelAttribute("user") UserDtoUpdate request,
@@ -115,6 +120,7 @@ public class UserController {
     }
 
     @GetMapping("update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateUsers(Model model, @PathVariable Long id) {
         UserDtoResponse userDtoResponse = userService.getUserById(id);
         if (userDtoResponse == null) return "redirect:/error-page";

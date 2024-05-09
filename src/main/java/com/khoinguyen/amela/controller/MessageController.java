@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
+import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
@@ -12,14 +13,17 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/messages")
 @RequiredArgsConstructor
+@RequestMapping("/messages")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MessageController {
     HttpSession session;
@@ -28,6 +32,7 @@ public class MessageController {
     PermissionMessages permissionMessages;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewMessagesAdmin(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest
@@ -49,6 +54,7 @@ public class MessageController {
     }
 
     @GetMapping("/detail/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewMessageDetail(
             Model model,
             @PathVariable long id
@@ -57,13 +63,17 @@ public class MessageController {
         if (!permissionMessages.checkPermission(id)) {
             return "redirect:/error-page";
         }
-
-        MessageScheduleUpdateResponse response = messageScheduleService.getByMessageScheduleId(id, "detail");
+        List<MessageScheduleDtoResponse> topMessages = messageScheduleService
+                .getTopMessagesScheduleForUser(10L, id);
+        MessageScheduleUpdateResponse response = messageScheduleService
+                .getByMessageScheduleId(id, "detail");
         model.addAttribute("message", response);
+        model.addAttribute("topMessages", topMessages);
         return "layout/messages/message_detail";
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateMessages(Model model) {
         var groups = groupService.getAll();
         session.setAttribute("groups", groups);
@@ -73,6 +83,7 @@ public class MessageController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createMessages(
             @Valid @ModelAttribute("message") MessageScheduleDtoRequest request,
             BindingResult result,
@@ -95,8 +106,10 @@ public class MessageController {
     }
 
     @GetMapping("update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateMessages(Model model, @PathVariable Long id) {
-        MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService.getByMessageScheduleId(id, "id");
+        MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService
+                .getByMessageScheduleId(id, "id");
         model.addAttribute("message", messageScheduleDtoResponse);
 
         var groups = groupService.getAll();
@@ -105,6 +118,7 @@ public class MessageController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateMessages(
             Model model,
             @Valid @ModelAttribute("message") MessageScheduleDtoRequest request,
@@ -128,6 +142,7 @@ public class MessageController {
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(
             Model model,
             @PathVariable Long id
