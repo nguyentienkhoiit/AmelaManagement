@@ -85,7 +85,7 @@ public class AuthController {
             return "layout/auth/new-password";
         }
 
-        if(!request.getPassword().equals(request.getConfirmPassword())) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
             result.rejectValue("confirmPassword", "confirmPassword",
                     "Password and confirm password does not match");
             return "layout/auth/new-password";
@@ -93,7 +93,7 @@ public class AuthController {
 
         //submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitNewPassword(request);
-        if(!serviceResponse.status()) {
+        if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
             return "layout/auth/new-password";
         }
@@ -122,7 +122,7 @@ public class AuthController {
             return "layout/users/user_new_password";
         }
 
-        if(!request.getPassword().equals(request.getConfirmPassword())) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
             result.rejectValue("confirmPassword", "confirmPassword",
                     "Password and confirm password does not match");
             return "layout/users/user_new_password";
@@ -130,7 +130,7 @@ public class AuthController {
 
         //submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitCreateNewPassword(request);
-        if(!serviceResponse.status()) {
+        if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
             return "layout/users/user_new_password";
         }

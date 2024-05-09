@@ -156,8 +156,7 @@ public class AttendanceController {
 
     @GetMapping("/change-status/{id}")
     public String changeStatus(
-            @PathVariable Long id,
-            HttpServletRequest request
+            @PathVariable Long id
     ) {
         boolean rs = attendanceService.changeStatus(id);
         String url = (String) session.getAttribute("url");

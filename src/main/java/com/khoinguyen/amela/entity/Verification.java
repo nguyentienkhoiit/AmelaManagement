@@ -28,7 +28,7 @@ public class Verification {
                     CascadeType.MERGE,
                     CascadeType.PERSIST,
                     CascadeType.REFRESH
-    })
+            })
     @JoinColumn(name = "user_id")
     User user;
 }

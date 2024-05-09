@@ -283,4 +283,19 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest) {
         return messageScheduleCriteria.getAllMessagesUser(pagingDtoRequest);
     }
+
+    @Override
+    public boolean changeStatus(Long id) {
+        User userLoggedIn = userHelper.getUserLogin();
+        var messageScheduleOptional = messageScheduleRepository.findById(id);
+        if (messageScheduleOptional.isPresent()) {
+            var messageSchedule = messageScheduleOptional.get();
+            messageSchedule.setUpdateAt(LocalDateTime.now());
+            messageSchedule.setUpdateBy(userLoggedIn.getId());
+            messageSchedule.setStatus(!messageSchedule.isStatus());
+            messageScheduleRepository.save(messageSchedule);
+            return true;
+        }
+        return false;
+    }
 }

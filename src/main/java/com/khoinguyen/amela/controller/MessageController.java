@@ -126,4 +126,14 @@ public class MessageController {
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
+
+    @GetMapping("/change-status/{id}")
+    public String changeStatus(
+            Model model,
+            @PathVariable Long id
+    ) {
+        boolean rs = messageScheduleService.changeStatus(id);
+        String url = (String) session.getAttribute("url");
+        return "redirect:" + url;
+    }
 }

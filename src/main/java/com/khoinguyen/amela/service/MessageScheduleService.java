@@ -17,4 +17,6 @@ public interface MessageScheduleService {
     ServiceResponse<String> updateMessages(MessageScheduleDtoRequest request);
 
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest);
+
+    boolean changeStatus(Long id);
 }

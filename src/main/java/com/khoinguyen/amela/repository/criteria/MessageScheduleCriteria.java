@@ -68,12 +68,12 @@ public class MessageScheduleCriteria {
     public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();
-        StringBuilder sql = new StringBuilder("select ms from MessageSchedule ms where ms.status = true and ms.id in " +
-                "( select ums.messageSchedule.id from UserMessageSchedule ums where " +
-                "ums.user.id = :userId and ms.senderName like :sender or ms.subject like :subject) " +
-                "or ms.group.id in " +
-                "( select g.id from Group g join UserGroup ug on g.id = ug.group.id where " +
-                "ug.user.id = :userId and g.status = true and ms.senderName like :sender or ms.subject like :subject)");
+        StringBuilder sql = new StringBuilder("SELECT ms FROM MessageSchedule ms WHERE " +
+                "ms.publishAt < CURRENT_TIMESTAMP() AND ms.status = true AND " +
+                "(ms.id IN (SELECT ums.messageSchedule.id FROM UserMessageSchedule ums WHERE " +
+                "ums.user.id = :userId and (ms.senderName like :sender or ms.subject like :subject) ) OR " +
+                "ms.group.id IN (SELECT g.id FROM Group g JOIN UserGroup ug ON g.id = ug.group.id WHERE " +
+                "ug.user.id = :userId AND g.status = true and (ms.senderName like :sender or ms.subject like :subject) ))");
         params.put("userId", userLoggedIn.getId());
         params.put("sender", "%%");
         params.put("subject", "%%");
@@ -82,9 +82,10 @@ public class MessageScheduleCriteria {
             params.put("sender", "%" + request.getText().trim() + "%");
             params.put("subject", "%" + request.getText().trim() + "%");
         }
+
         //filter search
         Query countQuery = em.createQuery(sql.toString()
-                .replace("select ms", "select count(ms.id)"));
+                .replace("SELECT ms", "SELECT count(ms.id)"));
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 
