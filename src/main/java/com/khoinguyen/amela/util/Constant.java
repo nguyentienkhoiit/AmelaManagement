@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Constant {
-    public static final Long EMAIL_WAITING_EXPIRATION = 84600L;
+    public static final Long EMAIL_WAITING_EXPIRATION = 3600L;
     public static final Long PAGE_INDEX = 1L;
     public static final Long PAGE_SIZE = 6L;
     public static final String PASSWORD_DEFAULT = "123456";

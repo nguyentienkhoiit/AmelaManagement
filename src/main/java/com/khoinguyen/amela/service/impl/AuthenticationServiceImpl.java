@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "success",
-                "We have just sent a verification link to your email, the link will be expired in 60s");
+                "We have just sent a verification link to your email, the link will be expired in 1h");
         User user = userRepository.findByEmailAndEnabledTrue(request.getEmail())
                 .orElse(null);
         if (user == null) {
@@ -82,7 +82,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //validate token
         response = verificationService.validateToken(request.getToken());
-        System.out.println(response.status());
         if (!response.status()) return response;
 
         //submit password

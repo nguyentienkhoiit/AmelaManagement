@@ -2,6 +2,7 @@ package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.entity.UserGroup;
 import com.khoinguyen.amela.entity.UserMessageSchedule;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
@@ -16,19 +17,25 @@ import com.khoinguyen.amela.repository.UserMessageScheduleRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.MessageScheduleCriteria;
 import com.khoinguyen.amela.service.MessageScheduleService;
+import com.khoinguyen.amela.util.EmailHandler;
 import com.khoinguyen.amela.util.StringUtil;
 import com.khoinguyen.amela.util.UserHelper;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -39,6 +46,39 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserRepository userRepository;
     GroupRepository groupRepository;
     UserMessageScheduleRepository userMessageScheduleRepository;
+    EmailHandler emailHandler;
+
+    @Scheduled(fixedDelay = 1000 * 120)
+    public void checkPublishTime() {
+        List<MessageSchedule> messageSchedules = messageScheduleRepository.findByPublishAtBeforeNow();
+//        List<MessageSchedule> messageSchedules = messageScheduleRepository.findByGroupId(3L);
+        if (messageSchedules.isEmpty()) return;
+
+        Map<MessageSchedule, List<User>> reminderMailMap = new HashMap<>();
+        for (MessageSchedule messageSchedule : messageSchedules) {
+            if (messageSchedule.getGroup() != null) {
+                List<UserGroup> userGroups = messageSchedule.getGroup().getUserGroups();
+                List<User> users = userGroups.stream().map(UserGroup::getUser).toList();
+                reminderMailMap.put(messageSchedule, users);
+            } else if (messageSchedule.getUserMessageSchedules() != null) {
+                List<UserMessageSchedule> userMessageSchedules = messageSchedule.getUserMessageSchedules();
+                List<User> users = userMessageSchedules.stream().map(UserMessageSchedule::getUser).toList();
+                reminderMailMap.put(messageSchedule, users);
+            }
+        }
+
+        for (Map.Entry<MessageSchedule, List<User>> entry : reminderMailMap.entrySet()) {
+            MessageSchedule messageSchedule = entry.getKey();
+            List<User> users = entry.getValue();
+            try {
+                emailHandler.sendNotificationMessage(messageSchedule, users);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                return;
+            }
+        }
+
+        log.info("Log time: {}", LocalDateTime.now());
+    }
 
     @Override
     public ServiceResponse<String> createMessages(MessageScheduleDtoRequest request) {

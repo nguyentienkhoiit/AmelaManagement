@@ -43,6 +43,9 @@ public class UserServiceImpl implements UserService {
         return userCriteria.getAllUsers(request);
     }
 
+    private User getUserLatest() {
+        return userRepository.findTopByOrderByIdDesc().orElse(null);
+    }
 
     @Override
     public ServiceResponse<String> createUser(UserDtoRequest request) {
@@ -88,6 +91,7 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
+        String code = CodeGenerator.generateNextUserCode(getUserLatest().getCode());
         User user = UserMapper.toUser(request);
         user.setCreatedBy(userLoggedIn.getId());
         user.setUpdateBy(userLoggedIn.getId());
@@ -95,7 +99,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(roleOptional.get());
         user.setJobPosition(positionOptional.get());
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
-        user.setCode(CodeGenerator.generateCode());
+        user.setCode(code);
         user.setEnabled(false);
         user.setActivated(false);
 

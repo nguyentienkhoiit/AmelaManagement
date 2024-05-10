@@ -393,7 +393,7 @@ public class TemplateEmailGenerate {
                 "                                <p style=\"font-size: 14px; line-height: 140%;\"><span\n" +
                 "                                    style=\"color: #888888; font-size: 14px; line-height: 19.6px;\"><em><span\n" +
                 "                                        style=\"font-size: 16px; line-height: 22.4px;\">Please ignore this email if you\n" +
-                "                                        did not request a password change. The link will be expired in 60s</span></em></span><br /><span\n" +
+                "                                        did not request a password change. The link will be expired in 1h</span></em></span><br /><span\n" +
                 "                                    style=\"color: #888888; font-size: 14px; line-height: 19.6px;\"><em><span\n" +
                 "                                        style=\"font-size: 16px; line-height: 22.4px;\">&nbsp;</span></em></span></p>\n" +
                 "                              </div>\n" +
@@ -1023,7 +1023,7 @@ public class TemplateEmailGenerate {
                 "                                <p style=\"font-size: 14px; line-height: 140%;\"><span\n" +
                 "                                    style=\"color: #888888; font-size: 14px; line-height: 19.6px;\"><em><span\n" +
                 "                                        style=\"font-size: 16px; line-height: 22.4px;\">Please ignore this email if you\n" +
-                "                                        did not request a password change. The link will be expired in 60s</span></em></span><br /><span\n" +
+                "                                        did not request a password change. The link will be expired in 1h</span></em></span><br /><span\n" +
                 "                                    style=\"color: #888888; font-size: 14px; line-height: 19.6px;\"><em><span\n" +
                 "                                        style=\"font-size: 16px; line-height: 22.4px;\">&nbsp;</span></em></span></p>\n" +
                 "                              </div>\n" +
@@ -1259,5 +1259,9 @@ public class TemplateEmailGenerate {
                 "</body>\n" +
                 "\n" +
                 "</html>";
+    }
+
+    public static String getHtmlNotificationMessages(String url) {
+        return "<a href=\"" + url + "\">Link bài viết</a>";
     }
 }

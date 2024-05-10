@@ -30,6 +30,6 @@ public class Group {
     @OneToMany(mappedBy = "group")
     List<MessageSchedule> messageSchedules;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     List<UserGroup> userGroups;
 }
