@@ -97,7 +97,6 @@
                         BA
                     </option>
                 </select>
-                <!--                <div class="text-danger h6 mt-1" th:errors="*{position}" th:if="${#fields.hasErrors('position')}"></div>-->
             </div>
         </div>
 
@@ -108,10 +107,8 @@
                     <option th:each="department: ${session.departments}"
                             th:selected="${department.id == user.department.id}"
                             th:text="${department.name}" th:value="${department.id}">Department
-                        1
                     </option>
                 </select>
-                <!--                <div class="text-danger h6 mt-1" th:errors="*{department}" th:if="${#fields.hasErrors('department')}"></div>-->
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="role">Role</label>
@@ -120,7 +117,6 @@
                             th:text="${role.name}" th:value="${role.id}">User
                     </option>
                 </select>
-                <!--                <div class="text-danger h6 mt-1" th:errors="*{role}" th:if="${#fields.hasErrors('role')}"></div>-->
             </div>
         </div>
         <div class="row">
@@ -129,6 +125,8 @@
                 <input name="id" th:field="*{id}" type="hidden">
                 <a class="btn btn-success ms-1" th:href="@{/users/reset-password/{id}(id=${user.id})}">Reset
                     password</a>
+                <a class="btn btn-secondary ms-1" th:href="@{/users/send-token-again/{id}(id=${user.id})}"
+                   th:if="${user.activated == false}">Reactivate</a>
             </div>
         </div>
     </form>

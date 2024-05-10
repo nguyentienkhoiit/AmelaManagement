@@ -44,6 +44,8 @@ public class User {
 
     boolean enabled = false;
 
+    boolean activated = false;
+
     int gender;
 
     String phone;

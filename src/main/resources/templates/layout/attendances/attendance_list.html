@@ -20,10 +20,6 @@
                 <div class="input-group mb-2 col-sm-8" style="max-width: 400px;">
                     <input class="form-control" id="date" name="text"
                            onchange="submitForm()" th:value="${text}" type="month">
-                    <!--                    <button class="btn btn-primary rounded-end" data-bs-placement="top" data-bs-toggle="tooltip"-->
-                    <!--                            title="Search" type="submit">-->
-                    <!--                        <i class="fa-solid fa-magnifying-glass"></i>-->
-                    <!--                    </button>-->
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top"
                        data-bs-toggle="tooltip" sec:authorize="hasAuthority('ADMIN')"
                        th:href="@{/attendances/create/{id}(id=${userId})}" title="Add">
@@ -52,7 +48,8 @@
                     </th>
                     <th scope="col">Work time <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Active <a class="text-secondary" href="#"><i
+                            class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col" sec:authorize="hasAuthority('ADMIN')">Action</th>
                 </tr>
@@ -67,7 +64,9 @@
                     <td th:text="${attendance.checkInTime}">10:20:00</td>
                     <td th:text="${attendance.checkOutTime}">20:11:00</td>
                     <td th:text="${attendance.workTime}">20:11:00</td>
-                    <td th:text="${attendance.status ? 'Active': 'Deactive'}">Active</td>
+                    <td sec:authorize="hasAuthority('ADMIN')" th:text="${attendance.status ? 'Active': 'Deactive'}">
+                        Active
+                    </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/attendances/update/{id}(id=${attendance.id})}"

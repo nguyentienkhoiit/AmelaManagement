@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/departments")
-@PreAuthorize("hasAuthority('ADMIN')")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DepartmentController {
     HttpSession session;
     DepartmentService departmentService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewDepartments(
             Model model,
             @ModelAttribute PagingDtoRequest request
@@ -47,12 +47,14 @@ public class DepartmentController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateDepartments(Model model) {
         model.addAttribute("department", new DepartmentDtoRequest());
         return "layout/departments/department_create";
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createDepartments(
             @Valid @ModelAttribute("department") DepartmentDtoRequest request,
             BindingResult result,
@@ -74,6 +76,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateDepartments(
             Model model,
             @PathVariable Long id
@@ -86,6 +89,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateDepartments(
             @Valid @ModelAttribute("department") DepartmentDtoRequest request,
             BindingResult result,
@@ -107,6 +111,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = departmentService.changeStatus(id);
 

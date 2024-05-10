@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/groups")
-@PreAuthorize("hasAuthority('ADMIN')")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class GroupController {
     HttpSession session;
     GroupService groupService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewGroups(
             Model model,
             @ModelAttribute PagingDtoRequest request
@@ -48,6 +48,7 @@ public class GroupController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateGroups(Model model) {
         session.setAttribute("active", "group");
 
@@ -56,6 +57,7 @@ public class GroupController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String createGroups(
             @Valid @ModelAttribute("group") GroupDtoRequest request,
             BindingResult result,
@@ -78,6 +80,7 @@ public class GroupController {
 
 
     @GetMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateGroups(
             Model model,
             @PathVariable Long id
@@ -90,6 +93,7 @@ public class GroupController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateGroups(
             @Valid @ModelAttribute("group") GroupDtoRequest request,
             BindingResult result,
@@ -112,6 +116,7 @@ public class GroupController {
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = groupService.changeStatus(id);
 

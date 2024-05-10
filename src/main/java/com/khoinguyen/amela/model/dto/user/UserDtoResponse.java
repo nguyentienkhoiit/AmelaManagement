@@ -25,6 +25,6 @@ public class UserDtoResponse {
     DepartmentDtoResponse department;
     RoleDtoResponse role;
     JobPositionDtoResponse position;
-    boolean active;
     boolean enabled;
+    boolean activated;
 }

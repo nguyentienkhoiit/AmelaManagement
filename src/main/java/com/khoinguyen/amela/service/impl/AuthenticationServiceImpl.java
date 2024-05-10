@@ -82,6 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //validate token
         response = verificationService.validateToken(request.getToken());
+        System.out.println(response.status());
         if (!response.status()) return response;
 
         //submit password
@@ -92,6 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String password = passwordEncoder.encode(request.getPassword());
             user.setPassword(password);
             user.setEnabled(true);
+            user.setActivated(true);
             userRepository.save(user);
             verificationRepository.delete(theVerification.get());
             return response;

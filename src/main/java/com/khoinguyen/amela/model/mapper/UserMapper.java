@@ -21,7 +21,7 @@ public class UserMapper {
                 .department(DepartmentMapper.toDepartmentDtoResponse(user.getDepartment()))
                 .role(RoleMapper.toRole(user.getRole()))
                 .dateOfBirth(user.getDateOfBirth().toString())
-                .active(user.isEnabled())
+                .activated(user.isActivated())
                 .address(user.getAddress())
                 .username(user.getUsername())
                 .enabled(user.isEnabled())

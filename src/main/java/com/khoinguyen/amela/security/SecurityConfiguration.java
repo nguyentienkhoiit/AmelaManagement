@@ -82,7 +82,8 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         l -> l.invalidateHttpSession(true).clearAuthentication(true)
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .logoutSuccessUrl("/login")
-                );
+                )
+                .exceptionHandling(e -> e.accessDeniedPage("/forbidden"));
         return http.build();
     }
 }

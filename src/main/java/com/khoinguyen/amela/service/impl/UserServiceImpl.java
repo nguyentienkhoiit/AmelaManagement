@@ -97,6 +97,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(CodeGenerator.generateCode());
         user.setEnabled(false);
+        user.setActivated(false);
 
         user = userRepository.save(user);
 
@@ -227,7 +228,6 @@ public class UserServiceImpl implements UserService {
 
     public ServiceResponse<String> sendMailCreateUser(User user) {
         String token = UUID.randomUUID().toString();
-        verificationService.createTokenUser(user, token);
         //send password reset verification email to the user
         String url = Constant.HOST + "user-new-password?token=" + token;
         verificationService.createTokenUser(user, token);
@@ -253,5 +253,13 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean sendTokenAgain(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) return false;
+        ServiceResponse<String> response = sendMailCreateUser(user);
+        return true;
     }
 }

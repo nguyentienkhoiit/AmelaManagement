@@ -7,7 +7,6 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UrlUtil;
@@ -40,7 +39,6 @@ public class AttendanceController {
     HttpSession session;
     AttendanceService attendanceService;
     UserHelper userHelper;
-    UserRepository userRepository;
 
     @GetMapping(value = {"", "/{userId}"})
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -50,7 +48,6 @@ public class AttendanceController {
             @PathVariable(required = false) Long userId,
             HttpServletRequest request
     ) {
-        log.info("request {}", request.getRequestURL());
         session.setAttribute("active", "attendance");
         User userLoggedIn = userHelper.getUserLogin();
 

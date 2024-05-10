@@ -46,7 +46,10 @@
                     <th scope="col">Role <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Position <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
-                    <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Activate <a class="text-secondary" href="#"><i
+                            class="fa fa-sort"></i></a>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Active <a class="text-secondary" href="#"><i
+                            class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col" sec:authorize="hasAuthority('ADMIN')">Action</th>
                 </tr>
@@ -61,7 +64,16 @@
                     <td th:text="${user.department.name}">User</td>
                     <td th:text="${user.role.name}">User</td>
                     <td th:text="${user.position.name}">Developer</td>
-                    <td th:text="${user.enabled ? 'Active': 'Deactive'}">Active</td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${user.activated ? 'text-success' : 'text-danger'}"
+                           th:title="${user.activated ? 'Activated' : 'Unactivated'}"
+                        ></i>
+                    </td>
+                    <td sec:authorize="hasAuthority('ADMIN')" th:text="${user.enabled ? 'Active': 'Deactive'}">Active
+                    </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/users/update/{id}(id=${user.id})}"

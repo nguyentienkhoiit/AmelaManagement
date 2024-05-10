@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/positions")
-@PreAuthorize("hasAuthority('ADMIN')")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PositionController {
     HttpSession session;
     JobPositionService positionService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewPositions(
             Model model,
             @ModelAttribute PagingDtoRequest request
@@ -48,6 +48,7 @@ public class PositionController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreatePositions(Model model) {
         model.addAttribute("position", new JobPositionDtoResponse());
         return "layout/positions/position_create";
@@ -75,6 +76,7 @@ public class PositionController {
     }
 
     @GetMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdatePositions(
             Model model,
             @PathVariable Long id
@@ -87,6 +89,7 @@ public class PositionController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updatePositions(
             @Valid @ModelAttribute("position") JobPositionDtoRequest request,
             BindingResult result,
@@ -108,6 +111,7 @@ public class PositionController {
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = positionService.changeStatus(id);
 

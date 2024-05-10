@@ -24,4 +24,6 @@ public interface UserService {
 
 
     boolean changeStatus(Long id);
+
+    boolean sendTokenAgain(Long id);
 }

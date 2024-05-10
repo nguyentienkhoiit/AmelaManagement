@@ -5,6 +5,8 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
+import com.khoinguyen.amela.util.Constant;
+import com.khoinguyen.amela.util.UserHelper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -22,17 +24,26 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserCriteria {
     EntityManager em;
+    UserHelper userHelper;
 
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
+        User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder("select u from User u");
         if (request.getText() != null) {
-            sql.append(" where u.email like :email or u.firstname like :firstName or u.lastname like :lastName or u.code like :code");
+            sql.append(" where  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName or u.code like :code) ");
             params.put("email", "%" + request.getText().trim() + "%");
             params.put("firstName", "%" + request.getText().trim() + "%");
             params.put("lastName", "%" + request.getText().trim() + "%");
             params.put("code", "%" + request.getText().trim() + "%");
         }
+
+        if (userLoggedIn.getRole().getName().equals(Constant.USER_NAME)) {
+            sql.append(" and u.enabled = :enable and u.activated = :activated");
+            params.put("enable", true);
+            params.put("activated", true);
+        }
+
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select u", "select count(u.id)"));

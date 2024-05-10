@@ -131,12 +131,14 @@ public class UserController {
     }
 
     @GetMapping("reset-password/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String resetPassword(@PathVariable Long id) {
         boolean rs = userService.resetPassword(id);
         return "redirect:/users/update/" + id;
     }
 
     @GetMapping("/change-status/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         boolean rs = userService.changeStatus(id);
         String url = (String) session.getAttribute("url");
@@ -155,5 +157,15 @@ public class UserController {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", UserDtoRequest.builder().build());
         }
+    }
+
+    @GetMapping("/send-token-again/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String sendTokenAgain(
+            Model model,
+            @PathVariable Long id
+    ) {
+        boolean rs = userService.sendTokenAgain(id);
+        return "redirect:/users/update/" + id;
     }
 }
