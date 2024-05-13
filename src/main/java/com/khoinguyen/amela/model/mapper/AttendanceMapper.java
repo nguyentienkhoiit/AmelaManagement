@@ -2,6 +2,7 @@ package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.Attendance;
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
@@ -42,6 +43,16 @@ public class AttendanceMapper {
         return AttendanceDtoUpdateResponse.builder()
                 .attendanceId(request.getId())
                 .userId(request.getUser().getId())
+                .checkInTime(request.getCheckInTime())
+                .checkOutTime(request.getCheckOutTime())
+                .note(request.getNote())
+                .build();
+    }
+
+    public static AttendanceDtoUpdateResponse toAttendanceDtoUpdateResponse(AttendanceDtoRequest request) {
+        return AttendanceDtoUpdateResponse.builder()
+                .attendanceId(request.getAttendanceId())
+                .userId(request.getUserId())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
                 .note(request.getNote())

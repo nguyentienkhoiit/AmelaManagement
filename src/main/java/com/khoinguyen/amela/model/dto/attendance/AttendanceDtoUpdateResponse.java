@@ -12,13 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 public class AttendanceDtoUpdateResponse {
     Long attendanceId;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkInTime;
+    LocalDateTime checkInTime = null;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkOutTime;
+    LocalDateTime checkOutTime = null;
     Long userId;
     String note;
 }

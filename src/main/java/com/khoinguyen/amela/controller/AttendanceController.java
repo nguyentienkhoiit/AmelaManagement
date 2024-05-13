@@ -7,6 +7,7 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
+import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UrlUtil;
@@ -128,14 +129,16 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes
     ) {
         //check validate
+        AttendanceDtoUpdateResponse response = AttendanceMapper.toAttendanceDtoUpdateResponse(request);
+        System.out.println(response);
+        model.addAttribute("attendance", response);
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             for (FieldError error : fieldErrors) {
-                redirectAttributes.addFlashAttribute(error.getField(), error.getDefaultMessage());
+                model.addAttribute(error.getField(), error.getDefaultMessage());
             }
-            return "redirect:/attendances/update/" + request.getUserId();
+            return "layout/attendances/attendance_update";
         }
-
         ServiceResponse<String> serviceResponse = attendanceService.updateAttendances(request);
 
         if (!serviceResponse.status()) {
