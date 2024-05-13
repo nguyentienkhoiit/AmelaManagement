@@ -64,8 +64,13 @@
                     <td th:text="${attendance.checkInTime}">10:20:00</td>
                     <td th:text="${attendance.checkOutTime}">20:11:00</td>
                     <td th:text="${attendance.workTime}">20:11:00</td>
-                    <td sec:authorize="hasAuthority('ADMIN')" th:text="${attendance.status ? 'Active': 'Deactive'}">
-                        Active
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${attendance.status ? 'text-success' : 'text-danger'}"
+                           th:title="${attendance.status ? 'Active' : 'Deactive'}"
+                        ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
                         <a data-bs-placement="left" data-bs-toggle="tooltip"

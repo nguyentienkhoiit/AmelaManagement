@@ -38,13 +38,18 @@ public class DateTimeHelper {
     }
 
     public static boolean compareDateGreaterThan(LocalDate date, Long age) {
-        if(date == null) return false;
+        if (date == null) return false;
         LocalDate now = LocalDate.now();
         Period period = Period.between(date, now);
         return period.getYears() <= age;
     }
 
     public static String formatLocalDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return dateTime.format(formatter);
+    }
+
+    public static String formatLocalTime(LocalTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return dateTime.format(formatter);
     }
@@ -153,11 +158,11 @@ public class DateTimeHelper {
         }
     }
 
-    public static boolean isExpiredDay(LocalDateTime l1, LocalDateTime l2, int numberOfDays) {
-        Duration duration = Duration.between(l1, l2);
+    public static boolean isExpiredDay(LocalDate l1, LocalDate l2, int numberOfDays) {
+        Duration duration = Duration.between(l1.atStartOfDay(), l2.atStartOfDay());
 
-        long absSeconds = Math.abs(duration.getSeconds()); // Đối với giá trị âm (nếu dateTime1 trước dateTime2)
-        long numberOfSeconds = Duration.ofDays(numberOfDays).getSeconds();
-        return absSeconds >= numberOfSeconds;
+        long absDays = Math.abs(duration.toDays());
+        long numberOfDay = Duration.ofDays(numberOfDays).toDays();
+        return absDays >= numberOfDay;
     }
 }

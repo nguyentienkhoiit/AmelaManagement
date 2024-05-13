@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -58,8 +59,9 @@ public class AttendanceServiceImpl implements AttendanceService {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
-        if (!request.getCheckInTime().toLocalDate().isEqual(request.getCheckOutTime().toLocalDate())) {
-            response = new ServiceResponse<>(false, "checkOutTime", "Check out day must be equal check in day");
+        //check in no more than 3 days from current time
+        if (DateTimeHelper.isExpiredDay(request.getCheckDay(), LocalDate.now(), 3)) {
+            response = new ServiceResponse<>(false, "error", "Attendance addition overdue");
             return response;
         }
 
@@ -68,31 +70,30 @@ public class AttendanceServiceImpl implements AttendanceService {
             return response;
         }
 
-        LocalDate date = request.getCheckInTime().toLocalDate();
-        Optional<Attendance> attendanceOptional = attendanceRepository
-                .findAttendanceByUserAndCheckDay(request.getUserId(), date);
-        if (attendanceOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "error", "Check time already exists");
-            return response;
-        }
-
-        //check in no more than 3 days from current time
-        if (DateTimeHelper.isExpiredDay(request.getCheckInTime(), LocalDateTime.now(), 3)) {
-            response = new ServiceResponse<>(false, "error", "Over date adding");
+        if (request.getCheckDay().isAfter(LocalDate.now())) {
+            response = new ServiceResponse<>(false, "checkDay", "Check day cannot exceed the current time is " + LocalDate.now());
             return response;
         }
 
         Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "user", "User is not found");
+            response = new ServiceResponse<>(false, "error", "User is not found");
+            return response;
+        }
+
+        Optional<Attendance> attendanceOptional = attendanceRepository
+                .findAttendanceByUserAndCheckDay(request.getUserId(), request.getCheckDay());
+        if (attendanceOptional.isPresent()) {
+            response = new ServiceResponse<>(false, "error", "Check time already exists");
             return response;
         }
 
         Attendance attendance = Attendance.builder()
                 .user(userOptional.get())
-                .checkDay(date)
+                .checkDay(request.getCheckDay())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
+                .createdAt(LocalDateTime.now())
                 .createdBy(userLoggedIn.getId())
                 .status(true)
                 .updateAt(LocalDateTime.now())
@@ -115,53 +116,31 @@ public class AttendanceServiceImpl implements AttendanceService {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
-        //day of check in equal day of checkout
-        if (!request.getCheckInTime().toLocalDate().isEqual(request.getCheckOutTime().toLocalDate())) {
-            response = new ServiceResponse<>(false, "checkOutTime", "Check out day must be equal check in day");
+        var attendanceOptional = attendanceRepository.findById(request.getAttendanceId());
+        if (attendanceOptional.isEmpty()) {
+            response = new ServiceResponse<>(false, "error", "Attendance is not found");
             return response;
         }
 
-        //time of checkin < time of checkout
+        Attendance attendance = attendanceOptional.get();
+        //check in no more than 3 days from current time
+        if (DateTimeHelper.isExpiredDay(attendance.getCheckDay(), LocalDate.now(), 3)) {
+            response = new ServiceResponse<>(false, "error", "Attendance editing overdue");
+            return response;
+        }
+
         if (request.getCheckInTime().isAfter(request.getCheckOutTime())) {
             response = new ServiceResponse<>(false, "checkOutTime", "Check out time must be after check in day");
             return response;
         }
 
-        //check attendances exist
-        LocalDate date = request.getCheckInTime().toLocalDate();
-        Optional<Attendance> attendanceOptional = attendanceRepository
-                .findAttendanceByUserAndCheckDay(request.getUserId(), date);
-        if (attendanceOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "error", "Check time is not exists");
-            return response;
-        }
-
-        //check in no more than 3 days from current time
-        if (DateTimeHelper.isExpiredDay(attendanceOptional.get().getCheckInTime(), LocalDateTime.now(), 3)) {
-            response = new ServiceResponse<>(false, "error", "Over date updating");
-            return response;
-        }
-
-
-        Optional<User> userOptional = userRepository.findById(request.getUserId());
-        if (userOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "error", "User is not found");
-            return response;
-        }
-
-        Attendance attendance = Attendance.builder()
-                .id(request.getAttendanceId())
-                .user(userOptional.get())
-                .checkDay(date)
-                .checkInTime(request.getCheckInTime())
-                .checkOutTime(request.getCheckOutTime())
-                .createdBy(userLoggedIn.getId())
-                .status(true)
-                .updateAt(LocalDateTime.now())
-                .updateBy(userLoggedIn.getId())
-                .note(request.getNote())
-                .build();
+        attendance.setUpdateAt(LocalDateTime.now());
+        attendance.setUpdateBy(userLoggedIn.getId());
+        attendance.setCheckInTime(request.getCheckInTime());
+        attendance.setCheckOutTime(request.getCheckOutTime());
+        attendance.setNote(request.getNote());
         attendanceRepository.save(attendance);
+
         return response;
     }
 
@@ -173,7 +152,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance attendance;
         if (attendanceOptional.isEmpty()) {
             attendance = Attendance.builder()
-                    .checkInTime(LocalDateTime.now())
+                    .checkInTime(LocalTime.now())
                     .checkOutTime(null)
                     .checkDay(LocalDate.now())
                     .user(userLoggedIn)
@@ -184,7 +163,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                     .build();
         } else {
             attendance = attendanceOptional.orElseThrow();
-            attendance.setCheckOutTime(LocalDateTime.now());
+            attendance.setCheckOutTime(LocalTime.now());
         }
         attendanceRepository.save(attendance);
         return true;

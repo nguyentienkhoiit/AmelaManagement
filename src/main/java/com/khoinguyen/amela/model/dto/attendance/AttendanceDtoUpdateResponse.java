@@ -1,10 +1,12 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Builder
 @Getter
@@ -14,12 +16,19 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 public class AttendanceDtoUpdateResponse {
-    Long attendanceId;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkInTime = null;
+    @NotNull(message = "Check day is required")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate checkDay;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkOutTime = null;
+    @NotNull(message = "Check in time is required")
+    @DateTimeFormat(pattern = "HH:mm")
+    LocalTime checkInTime;
+
+    @NotNull(message = "Check out time is required")
+    @DateTimeFormat(pattern = "HH:mm")
+    LocalTime checkOutTime;
+
+    Long attendanceId;
     Long userId;
     String note;
 }

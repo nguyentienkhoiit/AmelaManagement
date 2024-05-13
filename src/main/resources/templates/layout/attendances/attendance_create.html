@@ -32,31 +32,43 @@
                          xmlns="http://www.w3.org/2000/svg">
                         <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                     </svg>
-                    <div>The system allows adding information within the last 3 days</div>
+                    <div>The system allows insert information within the last 3 days</div>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
                 </div>
             </div>
         </div>
 
-        <div class="row" th:if="${param.error}">
+        <div class="row" th:if="${error != null}">
             <div class="col-md-12">
-                <div class="alert alert-danger" role="alert">
-                    Check time already exists
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                    <svg aria-label="Warning:" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+                         fill="currentColor" height="24"
+                         role="img" viewBox="0 0 16 16" width="24"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <div th:text="${error}">The system allows insert information within the last 3 days</div>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="mb-3 col-md-6">
+            <div class="mb-3 col-md-4">
+                <label class="form-label" for="checkDay">Check day</label>
+                <input class="form-control" id="checkDay" name="checkDay" th:field="*{checkDay}" type="date">
+                <div class="text-danger h6 mt-1" th:if="${checkDay}" th:text="${checkDay}"></div>
+            </div>
+            <div class="mb-3 col-md-4">
                 <label class="form-label" for="checkin">Checkin</label>
                 <input class="form-control" id="checkin" name="checkInTime" th:field="*{checkInTime}"
-                       type="datetime-local">
+                       type="time">
                 <div class="text-danger h6 mt-1" th:if="${checkInTime}" th:text="${checkInTime}"></div>
             </div>
-            <div class="mb-3 col-md-6">
+            <div class="mb-3 col-md-4">
                 <label class="form-label" for="checkout">Checkout</label>
                 <input class="form-control" id="checkout" name="checkOutTime" th:field="*{checkOutTime}"
-                       type="datetime-local">
+                       type="time">
                 <div class="text-danger h6 mt-1" th:if="${checkOutTime}" th:text="${checkOutTime}"></div>
             </div>
         </div>
@@ -77,49 +89,7 @@
 </main>
 <th:block id="js-static-resource">
     <script type="application/javascript">
-        // Lấy ngày hiện tại
-        var today = new Date();
 
-        // Cập nhật ngày tối thiểu có thể chọn là 3 ngày trước hôm nay
-        var minDate = new Date();
-        minDate.setDate(today.getDate() - 3);
-
-        // Format ngày thành chuỗi ISO
-        var minDateString = minDate.toISOString().slice(0, 16);
-
-        // Gán giá trị min cho cả checkin và checkout
-        document.getElementById("checkin").min = minDateString;
-        document.getElementById("checkout").min = minDateString;
-
-        // Lắng nghe sự kiện thay đổi của input checkin
-        document.getElementById("checkin").addEventListener("change", function () {
-            // Lấy giá trị của checkin
-            var checkinValue = new Date(this.value);
-
-            // Cập nhật giá trị min của checkout là ngày checkin nếu checkin đã được chọn
-            document.getElementById("checkout").min = document.getElementById("checkin").value;
-            // document.getElementById("checkout").max = this.value;
-
-            // Kiểm tra nếu checkin và checkout cùng ngày
-            if (document.getElementById("checkout").value) {
-                var checkoutValue = new Date(document.getElementById("checkout").value);
-                if (checkoutValue.getDate() !== checkinValue.getDate()) {
-                    document.getElementById("checkout").value = "";
-                }
-            }
-        });
-
-        // Lắng nghe sự kiện thay đổi của input checkout
-        document.getElementById("checkout").addEventListener("change", function () {
-            // Lấy giá trị của checkout
-            var checkoutValue = new Date(this.value);
-
-            // Kiểm tra nếu checkout nhỏ hơn hoặc bằng checkin
-            var checkinValue = new Date(document.getElementById("checkin").value);
-            if (checkoutValue <= checkinValue) {
-                this.value = "";
-            }
-        });
     </script>
 </th:block>
 </body>

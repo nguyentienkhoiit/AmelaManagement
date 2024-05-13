@@ -73,7 +73,9 @@ public class AttendanceController {
     @GetMapping("/create/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateAttendances(Model model, @PathVariable Long userId) {
-        model.addAttribute("attendance", AttendanceDtoRequest.builder().userId(userId).build());
+        if (!model.containsAttribute("attendance")) {
+            model.addAttribute("attendance", AttendanceDtoRequest.builder().userId(userId).build());
+        }
         return "layout/attendances/attendance_create";
     }
 
@@ -86,6 +88,7 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes
     ) {
         //check validate
+        redirectAttributes.addFlashAttribute("attendance", request);
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             for (FieldError error : fieldErrors) {
@@ -97,10 +100,6 @@ public class AttendanceController {
         ServiceResponse<String> serviceResponse = attendanceService.createAttendances(request);
 
         if (!serviceResponse.status()) {
-            if (serviceResponse.column().equalsIgnoreCase("error")) {
-                redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
-                return "redirect:/attendances/create/" + request.getUserId() + "?error";
-            }
             redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
             return "redirect:/attendances/create/" + request.getUserId();
         }
@@ -130,7 +129,6 @@ public class AttendanceController {
     ) {
         //check validate
         AttendanceDtoUpdateResponse response = AttendanceMapper.toAttendanceDtoUpdateResponse(request);
-        System.out.println(response);
         model.addAttribute("attendance", response);
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
@@ -142,12 +140,8 @@ public class AttendanceController {
         ServiceResponse<String> serviceResponse = attendanceService.updateAttendances(request);
 
         if (!serviceResponse.status()) {
-            if (serviceResponse.column().equalsIgnoreCase("error")) {
-                redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
-                return "redirect:/attendances/update/" + request.getUserId() + "?error";
-            }
             redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
-            return "redirect:/attendances/update/" + request.getUserId();
+            return "redirect:/attendances/update/" + request.getAttendanceId();
         }
 
         String url = (String) session.getAttribute("url");

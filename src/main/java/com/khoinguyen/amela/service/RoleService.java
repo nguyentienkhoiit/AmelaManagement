@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface RoleService {
     List<RoleDtoResponse> findAll();
+
     RoleDtoResponse findById(Long id);
 }

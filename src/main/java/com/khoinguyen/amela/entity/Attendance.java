@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -20,14 +21,15 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    //    @Temporal(TemporalType.TIME)
-    LocalDateTime checkInTime;
+    @Temporal(TemporalType.TIME)
+    LocalTime checkInTime;
     LocalDate checkDay;
 
-    //    @Temporal(TemporalType.TIME)
-    LocalDateTime checkOutTime;
+    @Temporal(TemporalType.TIME)
+    LocalTime checkOutTime;
     String note;
     boolean status;
+    LocalDateTime createdAt;
     Long createdBy;
     LocalDateTime updateAt;
     Long updateBy;

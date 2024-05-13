@@ -12,7 +12,7 @@ import java.time.Duration;
 public class AttendanceMapper {
     public static AttendanceDtoResponse toAttendanceDtoResponse(Attendance request) {
         String checkoutTime = request.getCheckOutTime() != null ?
-                DateTimeHelper.formatLocalDateTime(request.getCheckOutTime()) : "00:00:00";
+                DateTimeHelper.formatLocalTime(request.getCheckOutTime()) : "00:00:00";
         String workTime = "00:00";
         if (request.getCheckOutTime() != null) {
             Duration duration = Duration.between(request.getCheckInTime(), request.getCheckOutTime());
@@ -28,7 +28,7 @@ public class AttendanceMapper {
                 .user(UserMapper.toUserDtoResponse(request.getUser()))
                 .checkOutTime(checkoutTime)
                 .createdBy(request.getCreatedBy())
-                .checkInTime(DateTimeHelper.formatLocalDateTime(request.getCheckInTime()))
+                .checkInTime(DateTimeHelper.formatLocalTime(request.getCheckInTime()))
                 .updateBy(request.getUpdateBy())
                 .updateAt(request.getUpdateAt())
                 .day(DateTimeHelper.toDayOfWeek(request.getCheckDay()))
@@ -43,6 +43,7 @@ public class AttendanceMapper {
         return AttendanceDtoUpdateResponse.builder()
                 .attendanceId(request.getId())
                 .userId(request.getUser().getId())
+                .checkDay(request.getCheckDay())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
                 .note(request.getNote())
@@ -51,6 +52,7 @@ public class AttendanceMapper {
 
     public static AttendanceDtoUpdateResponse toAttendanceDtoUpdateResponse(AttendanceDtoRequest request) {
         return AttendanceDtoUpdateResponse.builder()
+                .checkDay(request.getCheckDay())
                 .attendanceId(request.getAttendanceId())
                 .userId(request.getUserId())
                 .checkInTime(request.getCheckInTime())

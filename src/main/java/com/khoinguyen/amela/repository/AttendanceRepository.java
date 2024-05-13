@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
-    @Query("select a from Attendance a where a.user.id = :userId and a.checkDay = :checkDay")
+    @Query("select a from Attendance a where a.user.id = ?1 and a.checkDay = ?2")
     Optional<Attendance> findAttendanceByUserAndCheckDay(Long userId, LocalDate checkDay);
 }

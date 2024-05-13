@@ -1,12 +1,12 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Builder
 @Getter
@@ -17,21 +17,17 @@ import java.time.LocalDateTime;
 public class AttendanceDtoRequest {
     Long attendanceId;
 
+    @NotNull(message = "Check day is required")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate checkDay;
+
     @NotNull(message = "Check in time is required")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkInTime;
+    @DateTimeFormat(pattern = "HH:mm")
+    LocalTime checkInTime;
 
     @NotNull(message = "Check out time is required")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    LocalDateTime checkOutTime;
+    @DateTimeFormat(pattern = "HH:mm")
+    LocalTime checkOutTime;
     Long userId;
     String note;
-
-    public LocalDateTime getCheckInTime() {
-        return checkInTime == null ? LocalDateTime.now() : checkInTime;
-    }
-
-    public LocalDateTime getCheckOutTime() {
-        return checkOutTime == null ? LocalDateTime.now() : checkOutTime;
-    }
 }

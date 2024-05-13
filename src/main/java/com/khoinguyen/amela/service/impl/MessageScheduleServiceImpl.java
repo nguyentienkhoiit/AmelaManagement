@@ -25,7 +25,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -48,7 +47,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserMessageScheduleRepository userMessageScheduleRepository;
     EmailHandler emailHandler;
 
-//    @Scheduled(fixedDelay = 1000 * 120)
+    //    @Scheduled(fixedDelay = 1000 * 120)
     public void checkPublishTime() {
         List<MessageSchedule> messageSchedules = messageScheduleRepository.findByPublishAtBeforeNow();
         log.info("size: {}", messageSchedules.size());

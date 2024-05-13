@@ -59,7 +59,8 @@
                     <a class="page-link" th:href="@{/(pageIndex=${pageNumber}, text=${text})}"
                        th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item" th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
+                <li class="page-item"
+                    th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
                     <a class="page-link"
                        th:href="@{/(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
