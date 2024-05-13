@@ -30,7 +30,8 @@ public class PagingDtoRequest {
 
     private long parseLongOrDefault(String value, long defaultValue) {
         try {
-            return Long.parseLong(value);
+            long index = Long.parseLong(value);
+            return index > 0 ? index : defaultValue;
         } catch (NumberFormatException e) {
             return defaultValue;
         }

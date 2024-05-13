@@ -109,9 +109,11 @@ public class AuthController {
             @RequestParam("token") String token,
             Model model
     ) {
+        ServiceResponse<String> serviceResponse = verificationService.validateToken(token);
         PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
                 .token(token)
                 .build();
+        model.addAttribute(serviceResponse.column(), serviceResponse.data());
         model.addAttribute("passwordDto", passwordDtoRequest);
         return "/layout/users/user_new_password";
     }

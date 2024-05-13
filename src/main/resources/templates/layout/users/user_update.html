@@ -123,8 +123,8 @@
             <div class="mb-3 col-md-12">
                 <button class="btn btn-primary" type="submit">Update</button>
                 <input name="id" th:field="*{id}" type="hidden">
-                <a class="btn btn-success ms-1" th:href="@{/users/reset-password/{id}(id=${user.id})}">Reset
-                    password</a>
+                <a class="btn btn-success ms-1" th:href="@{'/users/reset-password/' + ${user.id}}"
+                   th:if="${user.role.name == 'USER'}">Reset password</a>
                 <a class="btn btn-secondary ms-1" th:href="@{/users/send-token-again/{id}(id=${user.id})}"
                    th:if="${user.activated == false}">Reactivate</a>
             </div>

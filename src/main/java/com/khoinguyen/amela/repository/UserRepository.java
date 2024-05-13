@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailAndEnabledTrue(String email);
 
     Optional<User> findTopByOrderByIdDesc();
+
+    @Query("select u from User u where u.username = ?1 or u.email = ?1 and u.activated = true and u.enabled = true")
+    Optional<User> findByUsernameOrEmail(String username);
 }

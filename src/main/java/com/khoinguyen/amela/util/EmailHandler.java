@@ -65,11 +65,11 @@ public class EmailHandler {
         String url = Constant.HOST + "messages/detail/" + messageSchedule.getId();
         String mailContent = TemplateEmailGenerate.getHtmlNotificationMessages(url);
         String[] emails = users.stream().map(User::getEmail).toArray(String[]::new);
-        listEmailMessage(subject, senderName, mailContent, javaMailSender, emails);
+        emailListMessage(subject, senderName, mailContent, javaMailSender, emails);
     }
 
     @Async
-    public void listEmailMessage(String subject, String senderName, String mailContent,
+    public void emailListMessage(String subject, String senderName, String mailContent,
                                  JavaMailSender mailSender, String[] emails) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
         var messageHelper = new MimeMessageHelper(message);

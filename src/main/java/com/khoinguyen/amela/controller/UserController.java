@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
@@ -9,6 +10,7 @@ import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
 import com.khoinguyen.amela.service.UserService;
+import com.khoinguyen.amela.util.UserHelper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -21,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @Slf4j
 @Controller
 @RequestMapping("/users")
@@ -32,6 +36,7 @@ public class UserController {
     RoleService roleService;
     DepartmentService departmentService;
     JobPositionService jobPositionService;
+    UserHelper userHelper;
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -41,6 +46,7 @@ public class UserController {
     ) {
         session.setAttribute("active", "user");
 
+        User userLoggedIn = userHelper.getUserLogin();
         var pagingDtoResponse = userService.getAllUsers(pagingDtoRequest);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
         if (pagingDtoRequest.getText() != null) {
@@ -49,6 +55,7 @@ public class UserController {
         model.addAttribute("users", pagingDtoResponse.data());
         model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("userLoggedIn", userLoggedIn);
 
         session.setAttribute("url", "/users?pageIndex=" + pagingDtoRequest.getPageIndex() +
                 "&text=" + pagingDtoRequest.getText());
@@ -134,12 +141,17 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String resetPassword(@PathVariable Long id) {
         boolean rs = userService.resetPassword(id);
+        if(!rs) return "redirect:/forbidden";
         return "redirect:/users/update/" + id;
     }
 
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
+        User userLoggedIn = userHelper.getUserLogin();
+        if(Objects.equals(userLoggedIn.getId(), id))
+            return "redirect:/forbidden";
+
         boolean rs = userService.changeStatus(id);
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;

@@ -48,9 +48,10 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserMessageScheduleRepository userMessageScheduleRepository;
     EmailHandler emailHandler;
 
-    @Scheduled(fixedDelay = 1000 * 120)
+//    @Scheduled(fixedDelay = 1000 * 120)
     public void checkPublishTime() {
         List<MessageSchedule> messageSchedules = messageScheduleRepository.findByPublishAtBeforeNow();
+        log.info("size: {}", messageSchedules.size());
 //        List<MessageSchedule> messageSchedules = messageScheduleRepository.findByGroupId(3L);
         if (messageSchedules.isEmpty()) return;
 

@@ -155,7 +155,10 @@ public class UserServiceImpl implements UserService {
     public boolean resetPassword(Long id) {
         var userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            userOptional.get().setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
+            User user = userOptional.get();
+            if (user.getRole().getName().equals(Constant.ADMIN_NAME)) return false;
+            user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
+            userRepository.save(user);
             return true;
         }
         return false;

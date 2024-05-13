@@ -53,7 +53,7 @@ public class InterceptorRequest implements HandlerInterceptor {
             @NonNull Object handler,
             @Nullable ModelAndView modelAndView
     ) {
-        log.info("Response status code: {}", response.getStatus());
+//        log.info("Response status code: {}", response.getStatus());
     }
 
 }

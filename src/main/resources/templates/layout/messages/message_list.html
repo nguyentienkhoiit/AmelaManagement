@@ -128,7 +128,7 @@
 
         <nav aria-label="Page navigation example" class="d-flex justify-content-center">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                <li class="page-item" th:classappend="${(currentPage == 1 || totalPage.size() == 0) ? 'disabled' : ''}">
                     <a class="page-link"
                        th:href="@{/messages(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
@@ -137,7 +137,7 @@
                     <a class="page-link" th:href="@{/messages(pageIndex=${pageNumber}, text=${text})}"
                        th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                <li class="page-item" th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
                     <a class="page-link"
                        th:href="@{/messages(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>

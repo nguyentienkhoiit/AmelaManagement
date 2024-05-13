@@ -87,12 +87,12 @@
                             <i class="fa-solid fa-circle-check"
                                data-bs-placement="left"
                                data-bs-toggle="tooltip"
-                               th:classappend="${user.enabled ? 'text-danger' : 'text-success'}"
+                               th:classappend="${user.enabled ? 'text-danger disabled' : 'text-success'}"
                                th:title="${user.enabled ? 'Change to deactive' : 'Change to active'}"></i>
                         </span>
 
                         <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
-                             tabindex="-1" th:id="'modal'+${user.id}">
+                             tabindex="-1" th:id="'modal'+${user.id == userLoggedIn.id?0:user.id}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -126,7 +126,7 @@
 
         <nav aria-label="Page navigation example" class="d-flex justify-content-center">
             <ul class="pagination">
-                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                <li class="page-item" th:classappend="${(currentPage == 1 || totalPage.size() == 0) ? 'disabled' : ''}">
                     <a class="page-link"
                        th:href="@{/users(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
                 </li>
@@ -135,7 +135,8 @@
                     <a class="page-link" th:href="@{/users(pageIndex=${pageNumber}, text=${text})}"
                        th:text="${pageNumber}"></a>
                 </li>
-                <li class="page-item" th:classappend="${totalPage.size() == currentPage? 'disabled' : ''}">
+                <li class="page-item"
+                    th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
                     <a class="page-link"
                        th:href="@{/users(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
                 </li>
