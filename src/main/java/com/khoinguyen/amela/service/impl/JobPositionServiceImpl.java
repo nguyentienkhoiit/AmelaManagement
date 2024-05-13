@@ -39,6 +39,11 @@ public class JobPositionServiceImpl implements JobPositionService {
     }
 
     @Override
+    public JobPositionDtoResponse findById(long id) {
+        return jobPositionRepository.findById(id).map(JobPositionMapper::toJobPositionDtoResponse).orElse(null);
+    }
+
+    @Override
     public PagingDtoResponse<JobPositionDtoResponse> getAllPositions(PagingDtoRequest request) {
         return jobPositionCriteria.getAllPositions(request);
     }

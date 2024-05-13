@@ -38,6 +38,7 @@ public class DateTimeHelper {
     }
 
     public static boolean compareDateGreaterThan(LocalDate date, Long age) {
+        if(date == null) return false;
         LocalDate now = LocalDate.now();
         Period period = Period.between(date, now);
         return period.getYears() <= age;

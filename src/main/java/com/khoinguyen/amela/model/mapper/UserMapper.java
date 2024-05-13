@@ -1,8 +1,12 @@
 package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
+import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +20,7 @@ public class UserMapper {
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .phone(user.getPhone())
-                .status(user.isEnabled())
+                .status(user.isActivated())
                 .position(JobPositionMapper.toJobPositionDtoResponse(user.getJobPosition()))
                 .department(DepartmentMapper.toDepartmentDtoResponse(user.getDepartment()))
                 .role(RoleMapper.toRole(user.getRole()))
@@ -41,6 +45,29 @@ public class UserMapper {
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
                 .avatar("/image/avatar.jpg")
+                .username(request.getUsername())
+                .build();
+    }
+
+    public static UserDtoResponse toUserDtoResponse(
+            UserDtoUpdate request,
+            DepartmentDtoResponse department,
+            RoleDtoResponse role,
+            JobPositionDtoResponse jobPosition
+    ) {
+        return UserDtoResponse.builder()
+                .id(request.getId())
+                .code(request.getCode())
+                .email(request.getEmail())
+                .gender(request.getGender())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .phone(request.getPhone())
+                .position(jobPosition)
+                .department(department)
+                .role(role)
+                .dateOfBirth(request.getDateOfBirth().toString())
+                .address(request.getAddress())
                 .username(request.getUsername())
                 .build();
     }

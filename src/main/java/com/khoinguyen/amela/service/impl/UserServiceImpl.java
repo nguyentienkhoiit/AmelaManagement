@@ -192,7 +192,7 @@ public class UserServiceImpl implements UserService {
         }
 
         //check date of birth is greater than 18 ???
-        if (DateTimeHelper.compareDateGreaterThan(request.getDateOfBirth(), 18L)) {
+        if (DateTimeHelper.compareDateGreaterThan(DateTimeHelper.parseStringToDate(request.getDateOfBirth()), 18L)) {
             response = new ServiceResponse<>(false, "dateOfBirth", "Date of birth must be greater than 18");
             return response;
         }
@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
         user.setLastname(request.getLastname());
         user.setGender(request.getGender());
         user.setAddress(request.getAddress());
-        user.setDateOfBirth(request.getDateOfBirth());
+        user.setDateOfBirth(DateTimeHelper.parseStringToDate(request.getDateOfBirth()));
         user.setPhone(request.getPhone());
         user.setUsername(request.getUsername());
         user.setUpdateAt(LocalDateTime.now());
@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
         user.setDepartment(departmentOptional.get());
         user.setRole(roleOptional.get());
         user.setJobPosition(positionOptional.get());
-        user.setEnabled(false);
+        user.setEnabled(true);
         userRepository.save(user);
 
         return response;

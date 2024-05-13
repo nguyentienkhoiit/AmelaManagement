@@ -1,11 +1,15 @@
 package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
+import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
+import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
@@ -21,8 +25,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -65,6 +71,7 @@ public class UserController {
     @GetMapping("create")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateUsers(Model model) {
+        model.addAttribute("user", UserDtoRequest.builder().build());
         SetSessionSelectionOption(model);
         return "layout/users/user_create";
     }
@@ -97,6 +104,19 @@ public class UserController {
         return "redirect:" + url;
     }
 
+    @GetMapping("update/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String viewUpdateUsers(Model model, @PathVariable Long id) {
+        UserDtoResponse userDtoResponse = userService.getUserById(id);
+        if (userDtoResponse == null) return "redirect:/error-page";
+
+        SetSessionSelectionOption(model);
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", userDtoResponse);
+        }
+        return "layout/users/user_update";
+    }
+
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String updateUser(
@@ -104,8 +124,28 @@ public class UserController {
             @Valid @ModelAttribute("user") UserDtoUpdate request,
             BindingResult result
     ) {
+        JobPositionDtoResponse jobPositionDtoResponse = jobPositionService
+                .findById(request.getJobPositionId());
+        DepartmentDtoResponse departmentDtoResponse = departmentService
+                .findById(request.getDepartmentId());
+        RoleDtoResponse roleDtoResponse = roleService
+                .findById(request.getRoleId());
+
+        model.addAttribute("user",
+                UserMapper.toUserDtoResponse(
+                        request,
+                        departmentDtoResponse,
+                        roleDtoResponse,
+                        jobPositionDtoResponse
+                )
+        );
+
         //check validate
         if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            for (FieldError error : fieldErrors) {
+                model.addAttribute(error.getField(), error.getDefaultMessage());
+            }
             return "layout/users/user_update";
         }
 
@@ -113,7 +153,7 @@ public class UserController {
         ServiceResponse<String> serviceResponse = userService.updateUser(request);
 
         if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            model.addAttribute(serviceResponse.column(), serviceResponse.data());
             return "layout/users/user_update";
         }
 
@@ -126,22 +166,11 @@ public class UserController {
         return "redirect:" + url;
     }
 
-    @GetMapping("update/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewUpdateUsers(Model model, @PathVariable Long id) {
-        UserDtoResponse userDtoResponse = userService.getUserById(id);
-        if (userDtoResponse == null) return "redirect:/error-page";
-
-        SetSessionSelectionOption(model);
-        model.addAttribute("user", userDtoResponse);
-        return "layout/users/user_update";
-    }
-
     @GetMapping("reset-password/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String resetPassword(@PathVariable Long id) {
         boolean rs = userService.resetPassword(id);
-        if(!rs) return "redirect:/forbidden";
+        if (!rs) return "redirect:/forbidden";
         return "redirect:/users/update/" + id;
     }
 
@@ -149,7 +178,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         User userLoggedIn = userHelper.getUserLogin();
-        if(Objects.equals(userLoggedIn.getId(), id))
+        if (Objects.equals(userLoggedIn.getId(), id))
             return "redirect:/forbidden";
 
         boolean rs = userService.changeStatus(id);
@@ -165,10 +194,6 @@ public class UserController {
         session.setAttribute("roles", roleDtoResponses);
         session.setAttribute("departments", departmentDtoResponses);
         session.setAttribute("jobPositions", jobPositionDtoResponses);
-
-        if (!model.containsAttribute("user")) {
-            model.addAttribute("user", UserDtoRequest.builder().build());
-        }
     }
 
     @GetMapping("/send-token-again/{id}")

@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.model.dto.user;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -38,8 +39,8 @@ public class UserDtoUpdate {
     String address;
 
     @NotNull(message = "Date of birth is required")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate dateOfBirth;
+    @NotBlank(message = "Date of birth is required")
+    String dateOfBirth;
 
     int gender;
 

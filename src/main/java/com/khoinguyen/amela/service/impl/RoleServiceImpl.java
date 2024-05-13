@@ -23,4 +23,9 @@ public class RoleServiceImpl implements RoleService {
                 .map(RoleMapper::toRole)
                 .toList();
     }
+
+    @Override
+    public RoleDtoResponse findById(Long id) {
+        return roleRepository.findById(id).map(RoleMapper::toRole).orElse(null);
+    }
 }

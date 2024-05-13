@@ -11,6 +11,8 @@ import java.util.List;
 public interface JobPositionService {
     List<JobPositionDtoResponse> findAll();
 
+    JobPositionDtoResponse findById(long id);
+
     PagingDtoResponse<JobPositionDtoResponse> getAllPositions(PagingDtoRequest request);
 
     ServiceResponse<String> createPositions(JobPositionDtoRequest request);

@@ -39,6 +39,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public DepartmentDtoResponse findById(Long id) {
+        return departmentRepository.findById(id).map(DepartmentMapper::toDepartmentDtoResponse).orElse(null);
+    }
+
+    @Override
     public PagingDtoResponse<DepartmentDtoResponse> getAllGroups(PagingDtoRequest request) {
         return departmentCriteria.getAllDepartments(request);
     }

@@ -11,6 +11,8 @@ import java.util.List;
 public interface DepartmentService {
     List<DepartmentDtoResponse> findAll();
 
+    DepartmentDtoResponse findById(Long id);
+
     PagingDtoResponse<DepartmentDtoResponse> getAllGroups(PagingDtoRequest request);
 
     boolean changeStatus(Long id);

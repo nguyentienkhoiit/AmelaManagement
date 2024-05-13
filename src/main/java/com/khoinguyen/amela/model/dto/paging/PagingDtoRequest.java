@@ -17,8 +17,8 @@ public class PagingDtoRequest {
     String pageIndex = PAGE_INDEX.toString();
     String pageSize = PAGE_SIZE.toString();
     String text;
-    String sortName = "id";
-    String sort = "asc";
+    String by = "id";
+    String type = "asc";
 
     public long getPageIndex() {
         return parseLongOrDefault(pageIndex, PAGE_INDEX);
@@ -37,18 +37,20 @@ public class PagingDtoRequest {
         }
     }
 
-    public String getSortName() {
-        return switch (sortName) {
-            case "fn" -> "firstName";
-            case "ln" -> "lastName";
+    public String getBy() {
+        return switch (by) {
+            case "code" -> "code";
+            case "fn" -> "firstname";
+            case "ln" -> "lastname";
             case "e" -> "email";
+            case "gen" -> "gender";
             default -> "id";
         };
     }
 
-    public String getSort() {
-        if ("asc".equalsIgnoreCase(sort)) return "asc";
-        else if ("desc".equalsIgnoreCase(sort)) return "desc";
+    public String getType() {
+        if ("asc".equalsIgnoreCase(type)) return "asc";
+        else if ("desc".equalsIgnoreCase(type)) return "desc";
         else return "asc";
     }
 
