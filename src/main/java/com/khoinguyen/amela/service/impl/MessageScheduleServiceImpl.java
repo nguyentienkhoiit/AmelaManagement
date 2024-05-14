@@ -89,6 +89,11 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             request.setSenderName("Administrator");
         }
 
+        if (request.getPublishAt().isBefore(LocalDateTime.now())) {
+            response = new ServiceResponse<>(false, "error", "Can not create messages because publish at before now");
+            return response;
+        }
+
         MessageSchedule messageSchedule = MessageSchedule.builder()
                 .createdAt(LocalDateTime.now())
                 .publishAt(request.getPublishAt())
@@ -242,6 +247,11 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             return response;
         }
 
+        if (messageSchedule.getPublishAt().isBefore(LocalDateTime.now())) {
+            response = new ServiceResponse<>(false, "error", "Can not update messages because publish at before now");
+            return response;
+        }
+
         Set<String> messageInvalid = StringUtil.extractAttributeNameInvalid(request.getMessage());
         if (!messageInvalid.isEmpty()) {
             response = new ServiceResponse<>(false, "message", messageInvalid + " is invalid attribute");
@@ -304,7 +314,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             if (!MessageScheduleMapper.getListMailString(messageSchedule).equalsIgnoreCase(listEmail.toString())) {
                 userMessageScheduleRepository.deleteAll(userMessageScheduleRepository.findByMessageScheduleId(messageSchedule.getId()));
             }
-
 
             Set<UserMessageSchedule> userMessageScheduleList = new HashSet<>();
             for (var user : listUsers) {

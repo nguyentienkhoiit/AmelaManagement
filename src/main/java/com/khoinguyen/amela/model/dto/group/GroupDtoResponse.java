@@ -16,5 +16,6 @@ public class GroupDtoResponse {
     String description;
     String listMail;
     String createdAt;
+    String updateAt;
     boolean status;
 }

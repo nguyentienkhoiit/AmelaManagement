@@ -97,7 +97,9 @@ public class MessageController {
         ServiceResponse<String> serviceResponse = messageScheduleService.createMessages(request);
 
         if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            if (serviceResponse.column().equals("error")) {
+                model.addAttribute(serviceResponse.column(), serviceResponse.data());
+            } else result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
             return "layout/messages/message_create";
         }
 
@@ -133,7 +135,9 @@ public class MessageController {
         ServiceResponse<String> serviceResponse = messageScheduleService.updateMessages(request);
 
         if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            if (serviceResponse.column().equals("error")) {
+                model.addAttribute(serviceResponse.column(), serviceResponse.data());
+            } else result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
             return "layout/messages/message_update";
         }
 

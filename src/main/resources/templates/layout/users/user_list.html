@@ -47,7 +47,7 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">Code <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
@@ -88,7 +88,13 @@
                            th:title="${user.activated ? 'Activated' : 'Unactivated'}"
                         ></i>
                     </td>
-                    <td sec:authorize="hasAuthority('ADMIN')" th:text="${user.enabled ? 'Active': 'Deactive'}">Active
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${user.enabled ? 'text-success' : 'text-danger'}"
+                           th:title="${user.activated ? 'Active' : 'Deactive'}"
+                        ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
                         <a data-bs-placement="left" data-bs-toggle="tooltip"

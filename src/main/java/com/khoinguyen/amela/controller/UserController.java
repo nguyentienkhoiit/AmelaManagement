@@ -27,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Objects;
@@ -122,7 +123,8 @@ public class UserController {
     public String updateUser(
             Model model,
             @Valid @ModelAttribute("user") UserDtoUpdate request,
-            BindingResult result
+            BindingResult result,
+            RedirectAttributes redirectAttributes
     ) {
         JobPositionDtoResponse jobPositionDtoResponse = jobPositionService
                 .findById(request.getJobPositionId());
@@ -131,7 +133,7 @@ public class UserController {
         RoleDtoResponse roleDtoResponse = roleService
                 .findById(request.getRoleId());
 
-        model.addAttribute("user",
+        redirectAttributes.addFlashAttribute("user",
                 UserMapper.toUserDtoResponse(
                         request,
                         departmentDtoResponse,
@@ -144,17 +146,17 @@ public class UserController {
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             for (FieldError error : fieldErrors) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
+                redirectAttributes.addFlashAttribute(error.getField(), error.getDefaultMessage());
             }
-            return "layout/users/user_update";
+            return "redirect:/users/update/" + request.getId();
         }
 
         //save to database
         ServiceResponse<String> serviceResponse = userService.updateUser(request);
 
         if (!serviceResponse.status()) {
-            model.addAttribute(serviceResponse.column(), serviceResponse.data());
-            return "layout/users/user_update";
+            redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
+            return "redirect:/users/update/" + request.getId();
         }
 
         //remove session

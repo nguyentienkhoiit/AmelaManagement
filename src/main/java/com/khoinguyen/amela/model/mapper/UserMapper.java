@@ -4,9 +4,7 @@ import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
-import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
+import com.khoinguyen.amela.model.dto.user.*;
 
 import java.time.LocalDateTime;
 
@@ -66,9 +64,40 @@ public class UserMapper {
                 .position(jobPosition)
                 .department(department)
                 .role(role)
-                .dateOfBirth(request.getDateOfBirth().toString())
+                .dateOfBirth(request.getDateOfBirth())
                 .address(request.getAddress())
                 .username(request.getUsername())
                 .build();
+    }
+
+    public static ProfileDtoResponse toProfileDtoResponse(User request) {
+        return ProfileDtoResponse.builder()
+                .email(request.getEmail())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .role(request.getRole().getName())
+                .department(request.getDepartment().getName())
+                .position(request.getJobPosition().getName())
+                .code(request.getCode())
+                .username(request.getUsername())
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .dateOfBirth(request.getDateOfBirth().toString())
+                .build();
+    }
+
+
+    public static ProfileDtoResponse toProfileUserDtoResponse(ProfileDtoRequest request, User userLoggedIn) {
+        String dateOfBirth = request.getDateOfBirth() == null ? null : request.getDateOfBirth().toString();
+        var profileDtoResponse = toProfileDtoResponse(userLoggedIn);
+        profileDtoResponse.setUsername(request.getUsername());
+        profileDtoResponse.setFirstname(request.getFirstname());
+        profileDtoResponse.setLastname(request.getLastname());
+        profileDtoResponse.setGender(request.getGender());
+        profileDtoResponse.setAddress(request.getAddress());
+        profileDtoResponse.setPhone(request.getPhone());
+        profileDtoResponse.setDateOfBirth(dateOfBirth);
+        return profileDtoResponse;
     }
 }

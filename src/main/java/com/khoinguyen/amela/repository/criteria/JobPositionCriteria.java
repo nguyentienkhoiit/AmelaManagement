@@ -33,6 +33,9 @@ public class JobPositionCriteria {
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select p", "select count(p.id)"));
+
+        sql.append(" order by p.updateAt desc");
+
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 

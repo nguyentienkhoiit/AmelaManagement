@@ -29,11 +29,13 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">Group name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Created At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Update At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
@@ -44,7 +46,15 @@
                 <tr th:each="group: ${groups}">
                     <td th:text="${group.name}">Human resources</td>
                     <td th:text="${group.createdAt}">20:11:00 12/12/2024</td>
-                    <td th:text="${group.status ? 'Active': 'Deactive'}">Active</td>
+                    <td th:text="${group.updateAt}">20:11:00 12/12/2024</td>
+                    <td>
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${group.status ? 'text-success' : 'text-danger'}"
+                           th:title="${group.status ? 'Active' : 'Deactive'}"
+                        ></i>
+                    </td>
                     <td>
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/groups/update/{id}(id=${group.id})}"

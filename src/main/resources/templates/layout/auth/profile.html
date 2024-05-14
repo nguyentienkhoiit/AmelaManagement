@@ -17,7 +17,6 @@
 <body>
 <main class="min-vh-100 bg-light">
     <form class="container px-4 mt-4" method="post" th:action="@{/profile}" th:object="${user}">
-        <hr class="mt-0 mb-4">
         <div class="row">
             <div class="col-xl-4 profile__picture">
                 <div class="card mb-4 mb-xl-0">
@@ -26,8 +25,8 @@
                         <img alt="" class="img-account-profile rounded-circle mb-2"
                              id="img-preview"
                              style="height: 180px; width: 180px;" th:src="@{/image/avatar.jpg}">
-                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                        <input accept="image/*" class="form-control" id="file-input" type="file">
+                        <!--                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>-->
+                        <!--                        <input accept="image/*" class="form-control" id="file-input" type="file">-->
                     </div>
                 </div>
             </div>
@@ -38,34 +37,53 @@
                         <form>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputUsername">Username</label>
-                                    <input class="form-control" disabled id="inputUsername"
-                                           placeholder="Enter your username" th:field="*{username}" type="text">
+                                    <label class="form-label" for="inputEmailAddress">Email</label>
+                                    <input class="form-control" id="inputEmailAddress" placeholder="Enter your email address"
+                                           readonly th:field="*{email}" type="email">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputEmailAddress">Email</label>
-                                    <input class="form-control" disabled id="inputEmailAddress"
-                                           placeholder="Enter your email address" th:field="*{email}" type="email">
+                                    <label class="form-label" for="role">Role</label>
+                                    <input class="form-control" id="role" name="role" placeholder="Enter your code"
+                                           readonly th:field="*{role}" type="text">
                                 </div>
                             </div>
                             <div class="row gx-3">
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="department">Department</label>
-                                    <select class="form-select" disabled id="department" name="department">
-                                        <option th:each="department: ${session.departments}"
-                                                th:text="${department.name}"
-                                                th:value="${department.id}">Department 1
-                                        </option>
-                                    </select>
+                                    <input class="form-control" id="department" name="department" placeholder="Enter your email address"
+                                           readonly th:field="*{department}" type="text">
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="jobPosition">Job Position</label>
-                                    <select class="form-select" disabled id="jobPosition" name="jobPosition">
-                                        <option th:each="position: ${session.jobPositions}" th:text="${position.name}"
-                                                th:value="${position.id}">
-                                            BA
-                                        </option>
-                                    </select>
+                                    <input class="form-control" id="jobPosition" name="position" placeholder="Enter your email address"
+                                           readonly th:field="*{position}" type="text">
+                                </div>
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="code">Code</label>
+                                    <input class="form-control" id="code" name="code" placeholder="Enter your code"
+                                           readonly th:field="*{code}" type="text">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputUsername">Username</label>
+                                    <input class="form-control" id="inputUsername" name="username"
+                                           placeholder="Enter your username" th:field="*{username}" type="text">
+                                    <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>
+                                </div>
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputFirstName">First name</label>
+                                    <input class="form-control" id="inputFirstName" name="firstname"
+                                           placeholder="Enter your first name" th:field="*{firstname}" type="text">
+                                    <div class="text-danger h6 mt-1" th:if="${firstname}" th:text="${firstname}"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputLastName">Last name</label>
+                                    <input class="form-control" id="inputLastName" name="lastname"
+                                           placeholder="Enter your last name" th:field="*{lastname}" type="text">
+                                    <div class="text-danger h6 mt-1" th:if="${lastname}" th:text="${lastname}"></div>
                                 </div>
                             </div>
                             <div class="row gx-3">
@@ -80,56 +98,28 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="role">Role</label>
-                                    <select class="form-select" disabled id="role" name="role">
-                                        <option th:each="role: ${session.roles}" th:text="${role.name}"
-                                                th:value="${role.id}">User
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row gx-3 mb-3">
-                                <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputFirstName">First name</label>
-                                    <input class="form-control" id="inputFirstName" placeholder="Enter your first name"
-                                           th:field="*{firstname}" type="text">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputLastName">Last name</label>
-                                    <input class="form-control" id="inputLastName" placeholder="Enter your last name"
-                                           th:field="*{lastname}" type="text">
+                                    <label class="form-label" for="inputLocation">Address</label>
+                                    <input class="form-control" id="inputLocation" name="address"
+                                           placeholder="Enter your location" th:field="*{address}" type="text">
                                 </div>
                             </div>
                             <div class="row gx-3">
                                 <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="code">Code</label>
-                                    <input class="form-control" disabled id="code"
-                                           placeholder="Enter your code" type="text">
+                                    <label class="form-label" for="inputPhone">Phone</label>
+                                    <input class="form-control" id="inputPhone" name="phone"
+                                           placeholder="Enter your phone number" th:field="*{phone}" type="tel">
+                                    <div class="text-danger h6 mt-1" th:if="${phone}" th:text="${phone}"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputLocation">Address</label>
-                                    <input class="form-control" id="inputLocation" placeholder="Enter your location"
-                                           th:field="*{address}" type="text">
-                                </div>
-                            </div>
-                            <div class="row gx-3">
-                                <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputPhone">Phone</label>
-                                    <input class="form-control" id="inputPhone" placeholder="Enter your phone number"
-                                           th:field="*{phone}" type="tel">
-                                    <div class="text-danger h6 mt-1" th:errors="*{phone}"
-                                         th:if="${#fields.hasErrors('phone')}"></div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="mb-1" for="inputBirthday">Date of birth</label>
-                                    <input class="form-control" id="inputBirthday" name="birthday"
+                                    <label class="form-label" for="inputBirthday">Date of birth</label>
+                                    <input class="form-control" id="inputBirthday" name="dateOfBirth"
                                            placeholder="Enter your birthday"
                                            th:field="*{dateOfBirth}" type="date">
-                                    <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
-                                         th:if="${#fields.hasErrors('dateOfBirth')}"></div>
+                                    <div class="text-danger h6 mt-1" th:if="${dateOfBirth}"
+                                         th:text="${dateOfBirth}"></div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="submit">Update</button>
+                            <button class="btn btn-secondary" type="submit">Update</button>
                         </form>
                     </div>
                 </div>

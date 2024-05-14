@@ -4,9 +4,7 @@ import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
-import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
+import com.khoinguyen.amela.model.dto.user.*;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.UserCriteria;
@@ -91,7 +89,9 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        String code = CodeGenerator.generateNextUserCode(getUserLatest().getCode());
+        String latestCde = getUserLatest() != null ? getUserLatest().getCode() : "000001";
+
+        String code = CodeGenerator.generateNextUserCode(latestCde);
         User user = UserMapper.toUser(request);
         user.setCreatedBy(userLoggedIn.getId());
         user.setUpdateBy(userLoggedIn.getId());
@@ -112,19 +112,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse getProfile() {
+    public ProfileDtoResponse getProfile() {
         User userLoggedIn = userHelper.getUserLogin();
-        return UserMapper.toUserDtoResponse(userLoggedIn);
+        return UserMapper.toProfileDtoResponse(userLoggedIn);
     }
 
     @Override
-    public ServiceResponse<String> updateProfile(UserDtoRequest request) {
+    public ServiceResponse<String> updateProfile(ProfileDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
-        var userOptional = optionalValidator.findByPhoneExist(request.getPhone(), userLoggedIn.getId());
-        if (userOptional.isPresent()) {
+        var userOptionalPhone = optionalValidator.findByPhoneExist(request.getPhone(), userLoggedIn.getId());
+        if (userOptionalPhone.isPresent()) {
             response = new ServiceResponse<>(false, "phone", "Phone already existed");
+            return response;
+        }
+
+        var userOptionalUsername = optionalValidator.findByUsernameExist(request.getUsername(), userLoggedIn.getId());
+        if (userOptionalUsername.isPresent()) {
+            response = new ServiceResponse<>(false, "username", "Username already existed");
             return response;
         }
 
@@ -140,6 +146,7 @@ public class UserServiceImpl implements UserService {
         userLoggedIn.setGender(request.getGender());
         userLoggedIn.setAddress(request.getAddress());
         userLoggedIn.setDateOfBirth(request.getDateOfBirth());
+        userLoggedIn.setUsername(request.getUsername());
         userRepository.save(userLoggedIn);
 
         return response;

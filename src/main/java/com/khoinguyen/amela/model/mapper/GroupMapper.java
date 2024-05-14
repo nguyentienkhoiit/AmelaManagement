@@ -16,6 +16,7 @@ public class GroupMapper {
                 .description(group.getDescription())
                 .listMail(listMail.substring(1, listMail.length() - 1))
                 .createdAt(DateTimeHelper.formatLocalDateTimeFullText(group.getCreatedAt()))
+                .updateAt(DateTimeHelper.formatLocalDateTimeFullText(group.getUpdateAt()))
                 .status(group.isStatus())
                 .build();
     }

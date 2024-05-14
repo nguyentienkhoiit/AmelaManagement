@@ -33,6 +33,9 @@ public class GroupCriteria {
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select g", "select count(g.id)"));
+
+        sql.append(" order by g.updateAt desc");
+
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 

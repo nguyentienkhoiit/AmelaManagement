@@ -33,6 +33,9 @@ public class DepartmentCriteria {
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select d", "select count(d.id)"));
+
+        sql.append(" order by updateAt desc");
+
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 

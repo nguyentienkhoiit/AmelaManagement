@@ -57,6 +57,7 @@ public class MessageScheduleCriteria {
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select ms", "select count(ms.id)"));
+
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 

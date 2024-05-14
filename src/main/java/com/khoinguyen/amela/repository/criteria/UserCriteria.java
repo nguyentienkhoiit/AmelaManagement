@@ -31,22 +31,31 @@ public class UserCriteria {
         Map<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder("select u from User u");
         if (request.getText() != null) {
-            sql.append(" where  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName or u.code like :code) ");
+            sql.append(" where  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName " +
+                    "or u.code like :code or u.department.name like :department or u.role.name like :role " +
+                    "or u.jobPosition.name like :position) ");
             params.put("email", "%" + request.getText().trim() + "%");
             params.put("firstName", "%" + request.getText().trim() + "%");
             params.put("lastName", "%" + request.getText().trim() + "%");
             params.put("code", "%" + request.getText().trim() + "%");
+            params.put("department", "%" + request.getText().trim() + "%");
+            params.put("role", "%" + request.getText().trim() + "%");
+            params.put("position", "%" + request.getText().trim() + "%");
         }
 
         if (userLoggedIn.getRole().getName().equals(Constant.USER_NAME)) {
-            sql.append(" and u.enabled = :enable and u.activated = :activated");
+            sql.append(" and u.enabled = :enable and u.activated = :activated and u.role.name = :role");
             params.put("enable", true);
             params.put("activated", true);
+            params.put("role", "USER");
         }
 
         //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select u", "select count(u.id)"));
+
+        sql.append(" order by u.code asc");
+
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 

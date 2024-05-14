@@ -3,20 +3,18 @@ package com.khoinguyen.amela.service;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
-import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
-import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
+import com.khoinguyen.amela.model.dto.user.*;
 
 public interface UserService {
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest pagingDtoRequest);
 
     ServiceResponse<String> createUser(UserDtoRequest request);
 
-    UserDtoResponse getProfile();
+    ProfileDtoResponse getProfile();
 
     ServiceResponse<String> updateUser(UserDtoUpdate request);
 
-    ServiceResponse<String> updateProfile(UserDtoRequest request);
+    ServiceResponse<String> updateProfile(ProfileDtoRequest request);
 
     UserDtoResponse getUserById(Long id);
 

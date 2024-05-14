@@ -29,11 +29,13 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">Name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Created At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
+                    </th>
+                    <th scope="col">Update At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Active <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
@@ -42,9 +44,17 @@
                 </thead>
                 <tbody>
                 <tr th:each="department: ${departments}">
-                    <td th:text="${department.name}">Faderless</td>
+                    <td th:text="${department.name}"></td>
                     <td th:text="${department.createdAt}">20:11:00 12/12/2024</td>
-                    <td th:text="${department.status == true? 'Active': 'Deactive'}">Active</td>
+                    <td th:text="${department.updateAt}">20:11:00 12/12/2024</td>
+                    <td>
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${department.status ? 'text-success' : 'text-danger'}"
+                           th:title="${department.status ? 'Active' : 'Deactive'}"
+                        ></i>
+                    </td>
                     <td>
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/departments/update/{id}(id=${department.id})}"
