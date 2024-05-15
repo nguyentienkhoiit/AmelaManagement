@@ -7,6 +7,7 @@ public class Constant {
     public static final Long EMAIL_WAITING_EXPIRATION = 3600L;
     public static final Long PAGE_INDEX = 1L;
     public static final Long PAGE_SIZE = 6L;
+    public static final Long PAGE_SIZE_MESSAGE_USER = 6L;
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PREFIX = "A";
     public static final String HOST = "http://localhost:8080/";

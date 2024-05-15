@@ -7,12 +7,14 @@ import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.UrlUtil;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.Duration;
+import java.util.Date;
 
 @Controller
 @RequiredArgsConstructor

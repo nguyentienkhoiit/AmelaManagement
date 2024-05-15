@@ -36,7 +36,7 @@ public class VerificationServiceImpl implements VerificationService {
         ServiceResponse<String> response = new ServiceResponse<>(true, "valid", null);
 
         Optional<Verification> theToken = verificationRepository.findByToken(token);
-        if (theToken.isEmpty()) {
+        if (theToken.isEmpty() || theToken.get().getUser().isActivated()) {
             response = new ServiceResponse<>(false, "error", "This link is not exist");
             return response;
         }

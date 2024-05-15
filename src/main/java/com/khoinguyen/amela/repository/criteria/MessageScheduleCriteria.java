@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.khoinguyen.amela.util.Constant.PAGE_SIZE_MESSAGE_USER;
+
 @Repository
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -59,7 +61,7 @@ public class MessageScheduleCriteria {
                 .replace("select ms", "select count(ms.id)"));
 
         long pageIndex = request.getPageIndex();
-        long pageSize = request.getPageSize();
+        long pageSize = roleName.equals(Constant.USER_NAME)? PAGE_SIZE_MESSAGE_USER : request.getPageSize();
 
         TypedQuery<MessageSchedule> messageScheduleTypedQuery = em.createQuery(sql.toString(), MessageSchedule.class);
         params.forEach((k, v) -> {

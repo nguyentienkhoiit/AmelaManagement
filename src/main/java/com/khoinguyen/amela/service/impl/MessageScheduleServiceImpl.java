@@ -25,13 +25,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,38 +47,43 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     GroupRepository groupRepository;
     UserMessageScheduleRepository userMessageScheduleRepository;
     EmailHandler emailHandler;
+    ThreadPoolTaskScheduler taskScheduler;
+    private Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
-    //    @Scheduled(fixedDelay = 1000 * 120)
-    public void checkPublishTime() {
-        List<MessageSchedule> messageSchedules = messageScheduleRepository.findByPublishAtBeforeNow();
-        log.info("size: {}", messageSchedules.size());
-//        List<MessageSchedule> messageSchedules = messageScheduleRepository.findByGroupId(3L);
-        if (messageSchedules.isEmpty()) return;
+    private List<User> getUsersFromSchedule(MessageSchedule messageSchedule) {
+        if (messageSchedule.getGroup() != null) {
+            return messageSchedule.getGroup().getUserGroups().stream()
+                    .map(UserGroup::getUser)
+                    .collect(Collectors.toList());
+        } else if (messageSchedule.getUserMessageSchedules() != null) {
+            return messageSchedule.getUserMessageSchedules().stream()
+                    .map(UserMessageSchedule::getUser)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
 
-        Map<MessageSchedule, List<User>> reminderMailMap = new HashMap<>();
-        for (MessageSchedule messageSchedule : messageSchedules) {
-            if (messageSchedule.getGroup() != null) {
-                List<UserGroup> userGroups = messageSchedule.getGroup().getUserGroups();
-                List<User> users = userGroups.stream().map(UserGroup::getUser).toList();
-                reminderMailMap.put(messageSchedule, users);
-            } else if (messageSchedule.getUserMessageSchedules() != null) {
-                List<UserMessageSchedule> userMessageSchedules = messageSchedule.getUserMessageSchedules();
-                List<User> users = userMessageSchedules.stream().map(UserMessageSchedule::getUser).toList();
-                reminderMailMap.put(messageSchedule, users);
-            }
+    private void setSchedulePublishMessage(MessageSchedule messageSchedule) {
+        // Cancel existing task if it exists
+        ScheduledFuture<?> existingTask = scheduledTasks.get(messageSchedule.getId());
+        if (existingTask != null) {
+            existingTask.cancel(false);
         }
 
-        for (Map.Entry<MessageSchedule, List<User>> entry : reminderMailMap.entrySet()) {
-            MessageSchedule messageSchedule = entry.getKey();
-            List<User> users = entry.getValue();
+        // Schedule new task
+        List<User> users = getUsersFromSchedule(messageSchedule);
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(messageSchedule.getPublishAt(), ZoneId.systemDefault());
+        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> {
             try {
                 emailHandler.sendNotificationMessage(messageSchedule, users);
             } catch (MessagingException | UnsupportedEncodingException e) {
-                return;
+                log.error("Failed to send notification message: {}", e.getMessage(), e);
+                throw new RuntimeException("Failed to send notification message", e);
             }
-        }
+        }, zonedDateTime.toInstant());
 
-        log.info("Log time: {}", LocalDateTime.now());
+        // Save the new task in the map
+        scheduledTasks.put(messageSchedule.getId(), scheduledFuture);
     }
 
     @Override
@@ -163,6 +169,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             }
             userMessageScheduleRepository.saveAll(userMessageScheduleList);
         }
+        setSchedulePublishMessage(messageSchedule);
+
         return response;
     }
 
@@ -325,6 +333,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             }
             userMessageScheduleRepository.saveAll(userMessageScheduleList);
         }
+        setSchedulePublishMessage(messageSchedule);
+
         return response;
     }
 
