@@ -32,7 +32,7 @@ public class MessageSchedule {
     LocalDateTime updateAt;
     Long updateBy;
 
-    @OneToMany(mappedBy = "messageSchedule", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "messageSchedule", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<UserMessageSchedule> userMessageSchedules;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

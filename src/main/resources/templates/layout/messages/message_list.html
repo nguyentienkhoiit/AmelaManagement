@@ -120,6 +120,12 @@
                            th:href="@{/messages/detail/{id}(id=${message.id})}" title="Preview">
                             <i class="fa-solid fa-eye text-secondary"></i>
                         </a>
+
+                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/messages/create/{id}(id=${message.id})}"
+                           title="Copy">
+                            <i class="fa-solid fa-copy text-secondary"></i>
+                        </a>
                     </td>
                 </tr>
                 </tbody>

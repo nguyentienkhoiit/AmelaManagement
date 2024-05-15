@@ -21,7 +21,13 @@ public class UserMessageSchedule {
     @JoinColumn(name = "user_id")
     User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
+            })
     @JoinColumn(name = "message_schedule_id")
     MessageSchedule messageSchedule;
 }

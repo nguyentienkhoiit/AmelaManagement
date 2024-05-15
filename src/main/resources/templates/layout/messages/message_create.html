@@ -127,12 +127,6 @@
                 console.error(error);
             });
 
-        var now = new Date();
-        // Định dạng ngày và giờ hiện tại thành chuỗi cho trường datetime-local
-        var formattedNow = now.toISOString().slice(0, 16);
-        // Đặt minDate cho trường datetime-local
-        document.getElementById("sendTime").min = formattedNow;
-
         var radioGroup = document.getElementById("radio-btn-group");
         var radioEmail = document.getElementById("radio-btn-email");
         var emailValue = document.getElementById("emailValue");

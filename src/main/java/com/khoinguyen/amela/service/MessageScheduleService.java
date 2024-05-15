@@ -23,4 +23,6 @@ public interface MessageScheduleService {
     boolean changeStatus(Long id);
 
     List<MessageScheduleDtoResponse> getTopMessagesScheduleForUser(Long topElement, Long id);
+
+    MessageScheduleDtoRequest getMessageRequestById(Long messageId);
 }

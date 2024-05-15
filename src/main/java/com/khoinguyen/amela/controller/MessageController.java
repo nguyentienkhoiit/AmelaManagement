@@ -72,13 +72,20 @@ public class MessageController {
         return "layout/messages/message_detail";
     }
 
-    @GetMapping("/create")
+    @GetMapping(value = {"/create", "/create/{messageId}"})
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewCreateMessages(Model model) {
+    public String viewCreateMessages(
+            Model model,
+            @PathVariable(required = false) Long messageId
+    ) {
         var groups = groupService.getAll();
         session.setAttribute("groups", groups);
 
-        model.addAttribute("message", new MessageScheduleDtoRequest());
+        var request = MessageScheduleDtoRequest.builder().build();
+        if (messageId != null) {
+            request = messageScheduleService.getMessageRequestById(messageId);
+        }
+        model.addAttribute("message", request);
         return "layout/messages/message_create";
     }
 

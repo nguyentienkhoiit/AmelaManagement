@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.MessageSchedule;
+import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
@@ -47,6 +48,19 @@ public class MessageScheduleMapper {
                 .groupId(request.getGroup() != null ? request.getGroup().getId() : null)
                 .choice(request.getGroup() != null)
                 .listMail(getListMailString(request))
+                .build();
+    }
+
+    public static MessageScheduleDtoRequest toMessageScheduleDtoRequest(MessageScheduleUpdateResponse response) {
+        return MessageScheduleDtoRequest.builder()
+                .id(response.getId())
+                .publishAt(response.getPublishAt())
+                .message(response.getMessage())
+                .subject(response.getSubject())
+                .senderName(response.getSenderName())
+                .groupId(response.getGroupId())
+                .listMail(response.getListMail())
+                .choice(response.isChoice())
                 .build();
     }
 }

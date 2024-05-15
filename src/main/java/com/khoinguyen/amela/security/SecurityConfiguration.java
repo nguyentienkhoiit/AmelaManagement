@@ -1,7 +1,8 @@
 package com.khoinguyen.amela.security;
 
 import com.khoinguyen.amela.configuration.InterceptorRequest;
-import com.khoinguyen.amela.util.Constant;
+import com.khoinguyen.amela.security.custom.CustomAuthenticationFailureHandler;
+import com.khoinguyen.amela.security.custom.CustomAuthenticationSuccessHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,16 +14,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.Collection;
 
 import static com.khoinguyen.amela.util.Constant.LIST_PERMIT_ALL;
 
@@ -53,6 +53,16 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
@@ -63,19 +73,8 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 )
                 .formLogin(
                         l -> l.loginPage("/login").usernameParameter("email")
-                                .successHandler((request, response, authentication) -> {
-                                    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-                                    if (authorities.stream().anyMatch(a -> a.getAuthority().equals(Constant.ADMIN_NAME))) {
-                                        response.sendRedirect("/dashboard");
-                                    } else {
-                                        response.sendRedirect("/");
-                                    }
-                                })
-                                .failureHandler((request, response, exception) -> {
-                                    String email = request.getParameter("email");
-                                    String redirectUrl = "/login?error=true&email=" + email;
-                                    response.sendRedirect(redirectUrl);
-                                })
+                                .successHandler(customAuthenticationSuccessHandler())
+                                .failureHandler(customAuthenticationFailureHandler())
                                 .permitAll()
                 )
                 .logout(

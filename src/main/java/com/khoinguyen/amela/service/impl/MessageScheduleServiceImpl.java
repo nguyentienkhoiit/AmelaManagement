@@ -54,11 +54,11 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         if (messageSchedule.getGroup() != null) {
             return messageSchedule.getGroup().getUserGroups().stream()
                     .map(UserGroup::getUser)
-                    .collect(Collectors.toList());
+                    .toList();
         } else if (messageSchedule.getUserMessageSchedules() != null) {
             return messageSchedule.getUserMessageSchedules().stream()
                     .map(UserMessageSchedule::getUser)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return Collections.emptyList();
     }
@@ -119,7 +119,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             } else {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule.setUserMessageSchedules(null);
-                messageScheduleRepository.save(messageSchedule);
+                messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
         } else {
             //cut email to list
@@ -157,17 +157,19 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             }
 
             messageSchedule.setGroup(null);
-            MessageSchedule messageScheduleResult = messageScheduleRepository.save(messageSchedule);
+            messageSchedule = messageScheduleRepository.save(messageSchedule);
 
             Set<UserMessageSchedule> userMessageScheduleList = new HashSet<>();
             for (var user : listUsers) {
                 UserMessageSchedule userMessageSchedule = UserMessageSchedule.builder()
-                        .messageSchedule(messageScheduleResult)
+                        .messageSchedule(messageSchedule)
                         .user(user)
                         .build();
                 userMessageScheduleList.add(userMessageSchedule);
             }
-            userMessageScheduleRepository.saveAll(userMessageScheduleList);
+            var ums = userMessageScheduleRepository.saveAll(userMessageScheduleList);
+            messageSchedule.setUserMessageSchedules(ums);
+            messageSchedule = messageScheduleRepository.save(messageSchedule);
         }
         setSchedulePublishMessage(messageSchedule);
 
@@ -280,7 +282,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 response = new ServiceResponse<>(false, "groupId", "Please choose a group");
             } else {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
-                messageScheduleRepository.save(messageSchedule);
+                messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
         } else {
             //cut email to list
@@ -317,7 +319,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 response = new ServiceResponse<>(false, "listMail", "Please input at least one email");
             }
 
-            MessageSchedule messageScheduleResult = messageScheduleRepository.save(messageSchedule);
+            messageSchedule = messageScheduleRepository.save(messageSchedule);
 
             if (!MessageScheduleMapper.getListMailString(messageSchedule).equalsIgnoreCase(listEmail.toString())) {
                 userMessageScheduleRepository.deleteAll(userMessageScheduleRepository.findByMessageScheduleId(messageSchedule.getId()));
@@ -326,12 +328,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             Set<UserMessageSchedule> userMessageScheduleList = new HashSet<>();
             for (var user : listUsers) {
                 UserMessageSchedule userMessageSchedule = UserMessageSchedule.builder()
-                        .messageSchedule(messageScheduleResult)
+                        .messageSchedule(messageSchedule)
                         .user(user)
                         .build();
                 userMessageScheduleList.add(userMessageSchedule);
             }
-            userMessageScheduleRepository.saveAll(userMessageScheduleList);
+            var ums = userMessageScheduleRepository.saveAll(userMessageScheduleList);
+            messageSchedule.setUserMessageSchedules(ums);
+            messageSchedule = messageScheduleRepository.save(messageSchedule);
         }
         setSchedulePublishMessage(messageSchedule);
 
@@ -369,5 +373,12 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .stream()
                 .filter(response -> !response.getId().equals(id))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public MessageScheduleDtoRequest getMessageRequestById(Long messageId) {
+        var mes = getByMessageScheduleId(messageId, "");
+        mes.setPublishAt(LocalDateTime.now().plusMinutes(1L));
+        return MessageScheduleMapper.toMessageScheduleDtoRequest(mes);
     }
 }

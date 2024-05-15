@@ -1262,6 +1262,203 @@ public class TemplateEmailGenerate {
     }
 
     public static String getHtmlNotificationMessages(String url) {
-        return "<a href=\"" + url + "\">Link bài viết</a>";
+        return "<!doctype html>\n" +
+                "<html lang=\"en\">\n" +
+                "\n" +
+                "<head>\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
+                "    <title>Simple Transactional Email</title>\n" +
+                "    <style media=\"all\" type=\"text/css\">\n" +
+                "        @media all {\n" +
+                "            .btn-primary table td:hover {\n" +
+                "                background-color: #ec0867 !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .btn-primary a:hover {\n" +
+                "                background-color: #ec0867 !important;\n" +
+                "                border-color: #ec0867 !important;\n" +
+                "            }\n" +
+                "        }\n" +
+                "\n" +
+                "        @media only screen and (max-width: 640px) {\n" +
+                "\n" +
+                "            .main p,\n" +
+                "            .main td,\n" +
+                "            .main span {\n" +
+                "                font-size: 16px !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .wrapper {\n" +
+                "                padding: 8px !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .content {\n" +
+                "                padding: 0 !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .container {\n" +
+                "                padding: 0 !important;\n" +
+                "                padding-top: 8px !important;\n" +
+                "                width: 100% !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .main {\n" +
+                "                border-left-width: 0 !important;\n" +
+                "                border-radius: 0 !important;\n" +
+                "                border-right-width: 0 !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .btn table {\n" +
+                "                max-width: 100% !important;\n" +
+                "                width: 100% !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            .btn a {\n" +
+                "                font-size: 16px !important;\n" +
+                "                max-width: 100% !important;\n" +
+                "                width: 100% !important;\n" +
+                "            }\n" +
+                "        }\n" +
+                "\n" +
+                "        @media all {\n" +
+                "            .ExternalClass {\n" +
+                "                width: 100%;\n" +
+                "            }\n" +
+                "\n" +
+                "            .ExternalClass,\n" +
+                "            .ExternalClass p,\n" +
+                "            .ExternalClass span,\n" +
+                "            .ExternalClass font,\n" +
+                "            .ExternalClass td,\n" +
+                "            .ExternalClass div {\n" +
+                "                line-height: 100%;\n" +
+                "            }\n" +
+                "\n" +
+                "            .apple-link a {\n" +
+                "                color: inherit !important;\n" +
+                "                font-family: inherit !important;\n" +
+                "                font-size: inherit !important;\n" +
+                "                font-weight: inherit !important;\n" +
+                "                line-height: inherit !important;\n" +
+                "                text-decoration: none !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            #MessageViewBody a {\n" +
+                "                color: inherit;\n" +
+                "                text-decoration: none;\n" +
+                "                font-size: inherit;\n" +
+                "                font-family: inherit;\n" +
+                "                font-weight: inherit;\n" +
+                "                line-height: inherit;\n" +
+                "            }\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "\n" +
+                "<body\n" +
+                "    style=\"font-family: Helvetica, sans-serif; -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.3; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; background-color: #f4f5f6; margin: 0; padding: 0;\">\n" +
+                "    <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"body\"\n" +
+                "        style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f4f5f6; width: 100%;\"\n" +
+                "        width=\"100%\" bgcolor=\"#f4f5f6\">\n" +
+                "        <tr>\n" +
+                "            <td style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top;\" valign=\"top\">&nbsp;\n" +
+                "            </td>\n" +
+                "            <td class=\"container\"\n" +
+                "                style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; max-width: 600px; padding: 0; padding-top: 24px; width: 600px; margin: 0 auto;\"\n" +
+                "                width=\"600\" valign=\"top\">\n" +
+                "                <div class=\"content\"\n" +
+                "                    style=\"box-sizing: border-box; display: block; margin: 0 auto; max-width: 600px; padding: 0;\">\n" +
+                "\n" +
+                "                    <!-- START CENTERED WHITE CONTAINER -->\n" +
+                "                    <span class=\"preheader\"\n" +
+                "                        style=\"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;\">This\n" +
+                "                        is preheader text. Some clients will show this text as a preview.</span>\n" +
+                "                    <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"main\"\n" +
+                "                        style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #ffffff; border: 1px solid #eaebed; border-radius: 16px; width: 100%;\"\n" +
+                "                        width=\"100%\">\n" +
+                "\n" +
+                "                        <!-- START MAIN CONTENT AREA -->\n" +
+                "                        <tr>\n" +
+                "                            <td class=\"wrapper\"\n" +
+                "                                style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; box-sizing: border-box; padding: 24px;\"\n" +
+                "                                valign=\"top\">\n" +
+                "                                <p\n" +
+                "                                    style=\"font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;\">\n" +
+                "                                    Hi you</p>\n" +
+                "                                <p\n" +
+                "                                    style=\"font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;\">\n" +
+                "                                    We are extremely happy to announce that a new news has been updated on AMELA.</p>\n" +
+                "                                <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"\n" +
+                "                                    class=\"btn btn-primary\"\n" +
+                "                                    style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%; min-width: 100%;\"\n" +
+                "                                    width=\"100%\">\n" +
+                "                                    <tbody>\n" +
+                "                                        <tr>\n" +
+                "                                            <td align=\"left\"\n" +
+                "                                                style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; padding-bottom: 16px;\"\n" +
+                "                                                valign=\"top\">\n" +
+                "                                                <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"\n" +
+                "                                                    style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;\">\n" +
+                "                                                    <tbody>\n" +
+                "                                                        <tr>\n" +
+                "                                                            <td style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top; border-radius: 4px; text-align: center; background-color: #0867ec;\"\n" +
+                "                                                                valign=\"top\" align=\"center\" bgcolor=\"#0867ec\"> <a\n" +
+                "                                                                    href=\"" + url + "\" target=\"_blank\"\n" +
+                "                                                                    style=\"border: solid 2px #0867ec; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 16px; font-weight: bold; margin: 0; padding: 12px 24px; text-decoration: none; text-transform: capitalize; background-color: #0867ec; border-color: #0867ec; color: #ffffff;\">View\n" +
+                "                                                                    News</a> </td>\n" +
+                "                                                        </tr>\n" +
+                "                                                    </tbody>\n" +
+                "                                                </table>\n" +
+                "                                            </td>\n" +
+                "                                        </tr>\n" +
+                "                                    </tbody>\n" +
+                "                                </table>\n" +
+                "                                <p\n" +
+                "                                    style=\"font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;\">\n" +
+                "                                    Make sure you don't miss any other news or updates by always checking your\n" +
+                "                                    email every day.</p>\n" +
+                "                                <p\n" +
+                "                                    style=\"font-family: Helvetica, sans-serif; font-size: 16px; font-weight: normal; margin: 0; margin-bottom: 16px;\">\n" +
+                "                                    Good luck! Hope it works.</p>\n" +
+                "                            </td>\n" +
+                "                        </tr>\n" +
+                "\n" +
+                "                        <!-- END MAIN CONTENT AREA -->\n" +
+                "                    </table>\n" +
+                "\n" +
+                "                    <!-- START FOOTER -->\n" +
+                "                    <div class=\"footer\" style=\"clear: both; padding-top: 24px; text-align: center; width: 100%;\">\n" +
+                "                        <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"\n" +
+                "                            style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;\"\n" +
+                "                            width=\"100%\">\n" +
+                "                            <tr>\n" +
+                "                                <td class=\"content-block\"\n" +
+                "                                    style=\"font-family: Helvetica, sans-serif; vertical-align: top; color: #9a9ea6; font-size: 16px; text-align: center;\"\n" +
+                "                                    valign=\"top\" align=\"center\">\n" +
+                "                                    <span class=\"apple-link\"\n" +
+                "                                        style=\"color: #9a9ea6; font-size: 16px; text-align: center;\">\n" +
+                "                                        Tầng 5, Tháp A, Toà Keangnam, <br>\n" +
+                "                                        Khu Đô thị mới E6 Cầu Giấy, <br>\n" +
+                "                                        Phạm Hùng, Mễ Trì, Nam Từ Liêm, Hà Nội</span>\n" +
+                "                                    <br> <a style=\"color: #9a9ea6; font-size: 16px; text-align: center;\"\n" +
+                "                                        href=\"tel:+(+84)963 336 334\">(+84)963 336 334</a>\n" +
+                "                                </td>\n" +
+                "                            </tr>\n" +
+                "                        </table>\n" +
+                "                    </div>\n" +
+                "\n" +
+                "                    <!-- END FOOTER -->\n" +
+                "\n" +
+                "                    <!-- END CENTERED WHITE CONTAINER -->\n" +
+                "                </div>\n" +
+                "            </td>\n" +
+                "            <td style=\"font-family: Helvetica, sans-serif; font-size: 16px; vertical-align: top;\" valign=\"top\">&nbsp;\n" +
+                "            </td>\n" +
+                "        </tr>\n" +
+                "    </table>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>";
     }
 }

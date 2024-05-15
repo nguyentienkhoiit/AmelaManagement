@@ -61,7 +61,7 @@ public class MessageScheduleCriteria {
                 .replace("select ms", "select count(ms.id)"));
 
         long pageIndex = request.getPageIndex();
-        long pageSize = roleName.equals(Constant.USER_NAME)? PAGE_SIZE_MESSAGE_USER : request.getPageSize();
+        long pageSize = roleName.equals(Constant.USER_NAME) ? PAGE_SIZE_MESSAGE_USER : request.getPageSize();
 
         TypedQuery<MessageSchedule> messageScheduleTypedQuery = em.createQuery(sql.toString(), MessageSchedule.class);
         params.forEach((k, v) -> {
