@@ -43,10 +43,14 @@
                 <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
                 <div class="text-danger h6 mt-1" th:errors="*{lastname}" th:if="${#fields.hasErrors('lastname')}"></div>
             </div>
+            <!--            <div class="mb-3 col-md-6">-->
+            <!--                <label class="form-label" for="username">Username <i class="text-danger">*</i></label>-->
+            <!--                <input class="form-control" id="username" placeholder="khoi" th:field="*{username}" type="text">-->
+            <!--                <div class="text-danger h6 mt-1" th:errors="*{username}" th:if="${#fields.hasErrors('username')}"></div>-->
+            <!--            </div>-->
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="username">Username <i class="text-danger">*</i></label>
-                <input class="form-control" id="username" placeholder="khoi" th:field="*{username}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{username}" th:if="${#fields.hasErrors('username')}"></div>
+                <label class="form-label" for="address">Address</label>
+                <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">
             </div>
         </div>
 
@@ -64,12 +68,12 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="mb-3 col-md-12">
-                <label class="form-label" for="address">Address</label>
-                <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">
-            </div>
-        </div>
+        <!--        <div class="row">-->
+        <!--            <div class="mb-3 col-md-12">-->
+        <!--                <label class="form-label" for="address">Address</label>-->
+        <!--                <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">-->
+        <!--            </div>-->
+        <!--        </div>-->
 
         <div class="row">
             <div class="mb-3 col-md-6">
@@ -87,7 +91,6 @@
                         BA
                     </option>
                 </select>
-                <!--                <div class="text-danger h6 mt-1" th:errors="*{position}" th:if="${#fields.hasErrors('position')}"></div>-->
             </div>
         </div>
 

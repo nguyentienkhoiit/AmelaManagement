@@ -22,4 +22,6 @@ public class ProfileDtoResponse {
     String address;
     String phone;
     String dateOfBirth;
+    String avatar;
+    boolean isEditUsername;
 }

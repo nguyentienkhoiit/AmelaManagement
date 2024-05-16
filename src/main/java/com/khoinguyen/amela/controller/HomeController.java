@@ -19,10 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -77,11 +75,13 @@ public class HomeController {
     @PostMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String updateProfile(
+            @RequestParam(value = "fileImage", required = false) MultipartFile fileImage,
             @Valid @ModelAttribute("user") ProfileDtoRequest request,
             BindingResult result,
             Model model
     ) {
         User userLoggedIn = userHelper.getUserLogin();
+
         ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, userLoggedIn);
         model.addAttribute("user", response);
         if (result.hasErrors()) {
@@ -92,7 +92,7 @@ public class HomeController {
             return "layout/auth/profile";
         }
 
-        ServiceResponse<String> serviceResponse = userService.updateProfile(request);
+        ServiceResponse<String> serviceResponse = userService.updateProfile(request, fileImage);
         if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
             return "layout/auth/profile";

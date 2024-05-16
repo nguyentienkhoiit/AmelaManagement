@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
     OptionalValidator optionalValidator;
     VerificationService verificationService;
     EmailHandler emailHandler;
+    FileHelper fileHelper;
 
     @Override
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
@@ -55,10 +57,10 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        if (optionalValidator.findByUsernameExist(request.getUsername(), 0L).isPresent()) {
-            response = new ServiceResponse<>(false, "username", "Username already exists");
-            return response;
-        }
+//        if (optionalValidator.findByUsernameExist(request.getUsername(), 0L).isPresent()) {
+//            response = new ServiceResponse<>(false, "username", "Username already exists");
+//            return response;
+//        }
 
         if (optionalValidator.findByPhoneExist(request.getPhone(), 0L).isPresent()) {
             response = new ServiceResponse<>(false, "phone", "Phone already exists");
@@ -91,9 +93,12 @@ public class UserServiceImpl implements UserService {
 
         String latestCde = getUserLatest() != null ? getUserLatest().getCode() : "000001";
 
-        String code = CodeGenerator.generateNextUserCode(latestCde);
+        String code = AttributeGenerator.generateNextUserCode(latestCde);
+
         User user = UserMapper.toUser(request);
+        String username = AttributeGenerator.generatorUsername(user, getUserLatest().getId() + 1);
         user.setCreatedBy(userLoggedIn.getId());
+        user.setUsername(username);
         user.setUpdateBy(userLoggedIn.getId());
         user.setDepartment(departmentOptional.get());
         user.setRole(roleOptional.get());
@@ -101,6 +106,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(code);
         user.setEnabled(false);
+        user.setEditUsername(true);
         user.setActivated(false);
 
         user = userRepository.save(user);
@@ -118,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceResponse<String> updateProfile(ProfileDtoRequest request) {
+    public ServiceResponse<String> updateProfile(ProfileDtoRequest request, MultipartFile fileImage) {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
@@ -139,6 +145,11 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
+        if (!fileImage.isEmpty()) {
+            String fileName = fileHelper.uploadFile(fileImage);
+            request.setAvatar(fileName);
+        }
+
         userLoggedIn.setUpdateBy(userLoggedIn.getId());
         userLoggedIn.setPhone(request.getPhone());
         userLoggedIn.setFirstname(request.getFirstname());
@@ -146,7 +157,12 @@ public class UserServiceImpl implements UserService {
         userLoggedIn.setGender(request.getGender());
         userLoggedIn.setAddress(request.getAddress());
         userLoggedIn.setDateOfBirth(request.getDateOfBirth());
-        userLoggedIn.setUsername(request.getUsername());
+
+        if (userLoggedIn.isEditUsername()
+                && !request.getUsername().equalsIgnoreCase(userLoggedIn.getUsername())) {
+            userLoggedIn.setUsername(request.getUsername());
+            userLoggedIn.setEditUsername(false);
+        }
         userRepository.save(userLoggedIn);
 
         return response;
@@ -188,10 +204,10 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        if (optionalValidator.findByUsernameExist(request.getUsername(), user.getId()).isPresent()) {
-            response = new ServiceResponse<>(false, "username", "Username already exists");
-            return response;
-        }
+//        if (optionalValidator.findByUsernameExist(request.getUsername(), user.getId()).isPresent()) {
+//            response = new ServiceResponse<>(false, "username", "Username already exists");
+//            return response;
+//        }
 
         if (optionalValidator.findByPhoneExist(request.getPhone(), user.getId()).isPresent()) {
             response = new ServiceResponse<>(false, "phone", "Phone already exists");
@@ -228,13 +244,11 @@ public class UserServiceImpl implements UserService {
         user.setAddress(request.getAddress());
         user.setDateOfBirth(DateTimeHelper.parseStringToDate(request.getDateOfBirth()));
         user.setPhone(request.getPhone());
-        user.setUsername(request.getUsername());
         user.setUpdateAt(LocalDateTime.now());
         user.setUpdateBy(userLoggedIn.getId());
         user.setDepartment(departmentOptional.get());
         user.setRole(roleOptional.get());
         user.setJobPosition(positionOptional.get());
-        user.setEnabled(true);
         userRepository.save(user);
 
         return response;

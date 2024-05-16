@@ -35,7 +35,7 @@
                        type="email">
             </div>
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="code">Code<i class="text-danger">*</i></label>
+                <label class="form-label" for="code">Code <i class="text-danger">*</i></label>
                 <input class="form-control" id="code" name="code" placeholder="A153249" readonly th:field="*{code}"
                        type="text">
             </div>
@@ -74,8 +74,9 @@
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="username">Username <i class="text-danger">*</i></label>
-                <input class="form-control" id="username" placeholder="khoi" th:field="*{username}" type="text">
-                <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>
+                <input class="form-control" id="username" placeholder="khoi" readonly th:field="*{username}"
+                       type="text">
+                <!--                <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>-->
             </div>
         </div>
 

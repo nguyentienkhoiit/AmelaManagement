@@ -19,10 +19,10 @@ public class UserDtoRequest {
     @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "Email is invalid")
     String email;
 
-    @Length(min = 3, max = 15, message = "Length greater than 3 and smaller than 16")
+    @Length(min = 2, max = 15, message = "Length greater than 3 and smaller than 16")
     String firstname;
 
-    @Length(min = 3, max = 15, message = "Length greater than 3 and smaller than 16")
+    @Length(min = 2, max = 15, message = "Length greater than 3 and smaller than 16")
     String lastname;
 
     @Length(min = 4, message = "Username has length greater than 3")

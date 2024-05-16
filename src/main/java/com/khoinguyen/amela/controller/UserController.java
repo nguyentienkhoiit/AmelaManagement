@@ -51,6 +51,7 @@ public class UserController {
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest
     ) {
+        System.out.println(pagingDtoRequest);
         session.setAttribute("active", "user");
 
         User userLoggedIn = userHelper.getUserLogin();
@@ -59,6 +60,7 @@ public class UserController {
         if (pagingDtoRequest.getText() != null) {
             model.addAttribute("text", pagingDtoRequest.getText().trim());
         }
+        SetSessionSelectionOption(model);
         model.addAttribute("users", pagingDtoResponse.data());
         model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
         model.addAttribute("totalPage", totalPage);

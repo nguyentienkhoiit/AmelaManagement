@@ -33,4 +33,6 @@ public class ProfileDtoRequest {
 
     @Length(min = 4, message = "Username has length greater than 3")
     String username;
+
+    String avatar;
 }

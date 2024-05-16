@@ -44,10 +44,7 @@ public class UserCriteria {
         }
 
         if (userLoggedIn.getRole().getName().equals(Constant.USER_NAME)) {
-            sql.append(" and u.enabled = :enable and u.activated = :activated and u.role.name = :role");
-            params.put("enable", true);
-            params.put("activated", true);
-            params.put("role", "USER");
+            sql.append(" and u.enabled = true and u.activated = true and u.role.name = 'USER'");
         }
 
         //filter search

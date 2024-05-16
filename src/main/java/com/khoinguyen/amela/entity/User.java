@@ -58,6 +58,8 @@ public class User {
 
     Long updateBy;
 
+    boolean isEditUsername = false;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     Role role;

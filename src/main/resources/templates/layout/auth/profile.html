@@ -3,7 +3,7 @@
     ~{::title},
     ~{::main},
     ~{::#profile-static-resource},
-    ~{}
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -16,17 +16,19 @@
 
 <body>
 <main class="min-vh-100 bg-light">
-    <form class="container px-4 mt-4" method="post" th:action="@{/profile}" th:object="${user}">
+    <form class="container px-4 mt-4" enctype="multipart/form-data" method="post" th:action="@{/profile}"
+          th:object="${user}">
         <div class="row">
             <div class="col-xl-4 profile__picture">
                 <div class="card mb-4 mb-xl-0">
                     <div class="card-header">Profile Picture</div>
                     <div class="card-body text-center">
-                        <img alt="" class="img-account-profile rounded-circle mb-2"
-                             id="img-preview"
+                        <img alt="preview"
+                             class="img-account-profile rounded-circle mb-2" id="thumbnail"
                              style="height: 180px; width: 180px;" th:src="@{/image/avatar.jpg}">
                         <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                        <input accept="image/*" class="form-control" id="file-input" type="file">
+                        <input accept="image/png, image/jpeg" class="form-control" id="fileImage" name="fileImage"
+                               type="file">
                     </div>
                 </div>
             </div>
@@ -69,9 +71,12 @@
                                            readonly th:field="*{code}" type="text">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label" for="inputUsername">Username</label>
+                                    <label class="form-label" for="inputUsername">Username <span
+                                            class="text-danger"
+                                            th:if="${user.isEditUsername}">(can only be change once)</span></label>
                                     <input class="form-control" id="inputUsername" name="username"
-                                           placeholder="Enter your username" th:field="*{username}" type="text">
+                                           placeholder="Enter your username"
+                                           th:field="*{username}" th:readonly="${!user.isEditUsername}" type="text">
                                     <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>
                                 </div>
                             </div>
@@ -130,4 +135,28 @@
         </div>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script type="application/javascript">
+        $(document).ready(function () {
+            // const avatar = localStorage.getItem('avatar');
+            // if (avatar) {
+            //     $('#thumbnail').attr('src', avatar);
+            // }
+
+            $('#fileImage').change(function () {
+                showImageThumbnail(this);
+            });
+        });
+
+        function showImageThumbnail(fileInput) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#thumbnail').attr('src', e.target.result);
+                // localStorage.setItem('avatar', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    </script>
+</th:block>
 </body>

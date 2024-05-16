@@ -43,7 +43,6 @@ public class UserMapper {
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
                 .avatar("/image/avatar.jpg")
-                .username(request.getUsername())
                 .build();
     }
 
@@ -78,10 +77,12 @@ public class UserMapper {
                 .role(request.getRole().getName())
                 .department(request.getDepartment().getName())
                 .position(request.getJobPosition().getName())
+                .isEditUsername(request.isEditUsername())
                 .code(request.getCode())
                 .username(request.getUsername())
                 .gender(request.getGender())
                 .address(request.getAddress())
+                .avatar(request.getAvatar())
                 .phone(request.getPhone())
                 .dateOfBirth(request.getDateOfBirth().toString())
                 .build();
@@ -96,8 +97,10 @@ public class UserMapper {
         profileDtoResponse.setLastname(request.getLastname());
         profileDtoResponse.setGender(request.getGender());
         profileDtoResponse.setAddress(request.getAddress());
+        profileDtoResponse.setEditUsername(userLoggedIn.isEditUsername());
         profileDtoResponse.setPhone(request.getPhone());
         profileDtoResponse.setDateOfBirth(dateOfBirth);
+        profileDtoResponse.setAvatar(request.getAvatar());
         return profileDtoResponse;
     }
 }

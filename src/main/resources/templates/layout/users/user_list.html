@@ -59,7 +59,7 @@
                     <th scope="col">Gender <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Department <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
-                    <th scope="col">Role <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Role <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Position <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col" sec:authorize="hasAuthority('ADMIN')">Activate <a class="text-secondary" href="#"><i
@@ -78,7 +78,7 @@
                     <td th:text="${user.email}">hongminhsn1812@gmail.com</td>
                     <td th:text="${user.gender == 1? 'Male': 'Female'}">Male</td>
                     <td th:text="${user.department.name}">User</td>
-                    <td th:text="${user.role.name}">User</td>
+                    <td th:text="${user.role.name}" sec:authorize="hasAuthority('ADMIN')">User</td>
                     <td th:text="${user.position.name}">Developer</td>
                     <td sec:authorize="hasAuthority('ADMIN')">
                         <i class="fa-solid fa-circle-check"

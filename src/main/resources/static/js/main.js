@@ -34,20 +34,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     linkColor.forEach(l => l.addEventListener('click', colorLink))
-
-    // Your code to run since DOM is loaded and ready
 });
 
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
-
-// const input = document.getElementById('file-input');
-// const image = document.getElementById('img-preview');
-// input.addEventListener('change', (e) => {
-//     if (e.target.files.length) {
-//         const src = URL.createObjectURL(e.target.files[0]);
-//         image.src = src;
-//     }
-// });
