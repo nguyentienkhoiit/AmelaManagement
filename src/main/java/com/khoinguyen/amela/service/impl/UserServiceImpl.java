@@ -15,10 +15,12 @@ import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import java.util.UUID;
 import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
@@ -146,8 +149,18 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!fileImage.isEmpty()) {
-            String fileName = fileHelper.uploadFile(fileImage);
-            request.setAvatar(fileName);
+            String fileName = null;
+            try {
+                fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
+                if (fileName == null) {
+                    response = new ServiceResponse<>(false, "avatar", "Something went wrong");
+                    return response;
+                }
+                log.info("filename: {}", fileName);
+                userLoggedIn.setAvatar(fileName);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         userLoggedIn.setUpdateBy(userLoggedIn.getId());

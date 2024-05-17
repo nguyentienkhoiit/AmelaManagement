@@ -14,6 +14,7 @@ import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
 import com.khoinguyen.amela.service.UserService;
+import com.khoinguyen.amela.util.FileHelper;
 import com.khoinguyen.amela.util.UserHelper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,6 +22,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +48,7 @@ public class UserController {
     DepartmentService departmentService;
     JobPositionService jobPositionService;
     UserHelper userHelper;
+    FileHelper fileHelper;
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -51,7 +56,6 @@ public class UserController {
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest
     ) {
-        System.out.println(pagingDtoRequest);
         session.setAttribute("active", "user");
 
         User userLoggedIn = userHelper.getUserLogin();
@@ -208,5 +212,15 @@ public class UserController {
     ) {
         boolean rs = userService.sendTokenAgain(id);
         return "redirect:/users/update/" + id;
+    }
+
+    @GetMapping("/avatar")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ResponseEntity<Resource> getImage() {
+        User user = userHelper.getUserLogin();
+        Resource file = fileHelper.load(user.getAvatar());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getAvatar() + "\"").body(file);
     }
 }
