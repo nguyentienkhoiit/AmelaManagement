@@ -2,6 +2,7 @@ package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.entity.Verification;
+import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
@@ -10,10 +11,14 @@ import com.khoinguyen.amela.repository.VerificationRepository;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.EmailHandler;
+import com.khoinguyen.amela.util.UserHelper;
 import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     EmailHandler emailHandler;
     VerificationRepository verificationRepository;
     PasswordEncoder passwordEncoder;
+    UserHelper userHelper;
 
     @Override
     public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl) {
@@ -98,5 +104,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return response;
         }
         return new ServiceResponse<>(false, "error", "Something is went wrong");
+    }
+
+    @Override
+    public ServiceResponse<String> submitChangePassword(ChangePasswordDtoRequest request) {
+        ServiceResponse<String> response = new ServiceResponse<>(true, "success", "none");
+
+        User userLoggedIn = userHelper.getUserLogin();
+        if (!passwordEncoder.matches(request.getOldPassword(), userLoggedIn.getPassword())) {
+            response = new ServiceResponse<>(false, "oldPassword", "Wrong password");
+            return response;
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            response = new ServiceResponse<>(false, "confirmPassword", "Passwords do not match");
+            return response;
+        }
+
+        //update password
+        userLoggedIn.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
+        userRepository.save(userLoggedIn);
+
+        //set security context holder
+        userHelper.setSecurityContext(request.getConfirmPassword(), null);
+
+        return response;
     }
 }

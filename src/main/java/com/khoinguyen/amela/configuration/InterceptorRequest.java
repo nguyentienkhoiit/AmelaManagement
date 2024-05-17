@@ -19,9 +19,11 @@ public class InterceptorRequest implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler
     ) throws IOException {
-        log.info("Request URI: {}", request.getRequestURI());
-        log.info("Request method: {}", request.getMethod());
-        log.info("Response status code: {}", response.getStatus());
+        log.info("Request URI: {}, Request method: {}, Response status code: {}",
+                request.getRequestURI(), request.getMethod(), response.getStatus());
+//        log.info("Request URI: {}", request.getRequestURI());
+//        log.info("Request method: {}", request.getMethod());
+//        log.info("Response status code: {}", response.getStatus());
 
         if (response.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
             response.sendRedirect("/notFound");

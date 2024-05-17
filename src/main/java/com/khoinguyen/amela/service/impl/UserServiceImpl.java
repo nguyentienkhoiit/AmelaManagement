@@ -217,11 +217,6 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-//        if (optionalValidator.findByUsernameExist(request.getUsername(), user.getId()).isPresent()) {
-//            response = new ServiceResponse<>(false, "username", "Username already exists");
-//            return response;
-//        }
-
         if (optionalValidator.findByPhoneExist(request.getPhone(), user.getId()).isPresent()) {
             response = new ServiceResponse<>(false, "phone", "Phone already exists");
             return response;

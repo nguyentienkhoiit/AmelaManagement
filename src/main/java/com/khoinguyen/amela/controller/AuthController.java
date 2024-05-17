@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.LoginDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
@@ -155,5 +156,29 @@ public class AuthController {
             return "layout/users/user_new_password";
         }
         return "redirect:/login";
+    }
+
+    @GetMapping("/change-password")
+    public String changePassword(Model model) {
+        model.addAttribute("user", new ChangePasswordDtoRequest());
+        return "layout/auth/change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String submitChangePassword(
+            Model model,
+            @Valid @ModelAttribute("user") ChangePasswordDtoRequest request,
+            BindingResult result
+    ) {
+        if (result.hasErrors()) {
+            return "layout/auth/change-password";
+        }
+
+        ServiceResponse<String> serviceResponse = authenticationService.submitChangePassword(request);
+        if (!serviceResponse.status()) {
+            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+            return "layout/auth/change-password";
+        }
+        return "redirect:/profile";
     }
 }

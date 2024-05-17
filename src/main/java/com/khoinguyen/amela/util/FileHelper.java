@@ -1,5 +1,7 @@
 package com.khoinguyen.amela.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khoinguyen.amela.entity.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,10 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -30,7 +35,7 @@ public class FileHelper {
     public String uploadFile(MultipartFile file, User user) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
-        String fileExtension = getFileExtension(fileName);
+//        String fileExtension = getFileExtension(fileName);
         String newFileName = AttributeGenerator.generatorUsername(user, user.getId()) + ".jpg";
 
         String uploadDir = "./upload";
@@ -70,5 +75,28 @@ public class FileHelper {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    public Set<String> readFile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InputStream inputStream = getClass().getClassLoader()
+                .getResourceAsStream("file/backList.json");
+        if (inputStream == null) return null;
+        return objectMapper.readValue(inputStream, new TypeReference<Set<String>>() {
+        });
+    }
+
+    public Set<String> getListBannedWord(String paragraph) {
+        Set<String> bannedWords = new HashSet<>();
+        try {
+            bannedWords = readFile();
+            if (bannedWords.isEmpty()) return null;
+        } catch (IOException e) {
+            log.error("exception: {}", e.getMessage());
+            return null;
+        }
+        return bannedWords.stream()
+                .filter(w -> paragraph.toLowerCase().contains(w.toLowerCase()))
+                .collect(Collectors.toSet());
     }
 }

@@ -64,7 +64,7 @@ public class UserController {
         if (pagingDtoRequest.getText() != null) {
             model.addAttribute("text", pagingDtoRequest.getText().trim());
         }
-        SetSessionSelectionOption(model);
+        setInfoSelectionOption(model);
         model.addAttribute("users", pagingDtoResponse.data());
         model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
         model.addAttribute("totalPage", totalPage);
@@ -79,7 +79,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateUsers(Model model) {
         model.addAttribute("user", UserDtoRequest.builder().build());
-        SetSessionSelectionOption(model);
+        setInfoSelectionOption(model);
         return "layout/users/user_create";
     }
 
@@ -90,6 +90,7 @@ public class UserController {
             BindingResult result,
             Model model
     ) {
+        setInfoSelectionOption(model);
         //check validate
         if (result.hasErrors()) {
             return "layout/users/user_create";
@@ -102,11 +103,6 @@ public class UserController {
             return "layout/users/user_create";
         }
 
-        //remove session
-        session.removeAttribute("roles");
-        session.removeAttribute("departments");
-        session.removeAttribute("jobPositions");
-
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
@@ -114,10 +110,10 @@ public class UserController {
     @GetMapping("update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateUsers(Model model, @PathVariable Long id) {
+        setInfoSelectionOption(model);
         UserDtoResponse userDtoResponse = userService.getUserById(id);
         if (userDtoResponse == null) return "redirect:/error-page";
 
-        SetSessionSelectionOption(model);
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", userDtoResponse);
         }
@@ -132,6 +128,8 @@ public class UserController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
+        setInfoSelectionOption(model);
+
         JobPositionDtoResponse jobPositionDtoResponse = jobPositionService
                 .findById(request.getJobPositionId());
         DepartmentDtoResponse departmentDtoResponse = departmentService
@@ -165,11 +163,6 @@ public class UserController {
             return "redirect:/users/update/" + request.getId();
         }
 
-        //remove session
-        session.removeAttribute("roles");
-        session.removeAttribute("departments");
-        session.removeAttribute("jobPositions");
-
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
@@ -194,14 +187,14 @@ public class UserController {
         return "redirect:" + url;
     }
 
-    private void SetSessionSelectionOption(Model model) {
+    private void setInfoSelectionOption(Model model) {
         var roleDtoResponses = roleService.findAll();
         var departmentDtoResponses = departmentService.findAll();
         var jobPositionDtoResponses = jobPositionService.findAll();
 
-        session.setAttribute("roles", roleDtoResponses);
-        session.setAttribute("departments", departmentDtoResponses);
-        session.setAttribute("jobPositions", jobPositionDtoResponses);
+        model.addAttribute("roles", roleDtoResponses);
+        model.addAttribute("departments", departmentDtoResponses);
+        model.addAttribute("jobPositions", jobPositionDtoResponses);
     }
 
     @GetMapping("/send-token-again/{id}")

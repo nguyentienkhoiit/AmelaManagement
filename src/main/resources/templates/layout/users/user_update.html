@@ -91,7 +91,7 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="jobPosition">Job Position</label>
                 <select class="form-select" id="jobPosition" name="jobPositionId">
-                    <option th:each="position: ${session.jobPositions}" th:selected="${position.id == user.position.id}"
+                    <option th:each="position: ${jobPositions}" th:selected="${position.id == user.position.id}"
                             th:text="${position.name}" th:value="${position.id}">
                         BA
                     </option>
@@ -104,7 +104,7 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="department">Department</label>
                 <select class="form-select" id="department" name="departmentId">
-                    <option th:each="department: ${session.departments}"
+                    <option th:each="department: ${departments}"
                             th:selected="${department.id == user.department.id}"
                             th:text="${department.name}" th:value="${department.id}">Department
                     </option>
@@ -114,7 +114,7 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="role">Role</label>
                 <select class="form-select" id="role" name="roleId">
-                    <option th:each="role: ${session.roles}" th:selected="${role.id == user.role.id}"
+                    <option th:each="role: ${roles}" th:selected="${role.id == user.role.id}"
                             th:text="${role.name}" th:value="${role.id}">User
                     </option>
                 </select>

@@ -18,6 +18,7 @@ import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.MessageScheduleCriteria;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.util.EmailHandler;
+import com.khoinguyen.amela.util.FileHelper;
 import com.khoinguyen.amela.util.StringUtil;
 import com.khoinguyen.amela.util.UserHelper;
 import jakarta.mail.MessagingException;
@@ -48,7 +49,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserMessageScheduleRepository userMessageScheduleRepository;
     EmailHandler emailHandler;
     ThreadPoolTaskScheduler taskScheduler;
-    private Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    FileHelper fileHelper;
 
     private List<User> getUsersFromSchedule(MessageSchedule messageSchedule) {
         if (messageSchedule.getGroup() != null) {
@@ -97,6 +99,12 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
         if (request.getPublishAt().isBefore(LocalDateTime.now())) {
             response = new ServiceResponse<>(false, "error", "Can not create messages because publish at before now");
+            return response;
+        }
+
+        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
+        if(!listBannedWords.isEmpty()) {
+            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like "+listBannedWords);
             return response;
         }
 
@@ -254,6 +262,12 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         MessageSchedule messageSchedule = messageScheduleRepository.findById(request.getId()).orElse(null);
         if (messageSchedule == null) {
             response = new ServiceResponse<>(false, "message", "Message is not found");
+            return response;
+        }
+
+        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
+        if(!listBannedWords.isEmpty()) {
+            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like "+listBannedWords);
             return response;
         }
 

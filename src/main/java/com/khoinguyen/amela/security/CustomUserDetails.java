@@ -17,17 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 @Slf4j
 public class CustomUserDetails implements UserDetails {
-    String username;
-    String password;
-    boolean isEnabled;
-    boolean activated;
     List<GrantedAuthority> authorities;
+    User user;
 
     public CustomUserDetails(User user) {
-        this.username = user.getEmail();
-        this.password = user.getPassword();
-        this.isEnabled = user.isEnabled();
-        this.activated = user.isActivated();
+        this.user = user;
         this.authorities = List.of(new SimpleGrantedAuthority(user.getRole().getName()));
         log.info("authorities : {}", authorities);
     }
@@ -39,12 +33,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
@@ -64,6 +58,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled && activated;
+        return user.isEnabled() && user.isActivated();
     }
 }
