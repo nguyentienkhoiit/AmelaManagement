@@ -26,7 +26,8 @@
         <div class="row">
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="email">Email <i class="text-danger">*</i></label>
-                <input class="form-control" id="email" placeholder="email@example.com" th:field="*{email}" type="text">
+                <input class="form-control" id="email" placeholder="email@example.com" th:field="*{email}"
+                       type="text">
                 <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['email'])}">
                     <li class="text-danger h6 mt-1" th:each="error : ${errors['email']}" th:text="${error}"></li>
                 </ul>
@@ -35,7 +36,8 @@
                 <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
                 <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
                 <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['firstname'])}">
-                    <li class="text-danger h6 mt-1" th:each="error : ${errors['firstname']}" th:text="${error}"></li>
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['firstname']}" th:text="${error}">
+                    </li>
                 </ul>
             </div>
         </div>
@@ -69,7 +71,8 @@
                 <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
                 <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date">
                 <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['dateOfBirth'])}">
-                    <li class="text-danger h6 mt-1" th:each="error : ${errors['dateOfBirth']}" th:text="${error}"></li>
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['dateOfBirth']}" th:text="${error}">
+                    </li>
                 </ul>
             </div>
         </div>
@@ -116,4 +119,5 @@
     </form>
 </main>
 </body>
+
 </html>

@@ -9,10 +9,4 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
     @Value("${app.host}")
     public String HOST;
-
-    @Value("${app.version}")
-    public String version;
-
-    @Value("${app.description}")
-    public String description;
 }

@@ -1,21 +1,26 @@
 package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoRequest;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.mapper.JobPositionMapper;
 import com.khoinguyen.amela.service.JobPositionService;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class PositionController {
     HttpSession session;
     JobPositionService positionService;
-    ApplicationContext applicationContext;
+    ValidationService validationService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -62,14 +67,16 @@ public class PositionController {
             BindingResult result,
             Model model
     ) {
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/positions/position_create";
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = positionService.createPositions(request);
+        positionService.createPositions(request, errors);
 
-        if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
             return "layout/positions/position_create";
         }
 
@@ -85,8 +92,11 @@ public class PositionController {
     ) {
         session.setAttribute("active", "position");
 
-        JobPositionDtoResponse response = positionService.getPositionById(id);
-        model.addAttribute("position", response);
+        if (!model.containsAttribute("position")) {
+            JobPositionDtoResponse response = positionService.getPositionById(id);
+            model.addAttribute("position", response);
+        }
+
         return "layout/positions/position_update";
     }
 
@@ -95,17 +105,21 @@ public class PositionController {
     public String updatePositions(
             @Valid @ModelAttribute("position") JobPositionDtoRequest request,
             BindingResult result,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/positions/position_update";
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = positionService.updatePositions(request);
+        positionService.updatePositions(request, errors);
 
-        if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
-            return "layout/positions/position_update";
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("position", JobPositionMapper.toJobPositionDtoResponse(request));
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/positions/update/" + request.getId();
         }
 
         String url = (String) session.getAttribute("url");

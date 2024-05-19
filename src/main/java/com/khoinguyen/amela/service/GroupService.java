@@ -4,14 +4,14 @@ import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GroupService {
-    ServiceResponse<String> createGroups(GroupDtoRequest request);
+    void createGroups(GroupDtoRequest request, Map<String, List<String>> errors);
 
-    ServiceResponse<String> updateGroups(GroupDtoRequest request);
+    void updateGroups(GroupDtoRequest request, Map<String, List<String>> errors);
 
     GroupDtoResponse getGroupById(Long id);
 

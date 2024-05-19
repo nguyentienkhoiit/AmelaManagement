@@ -2,11 +2,11 @@ package com.khoinguyen.amela.service;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoRequest;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface JobPositionService {
     List<JobPositionDtoResponse> findAll();
@@ -15,11 +15,11 @@ public interface JobPositionService {
 
     PagingDtoResponse<JobPositionDtoResponse> getAllPositions(PagingDtoRequest request);
 
-    ServiceResponse<String> createPositions(JobPositionDtoRequest request);
+    void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors);
 
     boolean changeStatus(Long id);
 
     JobPositionDtoResponse getPositionById(Long id);
 
-    ServiceResponse<String> updatePositions(JobPositionDtoRequest request);
+    void updatePositions(JobPositionDtoRequest request, Map<String, List<String>> errors);
 }

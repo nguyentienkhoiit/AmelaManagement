@@ -2,7 +2,6 @@ package com.khoinguyen.amela.service;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.*;
 import org.springframework.web.multipart.MultipartFile;
 

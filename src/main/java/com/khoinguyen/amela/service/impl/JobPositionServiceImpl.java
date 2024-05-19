@@ -4,7 +4,6 @@ import com.khoinguyen.amela.entity.JobPosition;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoRequest;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 import com.khoinguyen.amela.model.mapper.JobPositionMapper;
@@ -13,6 +12,7 @@ import com.khoinguyen.amela.repository.criteria.JobPositionCriteria;
 import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     JobPositionCriteria jobPositionCriteria;
     UserHelper userHelper;
     OptionalValidator optionalValidator;
+    ValidationService validationService;
 
     @Override
     public List<JobPositionDtoResponse> findAll() {
@@ -49,16 +51,16 @@ public class JobPositionServiceImpl implements JobPositionService {
     }
 
     @Override
-    public ServiceResponse<String> createPositions(JobPositionDtoRequest request) {
+    public void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         //check position name duplicate
         var positionOptional = optionalValidator.findByPositionName(request.getName(), 0L);
         if (positionOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "name", "Position name already exists");
-            return response;
+            validationService.updateErrors("name", "Position name already exists", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         JobPosition jobPosition = JobPosition.builder()
                 .name(request.getName())
@@ -70,8 +72,6 @@ public class JobPositionServiceImpl implements JobPositionService {
                 .status(true)
                 .build();
         jobPositionRepository.save(jobPosition);
-
-        return response;
     }
 
     @Override
@@ -96,22 +96,21 @@ public class JobPositionServiceImpl implements JobPositionService {
     }
 
     @Override
-    public ServiceResponse<String> updatePositions(JobPositionDtoRequest request) {
+    public void updatePositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         JobPosition positionExist = jobPositionRepository.findById(request.getId()).orElse(null);
         if (positionExist == null) {
-            response = new ServiceResponse<>(false, "position", "Position not found: " + request.getId());
-            return response;
+            validationService.updateErrors("position", "Position not found: " + request.getId(), errors);
         }
 
         //check department name duplicate
         var positionOptional = optionalValidator.findByPositionName(request.getName(), request.getId());
         if (positionOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "name", "Position name already exists");
-            return response;
+            validationService.updateErrors("name", "Position name already exists", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         JobPosition jobPosition = JobPosition.builder()
                 .id(request.getId())
@@ -124,7 +123,5 @@ public class JobPositionServiceImpl implements JobPositionService {
                 .status(true)
                 .build();
         jobPositionRepository.save(jobPosition);
-
-        return response;
     }
 }

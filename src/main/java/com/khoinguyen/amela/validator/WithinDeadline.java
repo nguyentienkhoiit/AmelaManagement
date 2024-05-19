@@ -10,11 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = WithinDeadlineValidator.class)
-@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WithinDeadline {
     String message() default "Check day cannot be more than 3 days before today";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
+
     int days() default 3;
 }

@@ -4,9 +4,9 @@ import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DepartmentService {
     List<DepartmentDtoResponse> findAll();
@@ -17,9 +17,9 @@ public interface DepartmentService {
 
     boolean changeStatus(Long id);
 
-    ServiceResponse<String> createDepartments(DepartmentDtoRequest request);
+    void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors);
 
     DepartmentDtoResponse getDepartmentById(Long id);
 
-    ServiceResponse<String> updateDepartments(DepartmentDtoRequest request);
+    void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors);
 }

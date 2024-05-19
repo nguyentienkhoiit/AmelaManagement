@@ -6,13 +6,13 @@ import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.mapper.DepartmentMapper;
 import com.khoinguyen.amela.repository.DepartmentRepository;
 import com.khoinguyen.amela.repository.criteria.DepartmentCriteria;
 import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     DepartmentCriteria departmentCriteria;
     UserHelper userHelper;
     OptionalValidator optionalValidator;
+    ValidationService validationService;
 
     @Override
     public List<DepartmentDtoResponse> findAll() {
@@ -64,16 +66,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ServiceResponse<String> createDepartments(DepartmentDtoRequest request) {
+    public void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         //check department name duplicate
         var departmentOptional = optionalValidator.findByDepartmentName(request.getName(), 0L);
         if (departmentOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "name", "Department name already exists");
-            return response;
+            validationService.updateErrors("name", "Department name already exists", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         Department department = Department.builder()
                 .createdBy(userLoggedIn.getId())
@@ -85,8 +87,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .status(true)
                 .build();
         departmentRepository.save(department);
-
-        return response;
     }
 
     @Override
@@ -96,22 +96,21 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ServiceResponse<String> updateDepartments(DepartmentDtoRequest request) {
+    public void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         Department departmentExist = departmentRepository.findById(request.getId()).orElse(null);
         if (departmentExist == null) {
-            response = new ServiceResponse<>(false, "department", "Department not found: " + request.getId());
-            return response;
+            validationService.updateErrors("department", "Department not found: " + request.getId(), errors);
         }
 
         //check department name duplicate
         var departmentOptional = optionalValidator.findByDepartmentName(request.getName(), request.getId());
         if (departmentOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "name", "Department name already exists");
-            return response;
+            validationService.updateErrors("name", "Department name already exists", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         Department department = Department.builder()
                 .id(request.getId())
@@ -124,7 +123,5 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .status(true)
                 .build();
         departmentRepository.save(department);
-
-        return response;
     }
 }

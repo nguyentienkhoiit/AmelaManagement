@@ -1,8 +1,8 @@
 package com.khoinguyen.amela.model.dto.position;
 
 import com.khoinguyen.amela.util.StringUtil;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 @Getter
@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 public class JobPositionDtoRequest {
     Long id;
 
-    @Length(min = 4, message = "Length greater than 5")
+    @Size(min = 4, max = 30, message = "Length must be between {min} and {max} characters")
     String name;
 
     String description;

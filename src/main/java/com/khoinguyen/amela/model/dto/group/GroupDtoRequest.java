@@ -1,9 +1,9 @@
 package com.khoinguyen.amela.model.dto.group;
 
 import com.khoinguyen.amela.util.StringUtil;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 @Getter
@@ -15,12 +15,12 @@ import org.hibernate.validator.constraints.Length;
 public class GroupDtoRequest {
     Long id;
 
-    @Length(min = 4, message = "Length greater than 5")
+    @Size(min = 4, max = 30, message = "Length must be between {min} and {max} characters")
     String name;
 
     String description;
 
-    @Length(min = 9, message = "Length greater than 10")
+    @Size(min = 10, message = "Length must be greater than or equal to {min}")
     String listMail;
 
     public String getName() {

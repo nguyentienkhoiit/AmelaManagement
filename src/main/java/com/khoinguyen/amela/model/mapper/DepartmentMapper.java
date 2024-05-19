@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.Department;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
@@ -18,4 +19,11 @@ public class DepartmentMapper {
                 .build();
     }
 
+    public static DepartmentDtoResponse toDepartmentDtoResponse(DepartmentDtoRequest request) {
+        return DepartmentDtoResponse.builder()
+                .id(request.getId())
+                .name(request.getName())
+                .description(request.getDescription())
+                .build();
+    }
 }

@@ -296,9 +296,11 @@ VALUES (14, '2024-05-05 20:16:01.604474', 1,
 ', 'Bùi Tiến Dũng giúp LPBank HAGL hạ Thể Công ở trận HLV Kim Sang Sik dự khán',
         '
 2024-05-09 08:41:21.292192
-', 1, 1, '2024-05-07 11:36:00.000000
+', 1, 1, '
+2024-05-07 11:36:00.000000
 ', 83),
-       (17, '2024-05-05 22:13:12.494935
+       (17, '
+2024-05-05 22:13:12.494935
 ', 1,
         '<p>This is video: <a href=
 \"https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11\">https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11</a></p>',

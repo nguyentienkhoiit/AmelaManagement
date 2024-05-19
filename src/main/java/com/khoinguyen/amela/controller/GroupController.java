@@ -3,8 +3,9 @@ package com.khoinguyen.amela.controller;
 import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
+import com.khoinguyen.amela.model.mapper.GroupMapper;
 import com.khoinguyen.amela.service.GroupService;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
     HttpSession session;
     GroupService groupService;
+    ValidationService validationService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -63,14 +70,16 @@ public class GroupController {
             BindingResult result,
             Model model
     ) {
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/groups/group_create";
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = groupService.createGroups(request);
+        groupService.createGroups(request, errors);
 
-        if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
             return "layout/groups/group_create";
         }
 
@@ -87,8 +96,10 @@ public class GroupController {
     ) {
         session.setAttribute("active", "group");
 
-        GroupDtoResponse response = groupService.getGroupById(id);
-        model.addAttribute("group", response);
+        if (!model.containsAttribute("group")) {
+            GroupDtoResponse response = groupService.getGroupById(id);
+            model.addAttribute("group", response);
+        }
         return "layout/groups/group_update";
     }
 
@@ -97,18 +108,21 @@ public class GroupController {
     public String updateGroups(
             @Valid @ModelAttribute("group") GroupDtoRequest request,
             BindingResult result,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
-
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/groups/group_update";
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = groupService.updateGroups(request);
+        groupService.updateGroups(request, errors);
 
-        if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
-            return "layout/groups/group_update";
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("group", GroupMapper.toGroupDtoResponse(request));
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/groups/update/" + request.getId();
         }
 
         String url = (String) session.getAttribute("url");

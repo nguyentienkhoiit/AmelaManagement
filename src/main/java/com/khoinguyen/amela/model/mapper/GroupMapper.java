@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.model.mapper;
 
 import com.khoinguyen.amela.entity.Group;
+import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
@@ -18,6 +19,15 @@ public class GroupMapper {
                 .createdAt(DateTimeHelper.formatLocalDateTimeFullText(group.getCreatedAt()))
                 .updateAt(DateTimeHelper.formatLocalDateTimeFullText(group.getUpdateAt()))
                 .status(group.isStatus())
+                .build();
+    }
+
+    public static GroupDtoResponse toGroupDtoResponse(GroupDtoRequest group) {
+        return GroupDtoResponse.builder()
+                .id(group.getId())
+                .name(group.getName())
+                .description(group.getDescription())
+                .listMail(group.getListMail())
                 .build();
     }
 }

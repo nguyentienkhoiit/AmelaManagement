@@ -28,7 +28,9 @@
                 <label class="form-label" for="name">Group name</label>
                 <input class="form-control" id="name" name="name" placeholder="Faderless" th:field="*{name}"
                        type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['name'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['name']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
@@ -45,7 +47,9 @@
                 <label class="form-label" for="listMail">List mail</label>
                 <textarea class="form-control" id="listMail" name="listMail" placeholder="List mail"
                           th:field="*{listMail}"></textarea>
-                <div class="text-danger h6 mt-1" th:errors="*{listMail}" th:if="${#fields.hasErrors('listMail')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['listMail'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['listMail']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">
