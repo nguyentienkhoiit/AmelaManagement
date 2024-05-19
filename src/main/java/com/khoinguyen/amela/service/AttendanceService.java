@@ -7,6 +7,9 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AttendanceService {
     boolean checkAttendance();
 
@@ -15,9 +18,9 @@ public interface AttendanceService {
 
     boolean changeStatus(Long id);
 
-    ServiceResponse<String> createAttendances(AttendanceDtoRequest request);
+    void createAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors);
 
     AttendanceDtoUpdateResponse getAttendanceById(Long id);
 
-    ServiceResponse<String> updateAttendances(AttendanceDtoRequest request);
+    void updateAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors);
 }

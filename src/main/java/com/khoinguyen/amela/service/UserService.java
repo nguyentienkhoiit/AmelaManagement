@@ -6,16 +6,19 @@ import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.user.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Map;
+
 public interface UserService {
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest pagingDtoRequest);
 
-    ServiceResponse<String> createUser(UserDtoRequest request);
+    void createUser(UserDtoRequest request, Map<String, List<String>> errors);
 
     ProfileDtoResponse getProfile();
 
-    ServiceResponse<String> updateUser(UserDtoUpdate request);
+    void updateUser(UserDtoUpdate request, Map<String, List<String>> errors);
 
-    ServiceResponse<String> updateProfile(ProfileDtoRequest request, MultipartFile fileImage);
+    void updateProfile(ProfileDtoRequest request, MultipartFile fileImage, Map<String, List<String>> errors);
 
     UserDtoResponse getUserById(Long id);
 

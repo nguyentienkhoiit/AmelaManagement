@@ -1,7 +1,6 @@
 package com.khoinguyen.amela.util;
 
 import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,7 @@ public class UserHelper {
                 new UsernamePasswordAuthenticationToken(
                         userDetails,
                         password == null ? userDetails.getPassword() : password,
-                        authorities == null ? userDetails.getAuthorities(): authorities
+                        authorities == null ? userDetails.getAuthorities() : authorities
                 )
         );
     }

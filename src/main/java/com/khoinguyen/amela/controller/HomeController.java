@@ -9,6 +9,7 @@ import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -22,7 +23,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
@@ -33,6 +36,7 @@ public class HomeController {
     UserService userService;
     UserHelper userHelper;
     MessageScheduleService messageScheduleService;
+    ValidationService validationService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
@@ -81,20 +85,18 @@ public class HomeController {
             Model model
     ) {
         User userLoggedIn = userHelper.getUserLogin();
-
         ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, userLoggedIn);
         model.addAttribute("user", response);
+
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
-            }
-            return "layout/auth/profile";
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = userService.updateProfile(request, fileImage);
-        if (!serviceResponse.status()) {
-            model.addAttribute(serviceResponse.column(), serviceResponse.data());
+        userService.updateProfile(request, fileImage, errors);
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
             return "layout/auth/profile";
         }
 

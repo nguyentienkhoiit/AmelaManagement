@@ -38,8 +38,8 @@
             </div>
         </div>
 
-        <div class="row" th:if="${error != null}">
-            <div class="col-md-12">
+        <div class="row" th:if="${errors != null and !#lists.isEmpty(errors['error'])}">
+            <div class="col-md-12" th:each="error : ${errors['error']}">
                 <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
                     <svg aria-label="Warning:" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
                          fill="currentColor" height="24"
@@ -57,19 +57,25 @@
             <div class="mb-3 col-md-4">
                 <label class="form-label" for="checkDay">Check day</label>
                 <input class="form-control" id="checkDay" name="checkDay" th:field="*{checkDay}" type="date">
-                <div class="text-danger h6 mt-1" th:if="${checkDay}" th:text="${checkDay}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['checkDay'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['checkDay']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-4">
                 <label class="form-label" for="checkin">Checkin</label>
                 <input class="form-control" id="checkin" name="checkInTime" th:field="*{checkInTime}"
                        type="time">
-                <div class="text-danger h6 mt-1" th:if="${checkInTime}" th:text="${checkInTime}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['checkInTime'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['checkInTime']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-4">
                 <label class="form-label" for="checkout">Checkout</label>
                 <input class="form-control" id="checkout" name="checkOutTime" th:field="*{checkOutTime}"
                        type="time">
-                <div class="text-danger h6 mt-1" th:if="${checkOutTime}" th:text="${checkOutTime}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['checkOutTime'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['checkOutTime']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">

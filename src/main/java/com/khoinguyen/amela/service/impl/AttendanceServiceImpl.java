@@ -9,22 +9,28 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
+import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.repository.AttendanceRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.AttendanceCriteria;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.DateTimeHelper;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -33,6 +39,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     UserHelper userHelper;
     AttendanceCriteria attendanceCriteria;
     UserRepository userRepository;
+    ValidationService validationService;
 
     @Override
     public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(PagingDtoRequest pagingDtoRequest, Long userId) {
@@ -55,41 +62,24 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public ServiceResponse<String> createAttendances(AttendanceDtoRequest request) {
+    public void createAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
-
-        //check in no more than 3 days from current time
-        if (DateTimeHelper.isExpiredDay(request.getCheckDay(), LocalDate.now(), 3)) {
-            response = new ServiceResponse<>(false, "error", "Attendance addition overdue");
-            return response;
-        }
-
-        if (request.getCheckInTime().isAfter(request.getCheckOutTime())) {
-            response = new ServiceResponse<>(false, "checkOutTime", "Check out time must be after check in day");
-            return response;
-        }
-
-        if (request.getCheckDay().isAfter(LocalDate.now())) {
-            response = new ServiceResponse<>(false, "checkDay", "Check day cannot exceed the current time is " + LocalDate.now());
-            return response;
-        }
 
         Optional<User> userOptional = userRepository.findById(request.getUserId());
         if (userOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "error", "User is not found");
-            return response;
+            validationService.updateErrors("error", "User is not found", errors);
         }
 
         Optional<Attendance> attendanceOptional = attendanceRepository
                 .findAttendanceByUserAndCheckDay(request.getUserId(), request.getCheckDay());
         if (attendanceOptional.isPresent()) {
-            response = new ServiceResponse<>(false, "error", "Check time already exists");
-            return response;
+            validationService.updateErrors("error", "Check day has already been checked in", errors);
         }
 
+        if (!errors.isEmpty()) return;
+
         Attendance attendance = Attendance.builder()
-                .user(userOptional.get())
+                .user(userOptional.orElseThrow())
                 .checkDay(request.getCheckDay())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
@@ -101,7 +91,6 @@ public class AttendanceServiceImpl implements AttendanceService {
                 .note(request.getNote())
                 .build();
         attendanceRepository.save(attendance);
-        return response;
     }
 
     @Override
@@ -112,41 +101,29 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public ServiceResponse<String> updateAttendances(AttendanceDtoRequest request) {
+    public void updateAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         var attendanceOptional = attendanceRepository.findById(request.getAttendanceId());
         if (attendanceOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "error", "Attendance is not found");
-            return response;
+            validationService.updateErrors("error", "Attendance is not found", errors);
         }
 
-        Attendance attendance = attendanceOptional.get();
-        //check in no more than 3 days from current time
-        if (DateTimeHelper.isExpiredDay(attendance.getCheckDay(), LocalDate.now(), 3)) {
-            response = new ServiceResponse<>(false, "error", "Attendance editing overdue");
-            return response;
-        }
+        if (!errors.isEmpty()) return;
 
-        if (request.getCheckInTime().isAfter(request.getCheckOutTime())) {
-            response = new ServiceResponse<>(false, "checkOutTime", "Check out time must be after check in day");
-            return response;
-        }
-
+        Attendance attendance = attendanceOptional.orElseThrow();
         attendance.setUpdateAt(LocalDateTime.now());
         attendance.setUpdateBy(userLoggedIn.getId());
         attendance.setCheckInTime(request.getCheckInTime());
         attendance.setCheckOutTime(request.getCheckOutTime());
         attendance.setNote(request.getNote());
         attendanceRepository.save(attendance);
-
-        return response;
     }
 
     @Override
     public boolean checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
+        log.info("userLoggedIn: {}", UserMapper.toUserDtoResponse(userLoggedIn));
         Optional<Attendance> attendanceOptional = attendanceRepository
                 .findAttendanceByUserAndCheckDay(userLoggedIn.getId(), LocalDate.now());
         Attendance attendance;
@@ -165,6 +142,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance = attendanceOptional.orElseThrow();
             attendance.setCheckOutTime(LocalTime.now());
         }
+        System.out.println(AttendanceMapper.toAttendanceDtoUpdateResponse(attendance));
         attendanceRepository.save(attendance);
         return true;
     }

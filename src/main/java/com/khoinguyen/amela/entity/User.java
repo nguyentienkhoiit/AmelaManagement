@@ -71,7 +71,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<Verification> verifications;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Attendance> attendances;
 
     @OneToMany(mappedBy = "user")

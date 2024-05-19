@@ -1,5 +1,7 @@
-CREATE DATABASE IF NOT EXISTS `amela_management` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION = 'N' */;
-USE `amela_management`;
+CREATE
+DATABASE IF NOT EXISTS `amela_management` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION = 'N' */;
+USE
+`amela_management`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: amela_management
@@ -31,14 +33,14 @@ CREATE TABLE `attendance_tbl`
     `check_out_time` time(6)      DEFAULT NULL,
     `created_by`     bigint       DEFAULT NULL,
     `status`         bit(1) NOT NULL,
-    `update_at`      datetime(6)  DEFAULT NULL,
+    `update_at`      datetime(6) DEFAULT NULL,
     `update_by`      bigint       DEFAULT NULL,
     `user_id`        bigint       DEFAULT NULL,
     `check_day`      date         DEFAULT NULL,
     `note`           varchar(255) DEFAULT NULL,
-    `created_at`     datetime(6)  DEFAULT NULL,
+    `created_at`     datetime(6) DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `FKl5aaa4t4uqjf85g0aai4hdtsv` (`user_id`),
+    KEY              `FKl5aaa4t4uqjf85g0aai4hdtsv` (`user_id`),
     CONSTRAINT `FKl5aaa4t4uqjf85g0aai4hdtsv` FOREIGN KEY (`user_id`) REFERENCES `user_tbl` (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 29
@@ -50,7 +52,8 @@ CREATE TABLE `attendance_tbl`
 -- Dumping data for table `attendance_tbl`
 --
 
-LOCK TABLES `attendance_tbl` WRITE;
+LOCK
+TABLES `attendance_tbl` WRITE;
 /*!40000 ALTER TABLE `attendance_tbl`
     DISABLE KEYS */;
 INSERT INTO `attendance_tbl`
@@ -104,7 +107,8 @@ VALUES (1, '18:37:31.009294', '23:46:20.280276', 1, _binary '', '2024-05-03 23:
         NULL, NULL);
 /*!40000 ALTER TABLE `attendance_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `department_tbl`
@@ -116,12 +120,12 @@ DROP TABLE IF EXISTS `department_tbl`;
 CREATE TABLE `department_tbl`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
-    `created_at`  datetime(6)  DEFAULT NULL,
+    `created_at`  datetime(6) DEFAULT NULL,
     `created_by`  bigint       DEFAULT NULL,
     `description` varchar(255) DEFAULT NULL,
     `name`        varchar(255) DEFAULT NULL,
     `status`      bit(1) NOT NULL,
-    `update_at`   datetime(6)  DEFAULT NULL,
+    `update_at`   datetime(6) DEFAULT NULL,
     `update_by`   bigint       DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -134,7 +138,8 @@ CREATE TABLE `department_tbl`
 -- Dumping data for table `department_tbl`
 --
 
-LOCK TABLES `department_tbl` WRITE;
+LOCK
+TABLES `department_tbl` WRITE;
 /*!40000 ALTER TABLE `department_tbl`
     DISABLE KEYS */;
 INSERT INTO `department_tbl`
@@ -145,7 +150,8 @@ VALUES (1, '2024-05-03 10:47:00.000000', 1, 'description', 'Faderless', _binary 
        (6, '2024-05-10 09:38:18.944593', 1, 'Write here', 'Boom', _binary '', '2024-05-10 09:38:18.944593', 1);
 /*!40000 ALTER TABLE `department_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `group_tbl`
@@ -157,12 +163,12 @@ DROP TABLE IF EXISTS `group_tbl`;
 CREATE TABLE `group_tbl`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
-    `created_at`  datetime(6)  DEFAULT NULL,
+    `created_at`  datetime(6) DEFAULT NULL,
     `created_by`  bigint       DEFAULT NULL,
     `description` varchar(255) DEFAULT NULL,
     `name`        varchar(255) DEFAULT NULL,
     `status`      bit(1) NOT NULL,
-    `update_at`   datetime(6)  DEFAULT NULL,
+    `update_at`   datetime(6) DEFAULT NULL,
     `update_by`   bigint       DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -175,7 +181,8 @@ CREATE TABLE `group_tbl`
 -- Dumping data for table `group_tbl`
 --
 
-LOCK TABLES `group_tbl` WRITE;
+LOCK
+TABLES `group_tbl` WRITE;
 /*!40000 ALTER TABLE `group_tbl`
     DISABLE KEYS */;
 INSERT INTO `group_tbl`
@@ -185,7 +192,8 @@ VALUES (1, '2024-04-30 16:04:49.237322', 1, 'description here', 'Group Faderless
         '2024-05-16 14:26:41.726854', 1);
 /*!40000 ALTER TABLE `group_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `job_position_tbl`
@@ -197,12 +205,12 @@ DROP TABLE IF EXISTS `job_position_tbl`;
 CREATE TABLE `job_position_tbl`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
-    `created_at`  datetime(6)  DEFAULT NULL,
+    `created_at`  datetime(6) DEFAULT NULL,
     `created_by`  bigint       DEFAULT NULL,
     `description` varchar(255) DEFAULT NULL,
     `name`        varchar(255) DEFAULT NULL,
     `status`      bit(1) NOT NULL,
-    `update_at`   datetime(6)  DEFAULT NULL,
+    `update_at`   datetime(6) DEFAULT NULL,
     `update_by`   bigint       DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -215,7 +223,8 @@ CREATE TABLE `job_position_tbl`
 -- Dumping data for table `job_position_tbl`
 --
 
-LOCK TABLES `job_position_tbl` WRITE;
+LOCK
+TABLES `job_position_tbl` WRITE;
 /*!40000 ALTER TABLE `job_position_tbl`
     DISABLE KEYS */;
 INSERT INTO `job_position_tbl`
@@ -229,7 +238,8 @@ VALUES (1, '2024-05-14 08:04:57.239078', 1, 'description', 'Developer', _binary 
         1);
 /*!40000 ALTER TABLE `job_position_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `message_schedule_tbl`
@@ -241,19 +251,19 @@ DROP TABLE IF EXISTS `message_schedule_tbl`;
 CREATE TABLE `message_schedule_tbl`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
-    `created_at`  datetime(6)  DEFAULT NULL,
+    `created_at`  datetime(6) DEFAULT NULL,
     `created_by`  bigint       DEFAULT NULL,
     `message`     text,
     `sender_name` varchar(255) DEFAULT NULL,
     `status`      bit(1) NOT NULL,
     `subject`     varchar(255) DEFAULT NULL,
-    `update_at`   datetime(6)  DEFAULT NULL,
+    `update_at`   datetime(6) DEFAULT NULL,
     `update_by`   bigint       DEFAULT NULL,
     `group_id`    bigint       DEFAULT NULL,
-    `publish_at`  datetime(6)  DEFAULT NULL,
+    `publish_at`  datetime(6) DEFAULT NULL,
     `viewers`     bigint       DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `FKjgr0cguu1cli54k1jmd4xtgs1` (`group_id`),
+    KEY           `FKjgr0cguu1cli54k1jmd4xtgs1` (`group_id`),
     CONSTRAINT `FKjgr0cguu1cli54k1jmd4xtgs1` FOREIGN KEY (`group_id`) REFERENCES `group_tbl` (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 55
@@ -265,7 +275,8 @@ CREATE TABLE `message_schedule_tbl`
 -- Dumping data for table `message_schedule_tbl`
 --
 
-LOCK TABLES `message_schedule_tbl` WRITE;
+LOCK
+TABLES `message_schedule_tbl` WRITE;
 /*!40000 ALTER TABLE `message_schedule_tbl`
     DISABLE KEYS */;
 INSERT INTO `message_schedule_tbl`
@@ -278,16 +289,25 @@ VALUES (14, '2024-05-05 20:16:01.604474', 1,
         'Administrator', _binary '', 'Chương 1: Code Sạch', '2024-05-09 10:28:13.196889', 4, 1,
         '2024-05-09 08:27:00.000000', 57),
        (16, '2024-05-05 22:10:40.052066', 1,
-        '<h2><strong>Thủ thành Bùi Tiến Dũng có trận đấu xuất sắc, góp công lớn vào chiến thắng 1-0 của LPBank HAGL trước Thể Công Viettel. Trận đấu mà tân HLV ĐT Việt Nam Kim Sang Sik dự khán sân Hàng Đẫy, tối 5/5.</strong></h2><p><strong>Ghi bàn:</strong></p><p>HAGL: Thanh Bình (27\', phản lưới)</p><p><strong>Đội hình xuất phát Thể Công Viettel vs LPBank HAGL</strong></p><p><strong>Thể Công Viettel:</strong> Thế Tài (25), Thanh Bình (3), Tiến Dũng (4), Jaha (7), Hoàng Đức (28), Văn Khang (11), Tiến Anh (86), Đức Chiến (21), Tuấn Tài (12), Joao Pedro (77), Pedro Henrique (Văn Hào 23\').<br>&nbsp;</p><p><a href=\"https://vietnamnet.vn/hagl-tag7937402526507091206.html\"><strong>LPBank HAGL</strong></a><strong>:</strong> &nbsp;Tiến Dũng (36), Văn Sơn (2), Jairo Filho (33), Gabriel Ferreira (22), Tấn Tài (17), Minh Vương (10), Ngọc Quang (8), Quang Nho (86), Thanh Bình (9), Thanh Sơn (Đức Việt 17\'), Joao Veras (45).</p><p>&nbsp;</p>',
-        'Administrator', _binary '', 'Bùi Tiến Dũng giúp LPBank HAGL hạ Thể Công ở trận HLV Kim Sang Sik dự khán',
-        '2024-05-09 08:41:21.292192', 1, 1, '2024-05-07 11:36:00.000000', 83),
-       (17, '2024-05-05 22:13:12.494935', 1,
-        '<p>This is video: <a href=\"https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11\">https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11</a></p>',
+        '<h2><strong>Thủ thành Bùi Tiến Dũng có trận đấu xuất sắc, góp công lớn vào chiến thắng 1-0 của LPBank HAGL trước Thể Công Viettel. Trận đấu mà tân HLV ĐT Việt Nam Kim Sang Sik dự khán sân Hàng Đẫy, tối 5/5.</strong></h2><p><strong>Ghi bàn:</strong></p><p>HAGL: Thanh Bình (27\',
+        phản lưới)</p><p><strong>Đội hình xuất phát Thể Công Viettel vs LPBank HAGL</strong></p><p><strong>Thể Công Viettel:</strong> Thế Tài (25), Thanh Bình (3), Tiến Dũng (4), Jaha (7), Hoàng Đức (28), Văn Khang (11), Tiến Anh (86), Đức Chiến (21), Tuấn Tài (12), Joao Pedro (77), Pedro Henrique (Văn Hào 23\').<br>&nbsp;</p><p><a href=\"https://vietnamnet.vn/hagl-tag7937402526507091206.html\"><strong>LPBank HAGL</strong></a><strong>:</strong> &nbsp;Tiến Dũng (36), Văn Sơn (2), Jairo Filho (33), Gabriel Ferreira (22), Tấn Tài (17), Minh Vương (10), Ngọc Quang (8), Quang Nho (86), Thanh Bình (9), Thanh Sơn (Đức Việt 17\'), Joao Veras (45).</p><p>&nbsp;
+</p>',
+        'Administrator', _binary '
+', 'Bùi Tiến Dũng giúp LPBank HAGL hạ Thể Công ở trận HLV Kim Sang Sik dự khán',
+        '
+2024-05-09 08:41:21.292192
+', 1, 1, '2024-05-07 11:36:00.000000
+', 83),
+       (17, '2024-05-05 22:13:12.494935
+', 1,
+        '<p>This is video: <a href=
+\"https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11\">https://www.youtube.com/watch?v=_8ldAdQd9WU&amp;list=RDjfRActM9oUs&amp;index=11</a></p>',
         'Nguyễn Hồng Minh', _binary '', 'Mentor amela', '2024-05-05 22:13:12.494935', 1, 3,
         '2024-05-05 22:16:00.000000', 20),
        (18, '2024-05-06 09:18:42.185991', 1,
         '<p>Một điểm đáng chú ý nữa của dự thảo Thông tư là NHNN bổ sung, chỉnh sửa quy định tổ chức tín dụng niêm yết công khai lãi suất tiền gửi bằng VND tại địa điểm giao dịch hợp pháp thuộc mạng lưới hoạt động của tổ chức tín dụng và đăng tải trên trang thông tin điện tử (nếu có) của tổ chức tín dụng, để đồng bộ với quy định tại các Thông tư quy định về tiền gửi của NHNN.</p><p>Hiện nay NHNN quy định mức trần lãi suất tiền gửi không kỳ hạn (tức là tiền gửi trong tài khoản thanh toán là 0,5%/năm) và trần lãi suất của các kỳ hạn dưới 6 tháng là 4,75%/năm.</p><p><strong>Vẫn có ngân hàng vượt trần lãi suất</strong></p><p>Dù quy định hiện hành về trần lãi suất tiền gửi không kỳ hạn và tiền gửi kỳ hạn dưới 6 tháng đã có, nhưng vẫn có ngân hàng cố tình “vượt rào”.</p><p>Chia sẻ với Pháp Luật TP.HCM, một lãnh đạo <a href=\"https://www.24h.com.vn/doanh-nghiep-c849.html\">doanh nghiệp</a> nhỏ tại TP.HCM cho biết: Theo biểu lãi suất niêm yết công khai của một ngân hàng thương mại thì tiền gửi kỳ hạn 3 tháng chỉ được chi trả mức lãi suất 3%/năm, ngay cả kỳ hạn 12 tháng cũng chỉ được 4,5%/năm.</p><p>\"Thế nhưng khi biết tôi muốn gửi kỳ hạn 3 tháng với số tiền lên đến 45 tỉ đồng, lãnh đạo chi nhánh ngân hàng trên tuyên bố sẵn sàng duyệt cho tôi mức lãi suất lên đến 6%/năm. Đây không chỉ là mức lãi suất cao kỷ lục ở thời điểm hiện tại đối với kỳ hạn 3 tháng mà nó còn vượt trần lãi suất mà NHNN quy định\", vị lãnh đạo doanh nghiệp bình luận.</p><p>Ông còn thông tin thêm: Phía ngân hàng làm cho ông một sổ tiết kiệm kỳ hạn 12 tháng với lãi suất 6%/năm, trong khi thực tế ông chỉ gửi 3 tháng. Đến thời điểm đáo hạn sổ tiết kiệm, ngân hàng vẫn cho ông rút toàn bộ tiền gốc và nhận lãi đầy đủ như cam kết, đồng thời họ làm một hợp đồng cho vay với thời hạn là 9 tháng...</p><p>\"Song song với các thủ tục ký nhận hợp đồng vay vốn, ngân hàng còn cho tôi ký trước một loạt giấy tờ liên quan đến việc tất toán khoản vay. Tất cả mọi thủ tục đều được thực hiện một cách nhanh chóng”, vị này chia sẻ.</p><p><strong>Siết chất lượng tín dụng quan trọng hơn siết huy động</strong></p><p>Lý giải về việc vì sao ngay tại thời điểm này, khi mà nhu cầu vốn của nền kinh tế không cao mà vẫn có ngân hàng cố tình vi phạm vượt trần lãi suất mà NHNN quy định, Tổng giám đốc một ngân hàng thương mại nêu quan điểm:</p><p>Trong bối cảnh hiện tại, ngân hàng nào dám vượt trần lãi suất huy động thì có thể do họ đang rất cần vốn để đảo nợ cho trái phiếu doanh nghiệp, chứ dư nợ tín dụng cho hoạt động sản xuất tăng không đáng kể. Hoặc có thể ngân hàng đó đang căng thẳng về thanh khoản, do khách hàng vay vốn mà không có khả năng trả nợ khi đến hạn dẫn đến ngân hàng phải “nuôi” khách hàng tiền gửi để luôn luôn đảm bảo tính thanh khoản.</p><p>Bản chất của việc bị mất thanh khoản là do dòng tiền không luân chuyển, ngân hàng cho vay ra nhưng không thu được vốn về. Giờ đây cộng thêm với việc bị cấm vượt trần lãi suất huy động dưới mọi hình thức thì thanh khoản của ngân hàng đó vốn đã căng thẳng, sẽ càng trở nên căng thẳng hơn.</p><p>“Trong dự thảo Thông tư mới mà NHNN đang lấy ý kiến có việc nghiêm cấm tình trạng vượt trần lãi suất quy định. Theo đó, những khoản như lãi suất ưu đãi, quà tặng khuyến mãi, voucher… cũng phải được cộng vào lãi suất để tính mức trần. Và đương nhiên, ngân hàng nào đang trong tình trạng căng thẳng thanh khoản sẽ chịu tác động mạnh nhất từ những quy định này”, vị lãnh đạo nhà băng nhấn mạnh.</p><p>Bà Nguyễn Thị Phượng, Phó Tổng giám đốc Agribank cho biết: Về mặt nguyên tắc, bên cạnh lãi suất đã công bố, mỗi ngân hàng luôn thiết kế những gói tín dụng, hoặc các chương trình ưu đãi dành cho nhóm khách hàng ưu tiên.</p><p>Chẳng hạn, khách hàng vay có dòng tiền tốt, tài sản đảm bảo tốt, dự án kinh doanh tiềm năng sẽ được hưởng mức lãi suất tốt hơn so với các những khách có điều kiện vay không tốt bằng. Tương tự, các khách hàng tiền gửi cũng như vậy. Ngoài lãi suất tiền gửi niêm yết, khách hàng nào có số tiền gửi lớn vẫn sẽ được ngân hàng trả lãi suất hấp dẫn hơn.</p><p>Nhưng dù là chính sách ưu tiên đối với sản phẩm hay chính sách ưu tiên đối với khách hàng thì các ngân hàng cũng không được phép vượt trần lãi suất mà NHNN quy định.</p><p>Bà Phượng nhấn mạnh: “Một khi ngân hàng nào cố tình lách để huy động vốn cũng sẽ dễ dàng bị phát hiện trong quá trình hậu kiểm. Bởi chỉ cần dựa trên những tính toán từ lãi suất huy động thực tế cộng với các loại chi phí khuyến mãi, cơ quan chức năng sẽ biết được lãi suất huy động của từng ngân hàng có vi phạm quy định về trần lãi suất hay không”.</p><p>TS Nguyễn Hữu Huân, chuyên gia <a href=\"https://www.24h.com.vn/kinh-doanh-c161e4008.html\">tài chính</a> ngân hàng phân tích: Trong thời điểm hiện nay khi tiền trong hệ thống vẫn dư thừa, tín dụng vẫn tăng rất chậm thì những quy định về trần lãi suất không có nhiều ý nghĩa. Thực tế cho thấy là lãi suất không kỳ hạn và lãi suất dưới 6 tháng đang rất thấp so với mức trần mà NHNN đưa ra.</p><p>Thế nhưng, trong thời gian tới, khi tín dụng tăng trưởng xoay chiều, các ngân hàng có thể sẽ phải tăng lãi suất huy động thì với các quy định về trần lãi suất sẽ giúp ngăn chặn các ngân hàng lách luật, qua đó tạo sự công bằng minh bạch giữa các ngân hàng trong việc huy động vốn.</p><p>\"Bên cạnh đó, NHNN cũng cần đưa ra mức trần lãi suất ở từng thời điểm như thế nào cho hợp lý, để ngân hàng nhỏ không cần phải lách luật vẫn có thể cạnh tranh lãi suất, nhằm duy trì thanh khoản, qua đó cũng đảm bảo an toàn hệ thống”, TS Huân nêu quan điểm.</p>',
-        'Administrator', _binary '', 'Có ngân hàng \'đi đêm\' lãi suất tiết kiệm, cao gấp đôi so với niêm yết',
+        'Administrator', _binary '', 'Có ngân hàng \'đi đêm
+\' lãi suất tiết kiệm, cao gấp đôi so với niêm yết',
         '2024-05-14 11:48:19.759576', 1, NULL, '2024-05-30 09:18:00.000000', 26),
        (19, '2024-05-07 11:12:10.322018', 1,
         '<h4><strong>Do các bị cáo không phải chịu trách nhiệm bồi thường dân sự nên HĐXX tuyên trả lại số tiền hơn 183 tỷ đồng cho bà Phạm Thị Nụ (vợ ông Trần Quí Thanh).</strong></h4><p>Sau gần nửa tháng kết thúc phiên xét xử đối với bị cáo Trần Quí Thanh và 2 con gái, TAND TP.HCM vừa tống đạt bản án sơ thẩm đến các bị cáo, người liên quan.</p><p>Theo Bản án sơ thẩm, qua xét hỏi, tranh luận tại phiên tòa, các bị cáo Trần Quí Thanh, Trần Uyên Phương, Trần Ngọc Bích đã thừa nhận hành vi phạm tội của mình. Lời khai nhận tội của các bị cáo phù hợp với các tài liệu, chứng cứ có trong hồ sơ vụ án.</p><p>Vì vậy, có căn cứ kết luận, về bản chất của vụ án, các bị cáo đã có hành vi bằng giao dịch dân sự về vay tài sản (vay tiền) đối với các bị hại gồm: Lâm Sơn Hoàng, Nguyễn Huy Đông, Nguyễn Văn Chung và Đặng Thị Kim Oanh là không trái luật.</p><figure class=\"image\"><picture><source srcset=\"https://static-images.vnncdn.net/files/publish/2024/5/7/w-tranquithanh-1-287.gif?width=0&amp;s=iUg9xdO_-XIi34kigGCJlg\" media=\"(max-width: 1023px)\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"W-tranquithanh-1.gif\" srcset=\"https://static-images.vnncdn.net/files/publish/2024/5/7/w-tranquithanh-1-287.gif?width=0&amp;s=iUg9xdO_-XIi34kigGCJlg\" sizes=\"100vw\" width=\"1\" height=\"1\"></picture><figcaption><i>Bị cáo Trần Quí Thanh tại phiên sơ thẩm</i></figcaption></figure><p>Tuy nhiên, để đảm bảo cho khoản tiền vốn vay, tiền lãi phát sinh, các bị cáo cùng các bị hại đã thỏa thuận ký kết các hợp đồng về việc chuyển nhượng tài sản (quyền sử dụng đất, cổ phần của dự án), đây là các hợp đồng giả tạo, trái pháp luật.</p><p>Sau khi đứng tên trên giấy tờ chuyển nhượng, các bị cáo đã nảy sinh ý định chiếm đoạt tài sản của các bị hại nên đã dùng thủ đoạn gây khó khăn, nại ra lý do bất hợp lý để từ chối việc thanh toán hoặc buộc người vay phải trả thêm tiền lãi, tiền phạt, không cho trả tiền gốc…để chiếm đoạt tài sản.&nbsp;</p><p>Tổng số tài sản mà các bị cáo chiếm đoạt của các bị hại là hơn 1.048 tỷ đồng.</p><p>Căn cứ các tình tiết tăng nặng, giảm nhẹ, HĐXX &nbsp;tuyên phạt bị cáo Trần Quí Thanh 8 năm tù; bị cáo Trần Uyên Phương 4 năm tù và Trần Ngọc Bích 3 năm tù nhưng cho hưởng án treo cùng về tội \"Lạm dụng tín nhiệm chiếm đoạt tài sản\".</p><p>HĐXX cũng tuyên hủy các hợp đồng chuyển nhượng tài sản được các cơ quan có thẩm quyền công nhận, được công chứng chứng thực, cùng các giấy tờ đã giao kết có liên quan giữa các bị cáo và bị hại, người có quyền lợi, nghĩa vụ liên quan.</p><p>Cạnh đó, tòa không chấp nhận yêu cầu của bà Đặng Thị Kim Oanh về việc buộc ông Trần Quí Thanh phải bồi thường thiệt hại về lợi thế kinh doanh kể từ ngày bị chiếm đoạt tài sản với số tiền 531,3 tỷ đồng.</p><figure class=\"image\"><picture><source srcset=\"https://static-images.vnncdn.net/files/publish/2024/5/7/w-uyenphuong-1-288.gif?width=0&amp;s=WSEqsBfBRmQqXO44GM31Aw\" media=\"(max-width: 1023px)\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"W-uyenphuong-1.gif\" srcset=\"https://static-images.vnncdn.net/files/publish/2024/5/7/w-uyenphuong-1-288.gif?width=0&amp;s=WSEqsBfBRmQqXO44GM31Aw\" sizes=\"100vw\" width=\"1\" height=\"1\"></picture><figcaption><i>Bị cáo Trần Uyên Phương</i></figcaption></figure><p>Theo HĐXX, bà Oanh không có tài liệu, chứng cứ chứng minh thiệt hại thực tế đã xảy ra, việc yêu cầu tính thiệt hại theo mức lãi suất 10% trên giá trị tài sản được định giá là không có cơ sở nên không được chấp nhận.</p><p>Về dân sự, do các bị cáo không phải chịu trách nhiệm bồi thường dân sự nên HĐXX tuyên trả lại số tiền hơn 183 tỷ đồng cho bà Phạm Thị Nụ (vợ bị cáo Trần Quí Thanh và là mẹ của hai bị cáo Phương, Bích) đã nộp để khắc phục hậu quả của các bị cáo.</p><p>Ngoài mức án trên, mỗi bị cáo phải chịu án phí 200 ngàn đồng.</p><p>Các bị hại cũng phải chịu tiền án phí, trong đó bị hại Lâm Sơn Hoàng phải chịu 223 triệu đồng ; Nguyễn Huy Đông hơn 186 triệu đồng; Nguyễn Văn Chung hơn 142 triệu đồng và Đặng Thị Kim Oanh hơn 982 triệu đồng.</p><p>Ngoài ra, những người liên quan cũng phải chịu án phí, trong đó người cao nhất là 173 triệu đồng, người thấp nhất là 24 triệu đồng.</p>',
@@ -322,7 +342,8 @@ VALUES (14, '2024-05-05 20:16:01.604474', 1,
         'Administrator', _binary '', 'Your clock is 0.2 seconds ahead.', '2024-05-14 22:02:36.458473', 1, 3,
         '2024-05-14 22:05:00.000000', 1),
        (32, '2024-05-15 08:21:19.153905', 1,
-        '<h2><strong>HLV Kim Sang Sik vẫn chưa thể hoàn thiện đội ngũ trợ lý bất chấp thời gian tuyển Việt Nam tập trung chuẩn bị vòng loại World Cup 2026 đang đến rất gần.</strong></h2><p><strong>Trợ lý cho ông Kim Sang Sik chưa lộ diện...</strong></p><p>Hơn 1 tuần sau khi chính thức được bổ nhiệm ngồi \'ghế nóng\', đội ngũ trợ lý cho HLV Kim Sang Sik ở <a href=\"https://vietnamnet.vn/hlv-kim-sang-sik-tag12292919738489252851.html\"><strong>tuyển Việt Nam</strong></a> vẫn chưa lộ diện, ngoại trừ một cái tên Choi Won-Kwon.</p><p>Điều này có phần gây sốt ruột lẫn thắc mắc từ người hâm mộ, bởi thời gian để vị tân thuyền trưởng người Hàn Quốc chuẩn bị cho trận ra mắt là không nhiều, với việc tuyển Việt Nam có 2 trận đấu ở vòng loại 2 World Cup 2026 trong kỳ FIFA Days tháng 6.</p>',
+        '<h2><strong>HLV Kim Sang Sik vẫn chưa thể hoàn thiện đội ngũ trợ lý bất chấp thời gian tuyển Việt Nam tập trung chuẩn bị vòng loại World Cup 2026 đang đến rất gần.</strong></h2><p><strong>Trợ lý cho ông Kim Sang Sik chưa lộ diện...</strong></p><p>Hơn 1 tuần sau khi chính thức được bổ nhiệm ngồi \'ghế nóng
+\', đội ngũ trợ lý cho HLV Kim Sang Sik ở <a href=\"https://vietnamnet.vn/hlv-kim-sang-sik-tag12292919738489252851.html\"><strong>tuyển Việt Nam</strong></a> vẫn chưa lộ diện, ngoại trừ một cái tên Choi Won-Kwon.</p><p>Điều này có phần gây sốt ruột lẫn thắc mắc từ người hâm mộ, bởi thời gian để vị tân thuyền trưởng người Hàn Quốc chuẩn bị cho trận ra mắt là không nhiều, với việc tuyển Việt Nam có 2 trận đấu ở vòng loại 2 World Cup 2026 trong kỳ FIFA Days tháng 6.</p>',
         'Administrator', _binary '', 'Tuyển Việt Nam: Băn khoăn về đội ngũ trợ lý cho HLV Kim Sang Sik',
         '2024-05-15 08:21:30.420405', 1, 3, '2024-05-15 08:23:00.000000', 0),
        (33, '2024-05-15 10:50:12.692651', 1,
@@ -382,7 +403,8 @@ VALUES (14, '2024-05-05 20:16:01.604474', 1,
         '2024-05-15 15:39:19.848039', 1, NULL, '2024-05-15 15:40:00.000000', 1);
 /*!40000 ALTER TABLE `message_schedule_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `role_tbl`
@@ -394,12 +416,12 @@ DROP TABLE IF EXISTS `role_tbl`;
 CREATE TABLE `role_tbl`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
-    `created_at`  datetime(6)  DEFAULT NULL,
+    `created_at`  datetime(6) DEFAULT NULL,
     `created_by`  bigint       DEFAULT NULL,
     `description` varchar(255) DEFAULT NULL,
     `name`        varchar(255) DEFAULT NULL,
     `status`      bit(1) NOT NULL,
-    `update_at`   datetime(6)  DEFAULT NULL,
+    `update_at`   datetime(6) DEFAULT NULL,
     `update_by`   bigint       DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -412,7 +434,8 @@ CREATE TABLE `role_tbl`
 -- Dumping data for table `role_tbl`
 --
 
-LOCK TABLES `role_tbl` WRITE;
+LOCK
+TABLES `role_tbl` WRITE;
 /*!40000 ALTER TABLE `role_tbl`
     DISABLE KEYS */;
 INSERT INTO `role_tbl`
@@ -420,7 +443,8 @@ VALUES (1, NULL, 1, 'description', 'ADMIN', _binary '', NULL, 1),
        (2, NULL, 1, 'description', 'USER', _binary '', NULL, 1);
 /*!40000 ALTER TABLE `role_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `user_group_tbl`
@@ -435,8 +459,8 @@ CREATE TABLE `user_group_tbl`
     `group_id` bigint DEFAULT NULL,
     `user_id`  bigint DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `FKqggr9pa8fq69gyxkj5e9ccx1b` (`group_id`),
-    KEY `FKgsry4qa3qst0spwc1xx7kqysl` (`user_id`),
+    KEY        `FKqggr9pa8fq69gyxkj5e9ccx1b` (`group_id`),
+    KEY        `FKgsry4qa3qst0spwc1xx7kqysl` (`user_id`),
     CONSTRAINT `FKgsry4qa3qst0spwc1xx7kqysl` FOREIGN KEY (`user_id`) REFERENCES `user_tbl` (`id`),
     CONSTRAINT `FKqggr9pa8fq69gyxkj5e9ccx1b` FOREIGN KEY (`group_id`) REFERENCES `group_tbl` (`id`)
 ) ENGINE = InnoDB
@@ -449,7 +473,8 @@ CREATE TABLE `user_group_tbl`
 -- Dumping data for table `user_group_tbl`
 --
 
-LOCK TABLES `user_group_tbl` WRITE;
+LOCK
+TABLES `user_group_tbl` WRITE;
 /*!40000 ALTER TABLE `user_group_tbl`
     DISABLE KEYS */;
 INSERT INTO `user_group_tbl`
@@ -463,7 +488,8 @@ VALUES (6, 1, 4),
        (14, 3, 11);
 /*!40000 ALTER TABLE `user_group_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `user_message_schedule_tbl`
@@ -478,8 +504,8 @@ CREATE TABLE `user_message_schedule_tbl`
     `message_schedule_id` bigint DEFAULT NULL,
     `user_id`             bigint DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `FKsge9vcalb4vgv767c7md3eqjk` (`message_schedule_id`),
-    KEY `FKrqtd0mrv98uyhp7j1uvsgekiq` (`user_id`),
+    KEY                   `FKsge9vcalb4vgv767c7md3eqjk` (`message_schedule_id`),
+    KEY                   `FKrqtd0mrv98uyhp7j1uvsgekiq` (`user_id`),
     CONSTRAINT `FKrqtd0mrv98uyhp7j1uvsgekiq` FOREIGN KEY (`user_id`) REFERENCES `user_tbl` (`id`),
     CONSTRAINT `FKsge9vcalb4vgv767c7md3eqjk` FOREIGN KEY (`message_schedule_id`) REFERENCES `message_schedule_tbl` (`id`)
 ) ENGINE = InnoDB
@@ -492,7 +518,8 @@ CREATE TABLE `user_message_schedule_tbl`
 -- Dumping data for table `user_message_schedule_tbl`
 --
 
-LOCK TABLES `user_message_schedule_tbl` WRITE;
+LOCK
+TABLES `user_message_schedule_tbl` WRITE;
 /*!40000 ALTER TABLE `user_message_schedule_tbl`
     DISABLE KEYS */;
 INSERT INTO `user_message_schedule_tbl`
@@ -519,7 +546,8 @@ VALUES (30, 14, 4),
        (50, 54, 11);
 /*!40000 ALTER TABLE `user_message_schedule_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `user_tbl`
@@ -534,7 +562,7 @@ CREATE TABLE `user_tbl`
     `address`          varchar(255) DEFAULT NULL,
     `avatar`           varchar(255) DEFAULT NULL,
     `code`             varchar(255) NOT NULL,
-    `created_at`       datetime(6)  DEFAULT NULL,
+    `created_at`       datetime(6) DEFAULT NULL,
     `created_by`       bigint       DEFAULT NULL,
     `date_of_birth`    date         DEFAULT NULL,
     `email`            varchar(255) NOT NULL,
@@ -544,7 +572,7 @@ CREATE TABLE `user_tbl`
     `lastname`         varchar(255) DEFAULT NULL,
     `password`         varchar(255) DEFAULT NULL,
     `phone`            varchar(255) DEFAULT NULL,
-    `update_at`        datetime(6)  DEFAULT NULL,
+    `update_at`        datetime(6) DEFAULT NULL,
     `update_by`        bigint       DEFAULT NULL,
     `username`         varchar(255) NOT NULL,
     `department_id`    bigint       DEFAULT NULL,
@@ -556,9 +584,9 @@ CREATE TABLE `user_tbl`
     UNIQUE KEY `UK_4jy6gy5w2iw0idxxvbmh46mmx` (`code`),
     UNIQUE KEY `UK_i4ygcc30htflmb5xe5mjcydid` (`email`),
     UNIQUE KEY `UK_xkjl2orevvtyrqqshcot355j` (`username`),
-    KEY `FK3ym8qer0cptlwfb8j2bx6l8gu` (`department_id`),
-    KEY `FKj3rqu4q3l4wn0l3i0lm0av5gr` (`job_position_id`),
-    KEY `FK9xkyfi057wjvaal9c8dk6k2j7` (`role_id`),
+    KEY                `FK3ym8qer0cptlwfb8j2bx6l8gu` (`department_id`),
+    KEY                `FKj3rqu4q3l4wn0l3i0lm0av5gr` (`job_position_id`),
+    KEY                `FK9xkyfi057wjvaal9c8dk6k2j7` (`role_id`),
     CONSTRAINT `FK3ym8qer0cptlwfb8j2bx6l8gu` FOREIGN KEY (`department_id`) REFERENCES `department_tbl` (`id`),
     CONSTRAINT `FK9xkyfi057wjvaal9c8dk6k2j7` FOREIGN KEY (`role_id`) REFERENCES `role_tbl` (`id`),
     CONSTRAINT `FKj3rqu4q3l4wn0l3i0lm0av5gr` FOREIGN KEY (`job_position_id`) REFERENCES `job_position_tbl` (`id`),
@@ -573,7 +601,8 @@ CREATE TABLE `user_tbl`
 -- Dumping data for table `user_tbl`
 --
 
-LOCK TABLES `user_tbl` WRITE;
+LOCK
+TABLES `user_tbl` WRITE;
 /*!40000 ALTER TABLE `user_tbl`
     DISABLE KEYS */;
 INSERT INTO `user_tbl`
@@ -622,7 +651,8 @@ VALUES (1, 'Hà Nam', '/image/avatar.jpg', 'A000001', '2024-04-24 14:22:48.27449
         'levanlieu14', 3, 4, 2, _binary '', _binary '');
 /*!40000 ALTER TABLE `user_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 
 --
 -- Table structure for table `verify_token_tbl`
@@ -634,12 +664,12 @@ DROP TABLE IF EXISTS `verify_token_tbl`;
 CREATE TABLE `verify_token_tbl`
 (
     `id`         bigint NOT NULL AUTO_INCREMENT,
-    `created_at` datetime(6)  DEFAULT NULL,
-    `expire_at`  datetime(6)  DEFAULT NULL,
+    `created_at` datetime(6) DEFAULT NULL,
+    `expire_at`  datetime(6) DEFAULT NULL,
     `token`      varchar(255) DEFAULT NULL,
     `user_id`    bigint       DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `FK6yryw9xt8rm069p8tdogea2o6` (`user_id`),
+    KEY          `FK6yryw9xt8rm069p8tdogea2o6` (`user_id`),
     CONSTRAINT `FK6yryw9xt8rm069p8tdogea2o6` FOREIGN KEY (`user_id`) REFERENCES `user_tbl` (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 57
@@ -651,7 +681,8 @@ CREATE TABLE `verify_token_tbl`
 -- Dumping data for table `verify_token_tbl`
 --
 
-LOCK TABLES `verify_token_tbl` WRITE;
+LOCK
+TABLES `verify_token_tbl` WRITE;
 /*!40000 ALTER TABLE `verify_token_tbl`
     DISABLE KEYS */;
 INSERT INTO `verify_token_tbl`
@@ -659,7 +690,8 @@ VALUES (52, '2024-05-15 08:32:31.720075', '2024-05-15 09:32:31.720075', '28a931c
        (56, '2024-05-16 10:15:28.884203', '2024-05-16 11:15:28.884203', '35b81593-3dfb-4cf1-9c84-35644c9705b2', 14);
 /*!40000 ALTER TABLE `verify_token_tbl`
     ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK
+TABLES;
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;

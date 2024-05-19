@@ -27,13 +27,16 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="email">Email <i class="text-danger">*</i></label>
                 <input class="form-control" id="email" placeholder="email@example.com" th:field="*{email}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['email'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['email']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
                 <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{firstname}"
-                     th:if="${#fields.hasErrors('firstname')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['firstname'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['firstname']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
@@ -41,11 +44,16 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
                 <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{lastname}" th:if="${#fields.hasErrors('lastname')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['lastname'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['lastname']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="address">Address</label>
                 <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['address'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['address']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
@@ -53,13 +61,16 @@
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="phone">Phone <i class="text-danger">*</i></label>
                 <input class="form-control" id="phone" placeholder="0355166404" th:field="*{phone}" type="tel">
-                <div class="text-danger h6 mt-1" th:errors="*{phone}" th:if="${#fields.hasErrors('phone')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['phone'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['phone']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
                 <input class="form-control" id="dateOfBirth" th:field="*{dateOfBirth}" type="date">
-                <div class="text-danger h6 mt-1" th:errors="*{dateOfBirth}"
-                     th:if="${#fields.hasErrors('dateOfBirth')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['dateOfBirth'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['dateOfBirth']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">

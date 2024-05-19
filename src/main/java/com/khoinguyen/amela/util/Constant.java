@@ -10,7 +10,6 @@ public class Constant {
     public static final Long PAGE_SIZE_MESSAGE_USER = 6L;
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PREFIX = "A";
-    public static final String HOST = "http://localhost:8080/";
     public static String[] LIST_PERMIT_ALL = new String[]{
             "/forgot-password",
             "/new-password",

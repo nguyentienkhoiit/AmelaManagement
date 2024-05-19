@@ -43,27 +43,33 @@
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
-                <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
-                <div class="text-danger h6 mt-1" th:if="${firstname}" th:text="${firstname}"></div>
+                <label class="form-label" for="username">Username <i class="text-danger">*</i></label>
+                <input class="form-control" id="username" placeholder="khoi" readonly th:field="*{username}"
+                       type="text">
             </div>
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
-                <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
-                <div class="text-danger h6 mt-1" th:if="${lastname}" th:text="${lastname}"></div>
+                <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
+                <input class="form-control" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" type="date">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['dateOfBirth'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['dateOfBirth']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="phone">Phone <i class="text-danger">*</i></label>
-                <input class="form-control" id="phone" placeholder="0355166404" th:field="*{phone}" type="tel">
-                <div class="text-danger h6 mt-1" th:if="${phone}" th:text="${phone}"></div>
+                <label class="form-label" for="firstname">First name <i class="text-danger">*</i></label>
+                <input class="form-control" id="firstname" placeholder="Nguyen" th:field="*{firstname}" type="text">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['firstname'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['firstname']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="dateOfBirth">Date of birth <i class="text-danger">*</i></label>
-                <input class="form-control" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" type="date">
-                <div class="text-danger h6 mt-1" th:if="${dateOfBirth}" th:text="${dateOfBirth}"></div>
+                <label class="form-label" for="lastname">Last name <i class="text-danger">*</i></label>
+                <input class="form-control" id="lastname" placeholder="Khoi" th:field="*{lastname}" type="text">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['lastname'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['lastname']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
@@ -73,10 +79,11 @@
                 <input class="form-control" id="address" placeholder="Ha Noi" th:field="*{address}" type="tel">
             </div>
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="username">Username <i class="text-danger">*</i></label>
-                <input class="form-control" id="username" placeholder="khoi" readonly th:field="*{username}"
-                       type="text">
-                <!--                <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>-->
+                <label class="form-label" for="phone">Phone <i class="text-danger">*</i></label>
+                <input class="form-control" id="phone" placeholder="0355166404" th:field="*{phone}" type="tel">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['phone'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['phone']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
 
@@ -96,7 +103,6 @@
                         BA
                     </option>
                 </select>
-                <div class="text-danger h6 mt-1" th:if="${position}" th:text="${position}"></div>
             </div>
         </div>
 
@@ -109,7 +115,6 @@
                             th:text="${department.name}" th:value="${department.id}">Department
                     </option>
                 </select>
-                <div class="text-danger h6 mt-1" th:if="${department}" th:text="${department}"></div>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="role">Role</label>
@@ -118,7 +123,6 @@
                             th:text="${role.name}" th:value="${role.id}">User
                     </option>
                 </select>
-                <div class="text-danger h6 mt-1" th:if="${role}" th:text="${role}"></div>
             </div>
         </div>
         <div class="row">

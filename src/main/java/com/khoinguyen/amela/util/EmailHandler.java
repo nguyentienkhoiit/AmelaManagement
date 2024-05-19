@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.util;
 
+import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.entity.User;
 import jakarta.mail.MessagingException;
@@ -26,6 +27,7 @@ public class EmailHandler {
     final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     String email;
+    AppConfig appConfig;
 
     @Async
     public void sendTokenForgotPassword(User user, String url) throws MessagingException, UnsupportedEncodingException {
@@ -62,7 +64,7 @@ public class EmailHandler {
     public void sendNotificationMessage(MessageSchedule messageSchedule, List<User> users) throws MessagingException, UnsupportedEncodingException {
         String subject = "Notification New Messages";
         String senderName = "Users Notification Service";
-        String url = Constant.HOST + "messages/detail/" + messageSchedule.getId();
+        String url = appConfig.HOST + "messages/detail/" + messageSchedule.getId();
         String mailContent = TemplateEmailGenerate.getHtmlNotificationMessages(url);
         String[] emails = users.stream().map(User::getEmail).toArray(String[]::new);
         emailListMessage(subject, senderName, mailContent, javaMailSender, emails);

@@ -78,7 +78,11 @@
                                     <input class="form-control" id="inputUsername" name="username"
                                            placeholder="Enter your username"
                                            th:field="*{username}" th:readonly="${!user.isEditUsername}" type="text">
-                                    <div class="text-danger h6 mt-1" th:if="${username}" th:text="${username}"></div>
+                                    <ul class="errors"
+                                        th:if="${errors != null and !#lists.isEmpty(errors['username'])}">
+                                        <li class="text-danger h6 mt-1" th:each="error : ${errors['username']}"
+                                            th:text="${error}"></li>
+                                    </ul>
                                 </div>
                             </div>
                             <div class="row gx-3">
@@ -86,13 +90,21 @@
                                     <label class="form-label" for="inputFirstName">First name</label>
                                     <input class="form-control" id="inputFirstName" name="firstname"
                                            placeholder="Enter your first name" th:field="*{firstname}" type="text">
-                                    <div class="text-danger h6 mt-1" th:if="${firstname}" th:text="${firstname}"></div>
+                                    <ul class="errors"
+                                        th:if="${errors != null and !#lists.isEmpty(errors['firstname'])}">
+                                        <li class="text-danger h6 mt-1" th:each="error : ${errors['firstname']}"
+                                            th:text="${error}"></li>
+                                    </ul>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label" for="inputLastName">Last name</label>
                                     <input class="form-control" id="inputLastName" name="lastname"
                                            placeholder="Enter your last name" th:field="*{lastname}" type="text">
-                                    <div class="text-danger h6 mt-1" th:if="${lastname}" th:text="${lastname}"></div>
+                                    <ul class="errors"
+                                        th:if="${errors != null and !#lists.isEmpty(errors['lastname'])}">
+                                        <li class="text-danger h6 mt-1" th:each="error : ${errors['lastname']}"
+                                            th:text="${error}"></li>
+                                    </ul>
                                 </div>
                             </div>
                             <div class="row gx-3">
@@ -117,15 +129,21 @@
                                     <label class="form-label" for="inputPhone">Phone</label>
                                     <input class="form-control" id="inputPhone" name="phone"
                                            placeholder="Enter your phone number" th:field="*{phone}" type="tel">
-                                    <div class="text-danger h6 mt-1" th:if="${phone}" th:text="${phone}"></div>
+                                    <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['phone'])}">
+                                        <li class="text-danger h6 mt-1" th:each="error : ${errors['phone']}"
+                                            th:text="${error}"></li>
+                                    </ul>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label" for="inputBirthday">Date of birth</label>
                                     <input class="form-control" id="inputBirthday" name="dateOfBirth"
                                            placeholder="Enter your birthday"
                                            th:field="*{dateOfBirth}" type="date">
-                                    <div class="text-danger h6 mt-1" th:if="${dateOfBirth}"
-                                         th:text="${dateOfBirth}"></div>
+                                    <ul class="errors"
+                                        th:if="${errors != null and !#lists.isEmpty(errors['dateOfBirth'])}">
+                                        <li class="text-danger h6 mt-1" th:each="error : ${errors['dateOfBirth']}"
+                                            th:text="${error}"></li>
+                                    </ul>
                                 </div>
                             </div>
                             <button class="btn btn-outline-secondary" type="submit">Update</button>

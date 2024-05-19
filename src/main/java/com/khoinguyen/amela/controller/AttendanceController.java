@@ -1,17 +1,18 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.excel.AttendanceExcel;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UrlUtil;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -24,12 +25,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -40,6 +42,8 @@ public class AttendanceController {
     HttpSession session;
     AttendanceService attendanceService;
     UserHelper userHelper;
+    AppConfig appConfig;
+    ValidationService validationService;
 
     @GetMapping(value = {"", "/{userId}"})
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -87,20 +91,18 @@ public class AttendanceController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
-        //check validate
         redirectAttributes.addFlashAttribute("attendance", request);
+
+        //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                redirectAttributes.addFlashAttribute(error.getField(), error.getDefaultMessage());
-            }
-            return "redirect:/attendances/create/" + request.getUserId();
+            validationService.getAllErrors(result, errors);
         }
 
-        ServiceResponse<String> serviceResponse = attendanceService.createAttendances(request);
+        attendanceService.createAttendances(request, errors);
 
-        if (!serviceResponse.status()) {
-            redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/attendances/create/" + request.getUserId();
         }
 
@@ -114,8 +116,10 @@ public class AttendanceController {
             Model model,
             @PathVariable Long id
     ) {
-        AttendanceDtoUpdateResponse response = attendanceService.getAttendanceById(id);
-        model.addAttribute("attendance", response);
+        if (!model.containsAttribute("attendance")) {
+            AttendanceDtoUpdateResponse response = attendanceService.getAttendanceById(id);
+            model.addAttribute("attendance", response);
+        }
         return "layout/attendances/attendance_update";
     }
 
@@ -128,19 +132,16 @@ public class AttendanceController {
             RedirectAttributes redirectAttributes
     ) {
         //check validate
-        AttendanceDtoUpdateResponse response = AttendanceMapper.toAttendanceDtoUpdateResponse(request);
-        model.addAttribute("attendance", response);
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            for (FieldError error : fieldErrors) {
-                model.addAttribute(error.getField(), error.getDefaultMessage());
-            }
-            return "layout/attendances/attendance_update";
+            validationService.getAllErrors(result, errors);
         }
-        ServiceResponse<String> serviceResponse = attendanceService.updateAttendances(request);
+        attendanceService.updateAttendances(request, errors);
 
-        if (!serviceResponse.status()) {
-            redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
+        if (!errors.isEmpty()) {
+            var response = AttendanceMapper.toAttendanceDtoUpdateResponse(request);
+            redirectAttributes.addFlashAttribute("attendance", response);
+            redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/attendances/update/" + request.getAttendanceId();
         }
 
@@ -152,7 +153,7 @@ public class AttendanceController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String checkAttendance(HttpServletRequest request) {
         boolean rs = attendanceService.checkAttendance();
-        return "redirect:/" + UrlUtil.getReferer(request);
+        return "redirect:/" + UrlUtil.getReferer(request, appConfig.HOST);
     }
 
     @GetMapping("/change-status/{id}")
@@ -179,10 +180,11 @@ public class AttendanceController {
 
         PagingDtoRequest request = PagingDtoRequest.builder()
                 .pageIndex("1")
-                .pageSize("1000")
+                .pageSize(String.valueOf(Integer.MAX_VALUE))
                 .text(text)
                 .build();
-        List<AttendanceDtoResponse> attendanceDtoResponses = attendanceService.getAttendanceByUserId(request, userId).data();
+
+        var attendanceDtoResponses = attendanceService.getAttendanceByUserId(request, userId).data();
         AttendanceExcel attendanceExcel = new AttendanceExcel(attendanceDtoResponses);
         attendanceExcel.export(response);
     }

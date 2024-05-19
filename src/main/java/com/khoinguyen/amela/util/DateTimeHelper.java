@@ -159,6 +159,7 @@ public class DateTimeHelper {
     }
 
     public static boolean isExpiredDay(LocalDate l1, LocalDate l2, int numberOfDays) {
+        if (l1 == null || l2 == null) return false;
         Duration duration = Duration.between(l1.atStartOfDay(), l2.atStartOfDay());
 
         long absDays = Math.abs(duration.toDays());

@@ -103,8 +103,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         }
 
         var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
-        if(!listBannedWords.isEmpty()) {
-            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like "+listBannedWords);
+        if (!listBannedWords.isEmpty()) {
+            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like " + listBannedWords);
             return response;
         }
 
@@ -266,8 +266,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         }
 
         var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
-        if(!listBannedWords.isEmpty()) {
-            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like "+listBannedWords);
+        if (!listBannedWords.isEmpty()) {
+            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like " + listBannedWords);
             return response;
         }
 

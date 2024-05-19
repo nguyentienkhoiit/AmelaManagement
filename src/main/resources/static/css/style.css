@@ -206,3 +206,11 @@ a {
         margin-top: 15px;
     }
 }
+
+ul.errors > li {
+    list-style-type: none;
+}
+
+ul.errors {
+    padding: 0;
+}

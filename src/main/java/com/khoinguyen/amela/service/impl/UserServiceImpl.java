@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.service.impl;
 
+import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
@@ -18,11 +19,14 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
@@ -40,6 +44,8 @@ public class UserServiceImpl implements UserService {
     VerificationService verificationService;
     EmailHandler emailHandler;
     FileHelper fileHelper;
+    ValidationService validationService;
+    AppConfig appConfig;
 
     @Override
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
@@ -50,49 +56,40 @@ public class UserServiceImpl implements UserService {
         return userRepository.findTopByOrderByIdDesc().orElse(null);
     }
 
+    @Transactional
     @Override
-    public ServiceResponse<String> createUser(UserDtoRequest request) {
+    public void createUser(UserDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         if (optionalValidator.findByEmailExist(request.getEmail(), 0L).isPresent()) {
-            response = new ServiceResponse<>(false, "email", "Email already exists");
-            return response;
+            validationService.updateErrors("email", "Email already exists", errors);
         }
 
-//        if (optionalValidator.findByUsernameExist(request.getUsername(), 0L).isPresent()) {
-//            response = new ServiceResponse<>(false, "username", "Username already exists");
-//            return response;
-//        }
-
         if (optionalValidator.findByPhoneExist(request.getPhone(), 0L).isPresent()) {
-            response = new ServiceResponse<>(false, "phone", "Phone already exists");
-            return response;
+            validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
         //check date of birth is greater than 18 ???
         if (DateTimeHelper.compareDateGreaterThan(request.getDateOfBirth(), 18L)) {
-            response = new ServiceResponse<>(false, "dateOfBirth", "Date of birth must be greater than 18");
-            return response;
+            validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
         }
 
         var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
         if (positionOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "position", "Position is not found");
-            return response;
+            validationService.updateErrors("position", "Position is not found", errors);
         }
 
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         if (departmentOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "department", "Department is not found");
-            return response;
+            validationService.updateErrors("department", "Department is not found", errors);
         }
 
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
         if (roleOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "role", "Role is not found");
-            return response;
+            validationService.updateErrors("role", "Role is not found", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         String latestCde = getUserLatest() != null ? getUserLatest().getCode() : "000001";
 
@@ -103,9 +100,9 @@ public class UserServiceImpl implements UserService {
         user.setCreatedBy(userLoggedIn.getId());
         user.setUsername(username);
         user.setUpdateBy(userLoggedIn.getId());
-        user.setDepartment(departmentOptional.get());
-        user.setRole(roleOptional.get());
-        user.setJobPosition(positionOptional.get());
+        user.setDepartment(departmentOptional.orElseThrow());
+        user.setRole(roleOptional.orElseThrow());
+        user.setJobPosition(positionOptional.orElseThrow());
         user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
         user.setCode(code);
         user.setEnabled(false);
@@ -115,9 +112,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
 
         //Send mail
-        response = sendMailCreateUser(user);
-
-        return response;
+        sendMailCreateUser(user);
     }
 
     @Override
@@ -127,41 +122,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceResponse<String> updateProfile(ProfileDtoRequest request, MultipartFile fileImage) {
+    public void updateProfile(ProfileDtoRequest request, MultipartFile fileImage, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         var userOptionalPhone = optionalValidator.findByPhoneExist(request.getPhone(), userLoggedIn.getId());
         if (userOptionalPhone.isPresent()) {
-            response = new ServiceResponse<>(false, "phone", "Phone already existed");
-            return response;
+            validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
         var userOptionalUsername = optionalValidator.findByUsernameExist(request.getUsername(), userLoggedIn.getId());
         if (userOptionalUsername.isPresent()) {
-            response = new ServiceResponse<>(false, "username", "Username already existed");
-            return response;
+            validationService.updateErrors("username", "Username already exists", errors);
         }
 
         if (DateTimeHelper.compareDateGreaterThan(request.getDateOfBirth(), 18L)) {
-            response = new ServiceResponse<>(false, "dateOfBirth", "Date of birth must be greater than 18");
-            return response;
+            validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
         }
 
         if (!fileImage.isEmpty()) {
-            String fileName = null;
             try {
-                fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
+                String fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
                 if (fileName == null) {
-                    response = new ServiceResponse<>(false, "avatar", "Something went wrong");
-                    return response;
+                    validationService.updateErrors("avatar", "Something went wrong", errors);
                 }
-                log.info("filename: {}", fileName);
                 userLoggedIn.setAvatar(fileName);
             } catch (IOException e) {
+                log.error("Failed to upload file {}", e.getMessage());
                 throw new RuntimeException(e);
             }
         }
+
+        if (!errors.isEmpty()) return;
 
         userLoggedIn.setUpdateBy(userLoggedIn.getId());
         userLoggedIn.setPhone(request.getPhone());
@@ -177,8 +168,6 @@ public class UserServiceImpl implements UserService {
             userLoggedIn.setEditUsername(false);
         }
         userRepository.save(userLoggedIn);
-
-        return response;
     }
 
     @Override
@@ -201,50 +190,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceResponse<String> updateUser(UserDtoUpdate request) {
+    public void updateUser(UserDtoUpdate request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
         ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         var userOptional = userRepository.findById(request.getId());
         if (userOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "id", "User is not found");
-            return response;
+            validationService.updateErrors("user", "User is not exists", errors);
         }
-        var user = userOptional.get();
+        var user = userOptional.orElseThrow();
 
         if (optionalValidator.findByEmailExist(request.getEmail(), user.getId()).isPresent()) {
-            response = new ServiceResponse<>(false, "email", "Email already exists");
-            return response;
+            validationService.updateErrors("email", "Email already exists", errors);
         }
 
         if (optionalValidator.findByPhoneExist(request.getPhone(), user.getId()).isPresent()) {
-            response = new ServiceResponse<>(false, "phone", "Phone already exists");
-            return response;
+            validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
         //check date of birth is greater than 18 ???
         if (DateTimeHelper.compareDateGreaterThan(DateTimeHelper.parseStringToDate(request.getDateOfBirth()), 18L)) {
-            response = new ServiceResponse<>(false, "dateOfBirth", "Date of birth must be greater than 18");
-            return response;
+            validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
         }
 
         var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
         if (positionOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "position", "Position is not found");
-            return response;
+            validationService.updateErrors("position", "Position is not found", errors);
         }
 
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         if (departmentOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "department", "Department is not found");
-            return response;
+            validationService.updateErrors("department", "Department is not found", errors);
         }
 
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
         if (roleOptional.isEmpty()) {
-            response = new ServiceResponse<>(false, "role", "Role is not found");
-            return response;
+            validationService.updateErrors("role", "Role is not found", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
@@ -254,18 +238,16 @@ public class UserServiceImpl implements UserService {
         user.setPhone(request.getPhone());
         user.setUpdateAt(LocalDateTime.now());
         user.setUpdateBy(userLoggedIn.getId());
-        user.setDepartment(departmentOptional.get());
-        user.setRole(roleOptional.get());
-        user.setJobPosition(positionOptional.get());
+        user.setDepartment(departmentOptional.orElseThrow());
+        user.setRole(roleOptional.orElseThrow());
+        user.setJobPosition(positionOptional.orElseThrow());
         userRepository.save(user);
-
-        return response;
     }
 
     public ServiceResponse<String> sendMailCreateUser(User user) {
         String token = UUID.randomUUID().toString();
         //send password reset verification email to the user
-        String url = Constant.HOST + "user-new-password?token=" + token;
+        String url = appConfig.HOST + "user-new-password?token=" + token;
         verificationService.createTokenUser(user, token);
         //send mail
         try {
@@ -294,7 +276,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean sendTokenAgain(Long id) {
         var user = userRepository.findById(id).orElse(null);
-        if (user == null) return false;
+        if (user == null || user.isActivated()) return false;
         ServiceResponse<String> response = sendMailCreateUser(user);
         return true;
     }
