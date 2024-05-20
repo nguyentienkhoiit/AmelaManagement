@@ -9,7 +9,6 @@ import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.mapper.MessageScheduleMapper;
 import com.khoinguyen.amela.repository.GroupRepository;
 import com.khoinguyen.amela.repository.MessageScheduleRepository;
@@ -17,10 +16,7 @@ import com.khoinguyen.amela.repository.UserMessageScheduleRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.MessageScheduleCriteria;
 import com.khoinguyen.amela.service.MessageScheduleService;
-import com.khoinguyen.amela.util.EmailHandler;
-import com.khoinguyen.amela.util.FileHelper;
-import com.khoinguyen.amela.util.StringUtil;
-import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.*;
 import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +47,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     ThreadPoolTaskScheduler taskScheduler;
     Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
     FileHelper fileHelper;
+    ValidationService validationService;
 
     private List<User> getUsersFromSchedule(MessageSchedule messageSchedule) {
         if (messageSchedule.getGroup() != null) {
@@ -89,23 +86,20 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     }
 
     @Override
-    public ServiceResponse<String> createMessages(MessageScheduleDtoRequest request) {
+    public void createMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         if (request.getSenderName().isEmpty()) {
             request.setSenderName("Administrator");
         }
 
-        if (request.getPublishAt().isBefore(LocalDateTime.now())) {
-            response = new ServiceResponse<>(false, "error", "Can not create messages because publish at before now");
-            return response;
-        }
-
         var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
         if (!listBannedWords.isEmpty()) {
-            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like " + listBannedWords);
-            return response;
+            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
+        }
+
+        if (request.getPublishAt() != null && request.getPublishAt().isBefore(LocalDateTime.now())) {
+            validationService.updateErrors("publishAt", "The publish at must be in the future", errors);
         }
 
         MessageSchedule messageSchedule = MessageSchedule.builder()
@@ -123,12 +117,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
         if (request.isChoice()) {
             if (request.getGroupId() == 0) {
-                response = new ServiceResponse<>(false, "groupId", "Please choose a group");
+                validationService.updateErrors("groupId", "Please choose a group", errors);
             } else {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule.setUserMessageSchedules(null);
                 messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
+
+            if (!errors.isEmpty()) return;
         } else {
             //cut email to list
             Set<String> listEmail = Arrays.stream(request.getListMail()
@@ -139,15 +135,13 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                     .filter(s -> s.contains("@"))
                     .collect(Collectors.toSet());
 
-            if (listEmail.isEmpty()) {
-                response = new ServiceResponse<>(false, "listMail", "Please input at least one email");
-            }
-
             //check validate email exist in database
             StringBuilder messages = new StringBuilder();
             List<User> listUsers = new ArrayList<>();
             for (var email : listEmail) {
-                var userOptional = userRepository.findByEmail(email);
+                var userOptional = userRepository
+                        .findByEmail(email)
+                        .filter(u -> !u.getRole().getName().equals(Constant.ADMIN_NAME));
                 if (userOptional.isEmpty()) {
                     messages.append(email).append(", ");
                 } else listUsers.add(userOptional.get());
@@ -156,13 +150,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             //list of mail is not exist
             if (!messages.isEmpty()) {
                 String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-                response = new ServiceResponse<>(false, "listMail", msg);
-                return response;
+                validationService.updateErrors("listMail", msg, errors);
             }
 
             if (listUsers.isEmpty()) {
-                response = new ServiceResponse<>(false, "listMail", "Please input at least one email");
+                validationService.updateErrors("listMail", "Please input at least one email", errors);
             }
+
+            if (!errors.isEmpty()) return;
 
             messageSchedule.setGroup(null);
             messageSchedule = messageScheduleRepository.save(messageSchedule);
@@ -180,8 +175,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             messageSchedule = messageScheduleRepository.save(messageSchedule);
         }
         setSchedulePublishMessage(messageSchedule);
-
-        return response;
     }
 
     @Override
@@ -249,55 +242,56 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     }
 
     @Override
-    public ServiceResponse<String> updateMessages(MessageScheduleDtoRequest request) {
+    public void updateMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         //default sender if null
         if (request.getSenderName().isEmpty()) {
             request.setSenderName("Administrator");
         }
 
+        if (request.getPublishAt().isBefore(LocalDateTime.now())) {
+            validationService.updateErrors("error", "Can not update this message because out of date", errors);
+            return;
+        }
+
         //check message schedule exist
         MessageSchedule messageSchedule = messageScheduleRepository.findById(request.getId()).orElse(null);
         if (messageSchedule == null) {
-            response = new ServiceResponse<>(false, "message", "Message is not found");
-            return response;
+            validationService.updateErrors("message", "Message is not found", errors);
         }
 
         var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
         if (!listBannedWords.isEmpty()) {
-            response = new ServiceResponse<>(false, "message", "Messages contains invalid words like " + listBannedWords);
-            return response;
-        }
-
-        if (messageSchedule.getPublishAt().isBefore(LocalDateTime.now())) {
-            response = new ServiceResponse<>(false, "error", "Can not update messages because publish at before now");
-            return response;
+            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
         }
 
         Set<String> messageInvalid = StringUtil.extractAttributeNameInvalid(request.getMessage());
         if (!messageInvalid.isEmpty()) {
-            response = new ServiceResponse<>(false, "message", messageInvalid + " is invalid attribute");
-            return response;
+            validationService.updateErrors("message", messageInvalid + " is invalid attribute", errors);
         }
 
         //update message schedule
-        messageSchedule.setMessage(request.getMessage());
-        messageSchedule.setPublishAt(request.getPublishAt());
-        messageSchedule.setSubject(request.getSubject());
-        messageSchedule.setUpdateAt(LocalDateTime.now());
-        messageSchedule.setSenderName(request.getSenderName());
-        messageSchedule.setUpdateBy(userLoggedIn.getId());
+        if (request.getPublishAt().isAfter(LocalDateTime.now())) {
+            assert messageSchedule != null;
+            messageSchedule.setMessage(request.getMessage());
+            messageSchedule.setPublishAt(request.getPublishAt());
+            messageSchedule.setSubject(request.getSubject());
+            messageSchedule.setUpdateAt(LocalDateTime.now());
+            messageSchedule.setSenderName(request.getSenderName());
+            messageSchedule.setUpdateBy(userLoggedIn.getId());
+        } else return;
 
         //consist changing
         if (request.isChoice()) {
             if (request.getGroupId() == 0) {
-                response = new ServiceResponse<>(false, "groupId", "Please choose a group");
+                validationService.updateErrors("groupId", "Please choose a group", errors);
             } else {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
+
+            if (!errors.isEmpty()) return;
         } else {
             //cut email to list
             Set<String> listEmail = Arrays.stream(request.getListMail()
@@ -307,10 +301,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                     .filter(s -> !s.isEmpty())
                     .filter(s -> s.contains("@"))
                     .collect(Collectors.toSet());
-
-            if (listEmail.isEmpty()) {
-                response = new ServiceResponse<>(false, "listMail", "Please input at least one email");
-            }
 
             //check validate email exist in database
             StringBuilder messages = new StringBuilder();
@@ -325,13 +315,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             //list of mail is not exist
             if (!messages.isEmpty()) {
                 String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-                response = new ServiceResponse<>(false, "listMail", msg);
-                return response;
+                validationService.updateErrors("listMail", msg, errors);
             }
 
             if (listUsers.isEmpty()) {
-                response = new ServiceResponse<>(false, "listMail", "Please input at least one email");
+                validationService.updateErrors("listMail", "Please input at least one email", errors);
             }
+
+            if (!errors.isEmpty()) return;
 
             messageSchedule = messageScheduleRepository.save(messageSchedule);
 
@@ -352,8 +343,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             messageSchedule = messageScheduleRepository.save(messageSchedule);
         }
         setSchedulePublishMessage(messageSchedule);
-
-        return response;
     }
 
     @Override

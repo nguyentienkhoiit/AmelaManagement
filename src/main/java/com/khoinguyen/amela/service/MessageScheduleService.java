@@ -5,18 +5,18 @@ import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MessageScheduleService {
-    ServiceResponse<String> createMessages(MessageScheduleDtoRequest request);
+    void createMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors);
 
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesAdmin(PagingDtoRequest pagingDtoRequest);
 
     MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type);
 
-    ServiceResponse<String> updateMessages(MessageScheduleDtoRequest request);
+    void updateMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors);
 
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest);
 

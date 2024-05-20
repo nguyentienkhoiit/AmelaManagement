@@ -40,8 +40,8 @@
             </div>
         </div>
 
-        <div class="row" th:if="${error != null}">
-            <div class="col-md-12">
+        <div class="row" th:if="${errors != null and !#lists.isEmpty(errors['error'])}">
+            <div class="col-md-12" th:each="error : ${errors['error']}">
                 <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
                     <svg aria-label="Warning:" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
                          fill="currentColor" height="24"
@@ -56,17 +56,22 @@
         </div>
         <div class="row">
             <div class="mb-3 col-md-6">
-                <label class="form-label" for="subjectname">Subject name</label>
-                <input class="form-control" id="subjectname" name="subject" placeholder="Subject email"
-                       th:field="*{subject}" type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{subject}" th:if="${#fields.hasErrors('subject')}"></div>
+                <label class="form-label" for="subjectName">Subject name</label>
+                <input class="form-control" id="subjectName" name="subject" placeholder="Subject email"
+                       th:field="*{subject}"
+                       th:readonly="${message.isPublished()}" type="text">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['subject'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['subject']}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="mb-3 col-md-6">
                 <label class="form-label" for="senderName">Sender name</label>
                 <input class="form-control" id="senderName" placeholder="HR Management" th:field="*{senderName}"
+                       th:readonly="${message.isPublished()}"
                        type="text">
-                <div class="text-danger h6 mt-1" th:errors="*{senderName}"
-                     th:if="${#fields.hasErrors('senderName')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['senderName'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['senderName']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">
@@ -74,25 +79,34 @@
                 <label class="form-label" for="editor">Message <small>[{{name}}, {{age}}, {{address}}, {{code}},
                     {{email}}, {{phone}}, {{username}}, {{username}}, {{username}}, {{department}},
                     {{position}}]</small> </label>
-                <textarea class="form-control" id="editor" name="message" rows="3" th:field="*{message}"></textarea>
-                <div class="text-danger h6 mt-1" th:errors="*{message}" th:if="${#fields.hasErrors('message')}"></div>
+                <textarea class="form-control" id="editor" name="message" rows="3"
+                          th:field="*{message}"
+                          th:readonly="${message.isPublished()}"></textarea>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['message'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['message']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">
             <div class="mb-3 col-md-12">
                 <label class="form-label" for="publishAt">Send time</label>
-                <input class="form-control" id="publishAt" name="publishAt" th:field="*{publishAt}"
-                       type="datetime-local">
-                <div class="text-danger h6 mt-1" th:errors="*{publishAt}"
-                     th:if="${#fields.hasErrors('publishAt')}"></div>
+                <input class="form-control" id="publishAt" name="publishAt"
+                       th:field="*{publishAt}"
+                       th:readonly="${message.isPublished()}" type="datetime-local">
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['publishAt'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['publishAt']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row" id="emailValue" th:if="${message.choice == false}">
             <div class="col-md-12 mb-3">
                 <label class="form-label" for="list-email">List email</label>
                 <textarea autocomplete="on" class="form-control" id="list-email" name="listEmail" rows="3"
+                          th:attr="readonly=${message.isPublished()}"
                           th:field="*{listMail}"></textarea>
-                <div class="text-danger h6 mt-1" th:errors="*{listMail}" th:if="${#fields.hasErrors('listMail')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['listMail'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['listMail']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row" id="groupValue" th:if="${message.choice == true}">
@@ -103,10 +117,12 @@
                         th:field="*{groupId}">
                     <option value="0">Choose a group</option>
                     <option th:each="group: ${session.groups}" th:text="${group.name}" th:value="${group.id}">
-                        Intership group
+                        Internship group
                     </option>
                 </select>
-                <div class="text-danger h6 mt-1" th:errors="*{groupId}" th:if="${#fields.hasErrors('groupId')}"></div>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['groupId'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['groupId']}" th:text="${error}"></li>
+                </ul>
             </div>
         </div>
         <div class="row">

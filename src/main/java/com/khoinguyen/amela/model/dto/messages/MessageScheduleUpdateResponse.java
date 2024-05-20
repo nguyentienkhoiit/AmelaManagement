@@ -21,6 +21,7 @@ public class MessageScheduleUpdateResponse {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     LocalDateTime publishAt;
+    boolean isPublished = Boolean.FALSE;
     String listMail;
     Long groupId;
     boolean choice;

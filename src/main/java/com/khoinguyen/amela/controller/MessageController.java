@@ -4,10 +4,11 @@ import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
+import com.khoinguyen.amela.model.mapper.MessageScheduleMapper;
 import com.khoinguyen.amela.service.GroupService;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.util.PermissionMessages;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -18,8 +19,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class MessageController {
     MessageScheduleService messageScheduleService;
     GroupService groupService;
     PermissionMessages permissionMessages;
+    ValidationService validationService;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -82,6 +87,8 @@ public class MessageController {
         session.setAttribute("groups", groups);
 
         var request = MessageScheduleDtoRequest.builder().build();
+
+        //copy
         if (messageId != null) {
             request = messageScheduleService.getMessageRequestById(messageId);
         }
@@ -97,16 +104,16 @@ public class MessageController {
             Model model
     ) {
         //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/messages/message_create";
+            validationService.getAllErrors(result, errors);
         }
-        //save to database
-        ServiceResponse<String> serviceResponse = messageScheduleService.createMessages(request);
 
-        if (!serviceResponse.status()) {
-            if (serviceResponse.column().equals("error")) {
-                model.addAttribute(serviceResponse.column(), serviceResponse.data());
-            } else result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
+        //save to database
+        messageScheduleService.createMessages(request, errors);
+
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
             return "layout/messages/message_create";
         }
 
@@ -117,9 +124,11 @@ public class MessageController {
     @GetMapping("update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateMessages(Model model, @PathVariable Long id) {
-        MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService
-                .getByMessageScheduleId(id, "id");
-        model.addAttribute("message", messageScheduleDtoResponse);
+        if (!model.containsAttribute("message")) {
+            MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService
+                    .getByMessageScheduleId(id, "id");
+            model.addAttribute("message", messageScheduleDtoResponse);
+        }
 
         var groups = groupService.getAll();
         session.setAttribute("groups", groups);
@@ -131,21 +140,22 @@ public class MessageController {
     public String updateMessages(
             Model model,
             @Valid @ModelAttribute("message") MessageScheduleDtoRequest request,
-            BindingResult result
+            BindingResult result,
+            RedirectAttributes redirectAttributes
     ) {
         //check validate
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
-            return "layout/messages/message_update";
+            validationService.getAllErrors(result, errors);
         }
 
         //save to database
-        ServiceResponse<String> serviceResponse = messageScheduleService.updateMessages(request);
+        messageScheduleService.updateMessages(request, errors);
 
-        if (!serviceResponse.status()) {
-            if (serviceResponse.column().equals("error")) {
-                model.addAttribute(serviceResponse.column(), serviceResponse.data());
-            } else result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
-            return "layout/messages/message_update";
+        if (!errors.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", MessageScheduleMapper.toMessageScheduleUpdateResponse(request));
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/messages/update/" + request.getId();
         }
 
         String url = (String) session.getAttribute("url");

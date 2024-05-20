@@ -45,9 +45,25 @@ public class MessageScheduleMapper {
                 .message(request.getMessage())
                 .subject(request.getSubject())
                 .senderName(request.getSenderName())
+                .isPublished(request.getPublishAt().isBefore(LocalDateTime.now()))
                 .groupId(request.getGroup() != null ? request.getGroup().getId() : null)
                 .choice(request.getGroup() != null)
                 .listMail(getListMailString(request))
+                .build();
+    }
+
+    public static MessageScheduleUpdateResponse toMessageScheduleUpdateResponse(MessageScheduleDtoRequest request) {
+        System.out.println("toMessageScheduleUpdateResponse: " + request.getListMail());
+        return MessageScheduleUpdateResponse.builder()
+                .id(request.getId())
+                .publishAt(request.getPublishAt())
+                .message(request.getMessage())
+                .subject(request.getSubject())
+                .senderName(request.getSenderName())
+                .isPublished(request.getPublishAt().isBefore(LocalDateTime.now()))
+                .groupId(request.getGroupId())
+                .choice(request.getListMail() == null)
+                .listMail(request.getListMail())
                 .build();
     }
 

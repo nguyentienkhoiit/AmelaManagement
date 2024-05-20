@@ -40,8 +40,7 @@ public class HomeController {
     @PreAuthorize("hasAuthority('USER')")
     public String home(
             Model model,
-            @ModelAttribute PagingDtoRequest pagingDtoRequest
-    ) {
+            @ModelAttribute PagingDtoRequest pagingDtoRequest) {
         session.setAttribute("active", "home");
         var pagingDtoResponse = messageScheduleService.getAllMessagesUser(pagingDtoRequest);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
@@ -57,14 +56,14 @@ public class HomeController {
         return "layout/auth/home";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("dashboard")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String dashboard() {
         session.setAttribute("active", "dashboard");
         return "layout/auth/dashboard";
     }
 
-    @GetMapping("/profile")
+    @GetMapping("profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewProfile(Model model) {
         session.setAttribute("active", "profile");
@@ -74,19 +73,18 @@ public class HomeController {
         return "layout/auth/profile";
     }
 
-    @PostMapping("/profile")
+    @PostMapping("profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String updateProfile(
             @RequestParam(value = "fileImage", required = false) MultipartFile fileImage,
             @Valid @ModelAttribute("user") ProfileDtoRequest request,
             BindingResult result,
-            Model model
-    ) {
+            Model model) {
         User userLoggedIn = userHelper.getUserLogin();
         ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, userLoggedIn);
         model.addAttribute("user", response);
 
-        //check validate
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -101,31 +99,31 @@ public class HomeController {
         return "redirect:/profile";
     }
 
-    @GetMapping("/notFound")
+    @GetMapping("notFound")
     public String notFound404() {
         session.setAttribute("active", "error");
         return "layout/errorPages/not_found_404";
     }
 
-    @GetMapping("/forbidden")
+    @GetMapping("forbidden")
     public String forbidden403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/forbidden_403";
     }
 
-    @GetMapping("/badRequest")
+    @GetMapping("badRequest")
     public String badRequest400() {
         session.setAttribute("active", "error");
         return "layout/errorPages/bad_request_400";
     }
 
-    @GetMapping("/methodNotAllowed")
+    @GetMapping("methodNotAllowed")
     public String methodNotAllowed403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/method_not_allow_405";
     }
 
-    @GetMapping("/internalServerError")
+    @GetMapping("internalServerError")
     public String internalServerError500() {
         session.setAttribute("active", "error");
         return "layout/errorPages/internal_server_error_500";

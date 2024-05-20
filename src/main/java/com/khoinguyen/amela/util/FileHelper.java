@@ -96,7 +96,7 @@ public class FileHelper {
             return null;
         }
         return bannedWords.stream()
-                .filter(w -> paragraph.toLowerCase().contains(w.toLowerCase()))
+                .filter(w -> paragraph.equalsIgnoreCase(w.toLowerCase()))
                 .collect(Collectors.toSet());
     }
 }

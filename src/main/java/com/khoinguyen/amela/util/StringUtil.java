@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.khoinguyen.amela.util.Constant.LIST_ATTRIBUTE_NAME;
+
 public class StringUtil {
     public static String formatString(String request, boolean isUpperCaseFirst) {
         if (request == null) return "";
@@ -53,7 +55,7 @@ public class StringUtil {
 
     public static Set<String> extractAttributeNameInvalid(String input) {
         Set<String> attributes = extractAttributeName(input);
-        Set<String> sources = new HashSet<>(Constant.LIST_ATTRIBUTE_NAME);
+        Set<String> sources = new HashSet<>(LIST_ATTRIBUTE_NAME);
 
         Set<String> listErrors = new HashSet<>();
         for (String item : attributes) {
