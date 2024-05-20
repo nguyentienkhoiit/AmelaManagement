@@ -32,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
+import static com.khoinguyen.amela.util.Constant.ADMIN_NAME;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -141,7 +143,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             for (var email : listEmail) {
                 var userOptional = userRepository
                         .findByEmail(email)
-                        .filter(u -> !u.getRole().getName().equals(Constant.ADMIN_NAME));
+                        .filter(u -> !u.getRole().getName().equals(ADMIN_NAME));
                 if (userOptional.isEmpty()) {
                     messages.append(email).append(", ");
                 } else listUsers.add(userOptional.get());
@@ -200,7 +202,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         placeholders.put("{{department}}", userLoggedIn.getDepartment().getName());
         placeholders.put("{{position}}", userLoggedIn.getJobPosition().getName());
 
-        if (userLoggedIn.getRole().getName().equalsIgnoreCase("ADMIN")) {
+        if (userLoggedIn.getRole().getName().equalsIgnoreCase(ADMIN_NAME)) {
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 entry.setValue(entry.getKey());
             }
@@ -375,7 +377,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .getAllMessages(pagingDtoRequest).data()
                 .stream()
                 .filter(response -> !response.getId().equals(id))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

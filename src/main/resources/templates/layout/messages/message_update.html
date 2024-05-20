@@ -101,7 +101,7 @@
         <div class="row" id="emailValue" th:if="${message.choice == false}">
             <div class="col-md-12 mb-3">
                 <label class="form-label" for="list-email">List email</label>
-                <textarea autocomplete="on" class="form-control" id="list-email" name="listEmail" rows="3"
+                <textarea autocomplete="off" class="form-control" id="list-email" name="listEmail" rows="3"
                           th:attr="readonly=${message.isPublished()}"
                           th:field="*{listMail}"></textarea>
                 <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['listMail'])}">

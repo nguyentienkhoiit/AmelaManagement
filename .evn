@@ -1,0 +1,12 @@
+APP_HOST=http://localhost:8080/
+FILE_MAX_SIZE=10MB
+FILE_MAX_REQUEST_SIZE=10MB
+DB_URL=jdbc:mysql://localhost:3306/amela_management
+DB_USERNAME=root
+DB_PASSWORD=aA@12345678
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=nguyentienkhoi.dotnet@gmail.com
+MAIL_PASSWORD=ohqk naos cpfp poiz
+GOOGLE_CLIENT_ID=645991812867-ocnk6keccnnk221v2apuotfmqf3onpha.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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

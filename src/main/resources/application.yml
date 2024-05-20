@@ -1,9 +1,5 @@
-server:
-  port: 8080
 app:
-  host: http://localhost:8080/
-  version: 1.0.0
-  description: AmelaManagement
+  host: ${APP_HOST}
 spring:
   messages:
     basename: messages
@@ -11,19 +7,19 @@ spring:
   application:
     name: AmelaManagement
   datasource:
-    url: jdbc:mysql://localhost:3306/amela_management
-    username: root
-    password: aA@12345678
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: nguyentienkhoi.dotnet@gmail.com
-    password: ohqk naos cpfp poiz
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -32,12 +28,12 @@ spring:
             enable: true
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: ${FILE_MAX_SIZE}
+      max-request-size: ${FILE_MAX_REQUEST_SIZE}
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: 645991812867-ocnk6keccnnk221v2apuotfmqf3onpha.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
