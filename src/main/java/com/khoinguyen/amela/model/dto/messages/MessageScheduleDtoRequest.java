@@ -16,16 +16,16 @@ import java.time.LocalDateTime;
 public class MessageScheduleDtoRequest {
     Long id;
 
-    @Size(min = 10, max = 100, message = "Length must be between {min} and {max} characters")
+    @Size(min = 10, max = 100, message = "{validation.length.between}")
     String subject;
 
-    @Size(min = 10, message = "Length must be greater than or equal to {min}")
+    @Size(min = 10, message = "{validation.length.min}")
     String message;
 
-    @Size(max = 50, message = "Length must be smaller than or equal to {max}")
+    @Size(max = 50, message = "{validation.length.max}")
     String senderName;
 
-    @NotNull(message = "Publish at is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     LocalDateTime publishAt;
 

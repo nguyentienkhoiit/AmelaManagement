@@ -34,7 +34,7 @@ public class Attendance {
     LocalDateTime updateAt;
     Long updateBy;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     User user;
 }

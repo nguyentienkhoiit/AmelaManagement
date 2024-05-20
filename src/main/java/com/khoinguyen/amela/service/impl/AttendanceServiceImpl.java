@@ -8,7 +8,6 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
-import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.repository.AttendanceRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.AttendanceCriteria;
@@ -20,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,6 +59,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return false;
     }
 
+    @Transactional
     @Override
     public void createAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -98,6 +99,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return AttendanceMapper.toAttendanceDtoUpdateResponse(attendance);
     }
 
+    @Transactional
     @Override
     public void updateAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -118,10 +120,10 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendanceRepository.save(attendance);
     }
 
+    @Transactional
     @Override
     public boolean checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
-        log.info("userLoggedIn: {}", UserMapper.toUserDtoResponse(userLoggedIn));
         Optional<Attendance> attendanceOptional = attendanceRepository
                 .findAttendanceByUserAndCheckDay(userLoggedIn.getId(), LocalDate.now());
         Attendance attendance;
@@ -140,7 +142,6 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance = attendanceOptional.orElseThrow();
             attendance.setCheckOutTime(LocalTime.now());
         }
-        System.out.println(AttendanceMapper.toAttendanceDtoUpdateResponse(attendance));
         attendanceRepository.save(attendance);
         return true;
     }

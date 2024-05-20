@@ -13,16 +13,12 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ChangePasswordDtoRequest {
-
-    @NotNull(message = "Old password is required")
-    @NotBlank(message = "Old password is required")
+    @NotBlank(message = "{validation.required}")
     String oldPassword;
 
-    @NotNull(message = "New password is required")
-    @NotBlank(message = "New password is required")
+    @NotBlank(message = "{validation.required}")
     String newPassword;
 
-    @NotNull(message = "Confirm password is required")
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank(message = "{validation.required}")
     String confirmPassword;
 }

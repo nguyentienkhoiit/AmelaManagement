@@ -8,6 +8,7 @@ import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.UrlUtil;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -35,6 +39,7 @@ import java.util.Set;
 public class AuthController {
     AuthenticationService authenticationService;
     VerificationService verificationService;
+    ValidationService validationService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -170,15 +175,17 @@ public class AuthController {
             @Valid @ModelAttribute("user") ChangePasswordDtoRequest request,
             BindingResult result
     ) {
+        Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
+            validationService.getAllErrors(result, errors);
+        }
+
+        authenticationService.submitChangePassword(request, errors);
+        if (!errors.isEmpty()) {
+            model.addAttribute("errors", errors);
             return "layout/auth/change-password";
         }
 
-        ServiceResponse<String> serviceResponse = authenticationService.submitChangePassword(request);
-        if (!serviceResponse.status()) {
-            result.rejectValue(serviceResponse.column(), serviceResponse.column(), serviceResponse.data());
-            return "layout/auth/change-password";
-        }
         return "redirect:/profile";
     }
 }

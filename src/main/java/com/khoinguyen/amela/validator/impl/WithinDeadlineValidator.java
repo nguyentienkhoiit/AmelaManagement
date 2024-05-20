@@ -19,6 +19,6 @@ public class WithinDeadlineValidator implements ConstraintValidator<WithinDeadli
             return true;
         }
         LocalDate today = LocalDate.now();
-        return !checkDay.isBefore(today.minusDays(days));
+        return !checkDay.isAfter(today.minusDays(days));
     }
 }

@@ -5,6 +5,9 @@ import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AuthenticationService {
     ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl);
 
@@ -12,5 +15,5 @@ public interface AuthenticationService {
 
     ServiceResponse<String> submitCreateNewPassword(PasswordDtoRequest request);
 
-    ServiceResponse<String> submitChangePassword(ChangePasswordDtoRequest request);
+    void submitChangePassword(ChangePasswordDtoRequest request, Map<String, List<String>> errors);
 }

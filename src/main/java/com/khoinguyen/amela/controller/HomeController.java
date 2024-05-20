@@ -2,8 +2,8 @@ package com.khoinguyen.amela.controller;
 
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.user.ProfileDtoRequest;
-import com.khoinguyen.amela.model.dto.user.ProfileDtoResponse;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.service.UserService;

@@ -12,14 +12,18 @@ import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.EmailHandler;
 import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +37,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     VerificationRepository verificationRepository;
     PasswordEncoder passwordEncoder;
     UserHelper userHelper;
+    ValidationService validationService;
 
+    @Transactional
     @Override
     public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "success",
@@ -57,6 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return response;
     }
 
+    @Transactional
     @Override
     public ServiceResponse<String> submitNewPassword(PasswordDtoRequest request) {
         ServiceResponse<String> response;
@@ -79,6 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new ServiceResponse<>(false, "error", "Something is went wrong");
     }
 
+    @Transactional
     @Override
     public ServiceResponse<String> submitCreateNewPassword(PasswordDtoRequest request) {
         ServiceResponse<String> response;
@@ -103,20 +111,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new ServiceResponse<>(false, "error", "Something is went wrong");
     }
 
+    @Transactional
     @Override
-    public ServiceResponse<String> submitChangePassword(ChangePasswordDtoRequest request) {
-        ServiceResponse<String> response = new ServiceResponse<>(true, "success", "none");
-
+    public void submitChangePassword(ChangePasswordDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
         if (!passwordEncoder.matches(request.getOldPassword(), userLoggedIn.getPassword())) {
-            response = new ServiceResponse<>(false, "oldPassword", "Wrong password");
-            return response;
+            validationService.updateErrors("oldPassword", "Password is not correct", errors);
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            response = new ServiceResponse<>(false, "confirmPassword", "Passwords do not match");
-            return response;
+            validationService.updateErrors("confirmPassword", "Passwords do not match", errors);
         }
+
+        if (!errors.isEmpty()) return;
 
         //update password
         userLoggedIn.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
@@ -124,7 +131,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         //set security context holder
         userHelper.setSecurityContext(request.getConfirmPassword(), null);
-
-        return response;
     }
 }

@@ -3,8 +3,12 @@ package com.khoinguyen.amela.model.mapper;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
 import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
-import com.khoinguyen.amela.model.dto.user.*;
+import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
+import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
 
 import java.time.LocalDateTime;
 

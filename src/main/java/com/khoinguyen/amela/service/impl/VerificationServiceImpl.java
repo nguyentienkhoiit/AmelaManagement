@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public class VerificationServiceImpl implements VerificationService {
         verificationRepository.save(verification);
     }
 
+    @Transactional
     @Override
     public ServiceResponse<String> validateToken(String token) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "valid", null);

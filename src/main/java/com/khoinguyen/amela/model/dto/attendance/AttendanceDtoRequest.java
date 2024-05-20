@@ -18,21 +18,21 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ValidTimeOrder(message = "Check out time must be after check in day")
+@ValidTimeOrder(message = "{validation.validTimeOrder}")
 public class AttendanceDtoRequest {
     Long attendanceId;
 
-    @WithinDeadline(message = "It is past the deadline to add attendance", days = 3)
+    @WithinDeadline(message = "{validation.withinDeadline}", days = 3)
     @CheckDayNotInFuture
-    @NotNull(message = "Check day is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate checkDay;
 
-    @NotNull(message = "Check in time is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "HH:mm")
     LocalTime checkInTime;
 
-    @NotNull(message = "Check out time is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "HH:mm")
     LocalTime checkOutTime;
 

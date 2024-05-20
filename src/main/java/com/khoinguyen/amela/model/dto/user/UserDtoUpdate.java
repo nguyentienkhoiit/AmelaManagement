@@ -1,11 +1,10 @@
 package com.khoinguyen.amela.model.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 @Getter
@@ -18,25 +17,24 @@ public class UserDtoUpdate {
 
     String code;
 
-    @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "Email is invalid")
+    @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "{validation.invalid}")
     String email;
 
-    @Length(min = 3, max = 15, message = "Length greater than 3 and smaller than 16")
+    @Size(min = 2, max = 30, message = "{validation.length.between}")
     String firstname;
 
-    @Length(min = 3, max = 15, message = "Length greater than 3 and smaller than 16")
+    @Size(min = 2, max = 30, message = "{validation.length.between}")
     String lastname;
 
-    @Length(min = 4, message = "Username has length greater than 3")
+    @Size(min = 4, message = "{validation.length.min}")
     String username;
 
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "Phone just include 10 or 11 digit")
+    @Pattern(regexp = "^[0-9]{10,11}$", message = "{validation.phone.pattern}")
     String phone;
 
     String address;
 
-    @NotNull(message = "Date of birth is required")
-    @NotBlank(message = "Date of birth is required")
+    @NotBlank(message = "{validation.required}")
     String dateOfBirth;
 
     int gender;

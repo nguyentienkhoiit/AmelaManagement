@@ -24,6 +24,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.time.*;
@@ -87,6 +88,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         scheduledTasks.put(messageSchedule.getId(), scheduledFuture);
     }
 
+    @Transactional
     @Override
     public void createMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -221,6 +223,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         return message;
     }
 
+    @Transactional
     @Override
     public MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type) {
         return messageScheduleRepository.findById(id)
@@ -243,6 +246,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .orElse(null);
     }
 
+    @Transactional
     @Override
     public void updateMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -252,7 +256,12 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             request.setSenderName("Administrator");
         }
 
-        if (request.getPublishAt().isBefore(LocalDateTime.now())) {
+        if (request.getPublishAt() == null) {
+            validationService.updateErrors("publishAt", "This field is required", errors);
+        }
+
+        if (request.getPublishAt() != null
+                && request.getPublishAt().isBefore(LocalDateTime.now())) {
             validationService.updateErrors("error", "Can not update this message because out of date", errors);
             return;
         }
@@ -274,7 +283,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         }
 
         //update message schedule
-        if (request.getPublishAt().isAfter(LocalDateTime.now())) {
+        if (request.getPublishAt() != null
+                && request.getPublishAt().isAfter(LocalDateTime.now())) {
             assert messageSchedule != null;
             messageSchedule.setMessage(request.getMessage());
             messageSchedule.setPublishAt(request.getPublishAt());
@@ -380,6 +390,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public MessageScheduleDtoRequest getMessageRequestById(Long messageId) {
         var mes = getByMessageScheduleId(messageId, "");

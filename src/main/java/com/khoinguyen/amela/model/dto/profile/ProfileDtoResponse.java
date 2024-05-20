@@ -1,4 +1,4 @@
-package com.khoinguyen.amela.model.dto.user;
+package com.khoinguyen.amela.model.dto.profile;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

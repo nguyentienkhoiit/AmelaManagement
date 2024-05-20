@@ -15,12 +15,12 @@ import lombok.experimental.FieldDefaults;
 public class GroupDtoRequest {
     Long id;
 
-    @Size(min = 4, max = 30, message = "Length must be between {min} and {max} characters")
+    @Size(min = 4, max = 30, message = "{validation.length.between}")
     String name;
 
     String description;
 
-    @Size(min = 10, message = "Length must be greater than or equal to {min}")
+    @Size(min = 10, message = "{validation.length.min}")
     String listMail;
 
     public String getName() {

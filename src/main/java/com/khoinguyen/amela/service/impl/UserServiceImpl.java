@@ -5,7 +5,11 @@ import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import com.khoinguyen.amela.model.dto.user.*;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
+import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
+import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.UserCriteria;
@@ -121,6 +125,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toProfileDtoResponse(userLoggedIn);
     }
 
+    @Transactional
     @Override
     public void updateProfile(ProfileDtoRequest request, MultipartFile fileImage, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -189,6 +194,7 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Transactional
     @Override
     public void updateUser(UserDtoUpdate request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();

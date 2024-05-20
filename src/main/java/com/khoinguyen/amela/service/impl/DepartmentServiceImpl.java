@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,6 +66,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return false;
     }
 
+    @Transactional
     @Override
     public void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -95,6 +97,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return optionalDepartment.map(DepartmentMapper::toDepartmentDtoResponse).orElse(null);
     }
 
+    @Transactional
     @Override
     public void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();

@@ -22,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,6 +40,7 @@ public class GroupServiceImpl implements GroupService {
     OptionalValidator optionalValidator;
     ValidationService validationService;
 
+    @Transactional
     @Override
     public void createGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -107,6 +109,7 @@ public class GroupServiceImpl implements GroupService {
         userGroupRepository.saveAll(userGroups);
     }
 
+    @Transactional
     @Override
     public void updateGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();

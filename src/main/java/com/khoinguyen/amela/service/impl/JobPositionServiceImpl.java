@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,6 +51,7 @@ public class JobPositionServiceImpl implements JobPositionService {
         return jobPositionCriteria.getAllPositions(request);
     }
 
+    @Transactional
     @Override
     public void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
@@ -95,6 +97,7 @@ public class JobPositionServiceImpl implements JobPositionService {
         return optionalDepartment.map(JobPositionMapper::toJobPositionDtoResponse).orElse(null);
     }
 
+    @Transactional
     @Override
     public void updatePositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
