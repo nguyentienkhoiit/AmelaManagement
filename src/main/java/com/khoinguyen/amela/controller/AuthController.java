@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.controller;
 
+import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.LoginDtoRequest;
@@ -8,7 +9,9 @@ import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.Constant;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.ValidationService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,8 @@ public class AuthController {
     AuthenticationService authenticationService;
     VerificationService verificationService;
     ValidationService validationService;
+    OptionalValidator optionalValidator;
+    HttpSession session;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -53,6 +58,18 @@ public class AuthController {
             }
         }
         return "layout/auth/login";
+    }
+
+    @GetMapping("/oauth2")
+    public String auth(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = authenticationService.loginOauth2(authentication);
+        if (user.getRole().getName().equalsIgnoreCase(Constant.ADMIN_NAME)) {
+            return "redirect:/dashboard";
+        } else if (user.getRole().getName().equalsIgnoreCase(Constant.USER_NAME)) {
+            return "redirect:/";
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/register")

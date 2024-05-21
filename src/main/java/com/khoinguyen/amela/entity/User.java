@@ -60,6 +60,8 @@ public class User {
 
     boolean isEditUsername = false;
 
+    String googleId;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     Role role;

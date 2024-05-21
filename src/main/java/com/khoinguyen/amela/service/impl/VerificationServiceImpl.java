@@ -43,7 +43,7 @@ public class VerificationServiceImpl implements VerificationService {
             return response;
         }
 
-        if(!isCreated && theToken.get().getUser().isActivated()) {
+        if (!isCreated && theToken.get().getUser().isActivated()) {
             response = new ServiceResponse<>(false, "error", "This link is activated");
             return response;
         }

@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/messages")
@@ -83,9 +85,7 @@ public class MessageController {
             Model model,
             @PathVariable(required = false) Long messageId
     ) {
-        var groups = groupService.getAll();
-        session.setAttribute("groups", groups);
-
+        model.addAttribute("groups", groupService.getAll());
         var request = MessageScheduleDtoRequest.builder().build();
 
         //copy
@@ -107,10 +107,13 @@ public class MessageController {
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
+            errors.forEach((key, value) -> log.error("key: {}, value: {}", key, value));
         }
 
         //save to database
         messageScheduleService.createMessages(request, errors);
+
+        model.addAttribute("groups", groupService.getAll());
 
         if (!errors.isEmpty()) {
             model.addAttribute("errors", errors);

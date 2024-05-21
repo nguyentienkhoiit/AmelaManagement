@@ -365,13 +365,25 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     @Override
     public boolean changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
+
         var messageScheduleOptional = messageScheduleRepository.findById(id);
         if (messageScheduleOptional.isPresent()) {
             var messageSchedule = messageScheduleOptional.get();
+            //delete schedule
+            if (messageSchedule.isStatus()) {
+                ScheduledFuture<?> existingTask = scheduledTasks.get(messageSchedule.getId());
+                if (existingTask != null) {
+                    existingTask.cancel(false);
+                }
+            }
+            //open schedule
+            else setSchedulePublishMessage(messageSchedule);
+
             messageSchedule.setUpdateAt(LocalDateTime.now());
             messageSchedule.setUpdateBy(userLoggedIn.getId());
             messageSchedule.setStatus(!messageSchedule.isStatus());
             messageScheduleRepository.save(messageSchedule);
+
             return true;
         }
         return false;

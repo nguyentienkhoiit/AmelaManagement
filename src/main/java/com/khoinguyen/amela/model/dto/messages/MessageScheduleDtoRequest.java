@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.model.dto.messages;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -19,7 +20,7 @@ public class MessageScheduleDtoRequest {
     @Size(min = 10, max = 100, message = "{validation.length.between}")
     String subject;
 
-    @Size(min = 10, message = "{validation.length.min}")
+    @NotBlank(message = "{validation.required}")
     String message;
 
     @Size(max = 50, message = "{validation.length.max}")

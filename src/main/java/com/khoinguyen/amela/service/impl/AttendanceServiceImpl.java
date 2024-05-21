@@ -120,7 +120,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-//    @Transactional
+    //    @Transactional
     @Override
     public boolean checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();

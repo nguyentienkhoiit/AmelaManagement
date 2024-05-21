@@ -82,7 +82,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .logoutSuccessUrl("/login")
                 )
-                .exceptionHandling(e -> e.accessDeniedPage("/forbidden"));
+                .exceptionHandling(e -> e.accessDeniedPage("/forbidden"))
+                .oauth2Login(
+                        l -> l.loginPage("/login")
+                                .defaultSuccessUrl("/oauth2", true)
+                );
         return http.build();
     }
 }

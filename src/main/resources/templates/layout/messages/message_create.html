@@ -113,7 +113,7 @@
                 <select aria-label="Default select example" class="form-select" id="group-email" name="groupId"
                         th:field="*{groupId}">
                     <option value="0">Choose a group</option>
-                    <option th:each="group: ${session.groups}" th:text="${group.name}" th:value="${group.id}">
+                    <option th:each="group: ${groups}" th:text="${group.name}" th:value="${group.id}">
                         Intership group
                     </option>
                 </select>

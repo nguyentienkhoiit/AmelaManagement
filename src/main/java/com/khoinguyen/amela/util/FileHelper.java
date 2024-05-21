@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,7 +86,7 @@ public class FileHelper {
     }
 
     public Set<String> getListBannedWord(String paragraph) {
-        Set<String> bannedWords = new HashSet<>();
+        Set<String> bannedWords;
         try {
             bannedWords = readFile();
             if (bannedWords.isEmpty()) return null;
@@ -96,7 +95,7 @@ public class FileHelper {
             return null;
         }
         return bannedWords.stream()
-                .filter(w -> paragraph.equalsIgnoreCase(w.toLowerCase()))
+                .filter(w -> paragraph.toLowerCase().contains(w.toLowerCase()))
                 .collect(Collectors.toSet());
     }
 }
