@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.phone = ?1 and u.id != ?2")
     Optional<User> findByPhone(String phone, Long userId);
 
+    @Query("select u from User u where u.activated = true and u.enabled = true and u.email = ?1")
     Optional<User> findByEmailAndEnabledTrue(String email);
 
     Optional<User> findTopByOrderByIdDesc();

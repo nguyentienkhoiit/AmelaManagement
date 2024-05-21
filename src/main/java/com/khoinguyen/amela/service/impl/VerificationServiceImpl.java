@@ -34,12 +34,17 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Transactional
     @Override
-    public ServiceResponse<String> validateToken(String token) {
+    public ServiceResponse<String> validateToken(String token, boolean isCreated) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "valid", null);
 
         Optional<Verification> theToken = verificationRepository.findByToken(token);
-        if (theToken.isEmpty() || theToken.get().getUser().isActivated()) {
+        if (theToken.isEmpty()) {
             response = new ServiceResponse<>(false, "error", "This link is not exist");
+            return response;
+        }
+
+        if(!isCreated && theToken.get().getUser().isActivated()) {
+            response = new ServiceResponse<>(false, "error", "This link is activated");
             return response;
         }
 

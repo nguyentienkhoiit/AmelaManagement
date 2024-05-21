@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.service.impl;
 
+import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.entity.Verification;
 import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
@@ -17,6 +18,7 @@ import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -38,10 +41,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     PasswordEncoder passwordEncoder;
     UserHelper userHelper;
     ValidationService validationService;
+    AppConfig appConfig;
 
     @Transactional
     @Override
-    public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request, String rootUrl) {
+    public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "success",
                 "We have just sent a verification link to your email, the link will be expired in 1h");
         User user = userRepository.findByEmailAndEnabledTrue(request.getEmail())
@@ -53,10 +57,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = UUID.randomUUID().toString();
         verificationService.createTokenUser(user, token);
         //send password reset verification email to the user
-        String url = rootUrl + "/new-password?token=" + token;
+        String url = appConfig.HOST + "new-password?token=" + token;
         try {
             emailHandler.sendTokenForgotPassword(user, url);
         } catch (MessagingException | UnsupportedEncodingException e) {
+            log.error("error: {}", e.getMessage());
             response = new ServiceResponse<>(false, "error", "Something is went wrong");
             return response;
         }
@@ -69,7 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ServiceResponse<String> response;
 
         //validate token
-        response = verificationService.validateToken(request.getToken());
+        response = verificationService.validateToken(request.getToken(), true);
         if (!response.status()) return response;
 
         //submit password
@@ -92,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ServiceResponse<String> response;
 
         //validate token
-        response = verificationService.validateToken(request.getToken());
+        response = verificationService.validateToken(request.getToken(), true);
         if (!response.status()) return response;
 
         //submit password

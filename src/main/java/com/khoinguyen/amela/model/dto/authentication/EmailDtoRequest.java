@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmailDtoRequest {
-    @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "Email is invalid")
+    @Pattern(regexp = "^[a-zA-Z0-9.]+@(\\w+\\.)*(\\w+)$", message = "{validation.invalid}")
     String email;
 }

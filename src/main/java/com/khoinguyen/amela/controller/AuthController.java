@@ -7,9 +7,8 @@ import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
-import com.khoinguyen.amela.util.UrlUtil;
+import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.ValidationService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +46,9 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-            if (roles.contains("ADMIN")) {
+            if (roles.contains(Constant.ADMIN_NAME)) {
                 return "redirect:/dashboard";
-            } else if (roles.contains("USER")) {
+            } else if (roles.contains(Constant.USER_NAME)) {
                 return "redirect:/";
             }
         }
@@ -63,13 +62,23 @@ public class AuthController {
 
     @GetMapping("/forgot-password")
     public String forgotPassword(Model model) {
-        model.addAttribute("emailDto", new EmailDtoRequest());
+        if (!model.containsAttribute("emailDto")) {
+            model.addAttribute("emailDto", new EmailDtoRequest());
+        }
         return "layout/auth/forgot-password";
     }
 
+    /**
+     * Forgot password
+     *
+     * @param model              model
+     * @param redirectAttributes redirect
+     * @param request            request
+     * @param result             result
+     * @return "layout/auth/forgot-password"
+     */
     @PostMapping("/forgot-password")
     public String submitForgotPassword(
-            HttpServletRequest httpServletRequest,
             Model model,
             RedirectAttributes redirectAttributes,
             @Valid @ModelAttribute("emailDto") EmailDtoRequest request,
@@ -79,9 +88,9 @@ public class AuthController {
             return "layout/auth/forgot-password";
         }
 
-        String rootUrl = UrlUtil.getApplicationUrl(httpServletRequest);
-        ServiceResponse<String> serviceResponse = authenticationService.submitForgotPassword(request, rootUrl);
+        ServiceResponse<String> serviceResponse = authenticationService.submitForgotPassword(request);
         redirectAttributes.addFlashAttribute(serviceResponse.column(), serviceResponse.data());
+        redirectAttributes.addFlashAttribute("emailDto", request);
         return "redirect:/forgot-password";
     }
 
@@ -90,12 +99,17 @@ public class AuthController {
             @RequestParam("token") String token,
             Model model
     ) {
-        ServiceResponse<String> serviceResponse = verificationService.validateToken(token);
-        PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
-                .token(token)
-                .build();
-        model.addAttribute(serviceResponse.column(), serviceResponse.data());
-        model.addAttribute("passwordDto", passwordDtoRequest);
+        if (!model.containsAttribute("passwordDto")) {
+            PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
+                    .token(token)
+                    .build();
+            model.addAttribute("passwordDto", passwordDtoRequest);
+        }
+
+        ServiceResponse<String> serviceResponse = verificationService.validateToken(token, true);
+        if (!serviceResponse.status()) {
+            model.addAttribute(serviceResponse.column(), serviceResponse.data());
+        }
         return "layout/auth/new-password";
     }
 
@@ -109,12 +123,6 @@ public class AuthController {
             return "layout/auth/new-password";
         }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            result.rejectValue("confirmPassword", "confirmPassword",
-                    "Password and confirm password does not match");
-            return "layout/auth/new-password";
-        }
-
         //submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitNewPassword(request);
         if (!serviceResponse.status()) {
@@ -124,17 +132,29 @@ public class AuthController {
         return "redirect:/login";
     }
 
+    /**
+     * Activate new user
+     *
+     * @param token token
+     * @param model model
+     * @return "/layout/users/user_new_password"
+     */
     @GetMapping("/user-new-password")
     public String createNewPassword(
             @RequestParam("token") String token,
             Model model
     ) {
-        ServiceResponse<String> serviceResponse = verificationService.validateToken(token);
-        PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
-                .token(token)
-                .build();
-        model.addAttribute(serviceResponse.column(), serviceResponse.data());
-        model.addAttribute("passwordDto", passwordDtoRequest);
+        ServiceResponse<String> serviceResponse = verificationService.validateToken(token, false);
+        if (!serviceResponse.status()) {
+            model.addAttribute(serviceResponse.column(), serviceResponse.data());
+        }
+
+        if (!model.containsAttribute("passwordDto")) {
+            PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
+                    .token(token)
+                    .build();
+            model.addAttribute("passwordDto", passwordDtoRequest);
+        }
         return "/layout/users/user_new_password";
     }
 
@@ -148,12 +168,6 @@ public class AuthController {
             return "layout/users/user_new_password";
         }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            result.rejectValue("confirmPassword", "confirmPassword",
-                    "Password and confirm password does not match");
-            return "layout/users/user_new_password";
-        }
-
         //submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitCreateNewPassword(request);
         if (!serviceResponse.status()) {
@@ -163,9 +177,17 @@ public class AuthController {
         return "redirect:/login";
     }
 
+    /**
+     * Change password
+     *
+     * @param model model
+     * @return "layout/auth/change-password"
+     */
     @GetMapping("/change-password")
     public String changePassword(Model model) {
-        model.addAttribute("user", new ChangePasswordDtoRequest());
+        if (!model.containsAttribute("passwordDto")) {
+            model.addAttribute("user", new ChangePasswordDtoRequest());
+        }
         return "layout/auth/change-password";
     }
 
@@ -185,7 +207,6 @@ public class AuthController {
             model.addAttribute("errors", errors);
             return "layout/auth/change-password";
         }
-
         return "redirect:/profile";
     }
 }

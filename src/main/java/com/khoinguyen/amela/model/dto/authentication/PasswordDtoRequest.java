@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.model.dto.authentication;
 
+import com.khoinguyen.amela.validator.PasswordMatches;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@PasswordMatches
 public class PasswordDtoRequest {
     String password;
     String confirmPassword;
