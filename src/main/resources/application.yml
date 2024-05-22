@@ -8,7 +8,7 @@ spring:
   application:
     name: AmelaManagement
   datasource:
-    url: jdbc:mysql://localhost:3306/amela_management
+    url: jdbc:mysql://localhost:3306/amela_database
     username: root
     password: aA@12345678
     driver-class-name: com.mysql.cj.jdbc.Driver

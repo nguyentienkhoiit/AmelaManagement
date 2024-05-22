@@ -18,7 +18,13 @@ public class Constant {
             "/login",
             "/css/**",
             "/image/**",
-            "js/**"};
+            "js/**",
+            "/badRequest",
+            "/notFound",
+            "/forbidden",
+            "/methodNotAllowed",
+            "/internalServerError"
+    };
     public static Collection<String> LIST_ATTRIBUTE_NAME = List.of(
             "{{name}}", "{{age}}", "{{address}}",
             "{{code}}", "{{email}}", "{{phone}}",

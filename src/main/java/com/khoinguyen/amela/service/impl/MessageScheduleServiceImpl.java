@@ -97,10 +97,10 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             request.setSenderName("Administrator");
         }
 
-        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
-        if (!listBannedWords.isEmpty()) {
-            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
-        }
+//        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
+//        if (!listBannedWords.isEmpty()) {
+//            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
+//        }
 
         if (request.getPublishAt() != null && request.getPublishAt().isBefore(LocalDateTime.now())) {
             validationService.updateErrors("publishAt", "The publish at must be in the future", errors);
@@ -256,25 +256,10 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             request.setSenderName("Administrator");
         }
 
-        if (request.getPublishAt() == null) {
-            validationService.updateErrors("publishAt", "This field is required", errors);
-        }
-
-        if (request.getPublishAt() != null
-                && request.getPublishAt().isBefore(LocalDateTime.now())) {
-            validationService.updateErrors("error", "Can not update this message because out of date", errors);
-            return;
-        }
-
         //check message schedule exist
         MessageSchedule messageSchedule = messageScheduleRepository.findById(request.getId()).orElse(null);
         if (messageSchedule == null) {
             validationService.updateErrors("message", "Message is not found", errors);
-        }
-
-        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
-        if (!listBannedWords.isEmpty()) {
-            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
         }
 
         Set<String> messageInvalid = StringUtil.extractAttributeNameInvalid(request.getMessage());
@@ -283,16 +268,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         }
 
         //update message schedule
-        if (request.getPublishAt() != null
-                && request.getPublishAt().isAfter(LocalDateTime.now())) {
-            assert messageSchedule != null;
-            messageSchedule.setMessage(request.getMessage());
-            messageSchedule.setPublishAt(request.getPublishAt());
-            messageSchedule.setSubject(request.getSubject());
-            messageSchedule.setUpdateAt(LocalDateTime.now());
-            messageSchedule.setSenderName(request.getSenderName());
-            messageSchedule.setUpdateBy(userLoggedIn.getId());
-        } else return;
+        assert messageSchedule != null;
+        messageSchedule.setMessage(request.getMessage());
+        messageSchedule.setPublishAt(request.getPublishAt());
+        messageSchedule.setSubject(request.getSubject());
+        messageSchedule.setUpdateAt(LocalDateTime.now());
+        messageSchedule.setSenderName(request.getSenderName());
+        messageSchedule.setUpdateBy(userLoggedIn.getId());
+
 
         //consist changing
         if (request.isChoice()) {

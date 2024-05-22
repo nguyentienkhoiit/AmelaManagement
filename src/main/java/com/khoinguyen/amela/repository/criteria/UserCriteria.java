@@ -3,6 +3,7 @@ package com.khoinguyen.amela.repository.criteria;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.util.Constant;
@@ -26,12 +27,20 @@ public class UserCriteria {
     EntityManager em;
     UserHelper userHelper;
 
-    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
+//    @org.springframework.data.jpa.repository.Query("select u from User u join u.userGroups ug join ug.group g where g.id = 1")
+    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();
-        StringBuilder sql = new StringBuilder("select u from User u");
+        StringBuilder sql = new StringBuilder("select u from User u ");
+
+        if(request.getGroupId() != null) {
+            sql.append(" join u.userGroups ug join ug.group g where g.id = :groupId ");
+            params.put("groupId", request.getGroupId());
+        }
+        else sql.append(" where 1 = 1 ");
+
         if (request.getText() != null) {
-            sql.append(" where  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName " +
+            sql.append(" and  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName " +
                     "or u.code like :code or u.department.name like :department or u.role.name like :role " +
                     "or u.jobPosition.name like :position) ");
             params.put("email", "%" + request.getText().trim() + "%");
@@ -45,6 +54,16 @@ public class UserCriteria {
 
         if (userLoggedIn.getRole().getName().equals(Constant.USER_NAME)) {
             sql.append(" and u.enabled = true and u.activated = true and u.role.name = 'USER'");
+        }
+
+        if (request.getDepartmentId() != null) {
+            sql.append(" and u.department.id = :departmentId ");
+            params.put("departmentId", request.getDepartmentId());
+        }
+
+        if (request.getPositionId() != null) {
+            sql.append(" and u.jobPosition.id = :jobPosition ");
+            params.put("jobPosition", request.getPositionId());
         }
 
         //filter search

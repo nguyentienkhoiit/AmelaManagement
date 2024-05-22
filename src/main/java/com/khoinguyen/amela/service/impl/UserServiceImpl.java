@@ -4,6 +4,7 @@ import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
     AppConfig appConfig;
 
     @Override
-    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest request) {
+    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
         return userCriteria.getAllUsers(request);
     }
 

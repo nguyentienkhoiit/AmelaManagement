@@ -46,7 +46,7 @@ public class UserMapper {
                 .gender(request.getGender())
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
-                .avatar("/image/avatar.jpg")
+                .avatar("avatar.jpg")
                 .build();
     }
 

@@ -22,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class MessageController {
     ) {
         //check permission
         if (!permissionMessages.checkPermission(id)) {
-            return "redirect:/error-page";
+            return "redirect:/notFound";
         }
         List<MessageScheduleDtoResponse> topMessages = messageScheduleService
                 .getTopMessagesScheduleForUser(10L, id);
@@ -107,7 +108,6 @@ public class MessageController {
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
-            errors.forEach((key, value) -> log.error("key: {}, value: {}", key, value));
         }
 
         //save to database
@@ -124,6 +124,10 @@ public class MessageController {
         return "redirect:" + url;
     }
 
+    public boolean checkPublishAtInThePast(LocalDateTime publishAt) {
+        return publishAt != null && publishAt.isBefore(LocalDateTime.now());
+    }
+
     @GetMapping("update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateMessages(Model model, @PathVariable Long id) {
@@ -131,7 +135,12 @@ public class MessageController {
             MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService
                     .getByMessageScheduleId(id, "id");
             model.addAttribute("message", messageScheduleDtoResponse);
+
+            //check time publish at in the past
+            if (checkPublishAtInThePast(messageScheduleDtoResponse.getPublishAt()))
+                return "redirect:/forbidden";
         }
+
 
         var groups = groupService.getAll();
         session.setAttribute("groups", groups);
@@ -146,6 +155,10 @@ public class MessageController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
+        //check time publish at in the past
+        if (checkPublishAtInThePast(request.getPublishAt()))
+            return "redirect:/forbidden";
+
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {

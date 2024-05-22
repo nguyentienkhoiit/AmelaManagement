@@ -18,4 +18,5 @@ public class GroupDtoResponse {
     String createdAt;
     String updateAt;
     boolean status;
+    Long member;
 }

@@ -31,7 +31,7 @@ public class ProfileDtoRequest {
     @NotNull(message = "{validation.required}")
     LocalDate dateOfBirth;
 
-    @Size(min = 4, max = 20, message = "{validation.length.between}")
+    @Size(min = 4, max = 30, message = "{validation.length.between}")
     String username;
 
     String avatar;

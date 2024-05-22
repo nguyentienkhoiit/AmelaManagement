@@ -12,7 +12,7 @@ import lombok.*;
 public class JobPositionDtoRequest {
     Long id;
 
-    @Size(min = 4, max = 30, message = "{validation.length.between}")
+    @Size(min = 2, max = 30, message = "{validation.length.between}")
     String name;
 
     String description;

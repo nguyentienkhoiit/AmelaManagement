@@ -16,4 +16,5 @@ public class JobPositionDtoResponse {
     Long createdBy;
     String updateAt;
     Long updateBy;
+    Long member;
 }

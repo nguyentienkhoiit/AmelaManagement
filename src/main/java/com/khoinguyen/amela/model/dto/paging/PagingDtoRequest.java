@@ -12,7 +12,7 @@ import static com.khoinguyen.amela.util.Constant.PAGE_SIZE;
 @Getter
 @Setter
 @ToString
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class PagingDtoRequest {
     String pageIndex = PAGE_INDEX.toString();
     String pageSize = PAGE_SIZE.toString();

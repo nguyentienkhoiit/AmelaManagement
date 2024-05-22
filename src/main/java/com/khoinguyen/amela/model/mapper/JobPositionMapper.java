@@ -7,6 +7,7 @@ import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class JobPositionMapper {
     public static JobPositionDtoResponse toJobPositionDtoResponse(JobPosition request) {
+        long count = request.getUsers().stream().filter(x -> x.isActivated() && x.isEnabled()).count();
         return JobPositionDtoResponse.builder()
                 .id(request.getId())
                 .name(request.getName())
@@ -16,6 +17,7 @@ public class JobPositionMapper {
                 .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))
                 .createdBy(request.getCreatedBy())
                 .updateBy(request.getUpdateBy())
+                .member(count)
                 .build();
     }
 

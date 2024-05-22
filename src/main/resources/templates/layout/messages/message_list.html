@@ -77,7 +77,7 @@
                     </td>
                     <td th:text="${message.status ? 'Active': 'Deactive'}">Active</td>
                     <td>
-                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                        <a data-bs-placement="left" th:if="${!message.isPublished()}" data-bs-toggle="tooltip"
                            th:href="@{/messages/update/{id}(id=${message.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>

@@ -39,7 +39,7 @@
                            type="text">
                     <a class="btn btn-success ms-1 rounded" data-bs-placement="top"
                        data-bs-toggle="tooltip" sec:authorize="hasAuthority('ADMIN')"
-                       th:href="@{/users/create}" title="Add">
+                       th:href="@{/users/create(departmentId=${departmentId}, positionId=${positionId})}" title="Add">
                         <i class="fa-solid fa-plus"></i>
                     </a>
                 </div>
@@ -151,17 +151,18 @@
             <ul class="pagination">
                 <li class="page-item" th:classappend="${(currentPage == 1 || totalPage.size() == 0) ? 'disabled' : ''}">
                     <a class="page-link"
-                       th:href="@{/users(pageIndex=${currentPage -1}, text=${text})}">Previous</a>
+                       th:href="@{/users(pageIndex=${currentPage -1}, text=${text}, departmentId=${departmentId}, positionId=${positionId}, groupId=${groupId})}">Previous</a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == pageNumber ? 'active' : ''}"
                     th:each="pageNumber : ${totalPage}">
-                    <a class="page-link" th:href="@{/users(pageIndex=${pageNumber}, text=${text})}"
+                    <a class="page-link"
+                       th:href="@{/users(pageIndex=${pageNumber}, text=${text}, departmentId=${departmentId}, positionId=${positionId}, groupId=${groupId})}"
                        th:text="${pageNumber}"></a>
                 </li>
                 <li class="page-item"
                     th:classappend="${(totalPage.size() == currentPage || totalPage.size() == 0)? 'disabled' : ''}">
                     <a class="page-link"
-                       th:href="@{/users(pageIndex=${currentPage + 1}, text=${text})}">Next</a>
+                       th:href="@{/users(pageIndex=${currentPage + 1}, text=${text}, departmentId=${departmentId}, positionId=${positionId}, groupId=${groupId})}">Next</a>
                 </li>
             </ul>
         </nav>

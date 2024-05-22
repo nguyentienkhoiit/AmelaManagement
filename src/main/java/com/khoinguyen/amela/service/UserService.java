@@ -2,6 +2,7 @@ package com.khoinguyen.amela.service;
 
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingDtoRequest pagingDtoRequest);
+    public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest pagingDtoRequest);
 
     void createUser(UserDtoRequest request, Map<String, List<String>> errors);
 

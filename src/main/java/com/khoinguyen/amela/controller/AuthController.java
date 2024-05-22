@@ -61,9 +61,13 @@ public class AuthController {
     }
 
     @GetMapping("/oauth2")
-    public String auth(Model model) {
+    public String auth() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = authenticationService.loginOauth2(authentication);
+        if (user == null) {
+
+            return "redirect:/login?fault";
+        }
         if (user.getRole().getName().equalsIgnoreCase(Constant.ADMIN_NAME)) {
             return "redirect:/dashboard";
         } else if (user.getRole().getName().equalsIgnoreCase(Constant.USER_NAME)) {

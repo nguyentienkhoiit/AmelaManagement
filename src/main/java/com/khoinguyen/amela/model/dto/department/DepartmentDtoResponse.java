@@ -16,4 +16,5 @@ public class DepartmentDtoResponse {
     Long createdBy;
     String updateAt;
     Long updateBy;
+    Long member;
 }

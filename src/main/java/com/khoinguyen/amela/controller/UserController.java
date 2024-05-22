@@ -3,6 +3,7 @@ package com.khoinguyen.amela.controller;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
@@ -55,7 +56,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String viewUsers(
             Model model,
-            @ModelAttribute PagingDtoRequest pagingDtoRequest
+            @ModelAttribute PagingUserDtoRequest pagingDtoRequest
     ) {
         session.setAttribute("active", "user");
 
@@ -71,15 +72,40 @@ public class UserController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("userLoggedIn", userLoggedIn);
 
-        session.setAttribute("url", "/users?pageIndex=" + pagingDtoRequest.getPageIndex() +
-                "&text=" + pagingDtoRequest.getText());
+        String url = "/users?pageIndex=" + pagingDtoRequest.getPageIndex() +
+                "&text=" + pagingDtoRequest.getText();
+
+        if(pagingDtoRequest.getDepartmentId() != null) {
+            model.addAttribute("departmentId", pagingDtoRequest.getDepartmentId());
+            url+="&departmentId=" + pagingDtoRequest.getDepartmentId();
+        }
+
+        if(pagingDtoRequest.getPositionId() != null) {
+            model.addAttribute("positionId", pagingDtoRequest.getPositionId());
+            url+="&positionId=" + pagingDtoRequest.getPositionId();
+        }
+
+        if(pagingDtoRequest.getGroupId() != null) {
+            model.addAttribute("groupId", pagingDtoRequest.getGroupId());
+            url+="&groupId=" + pagingDtoRequest.getGroupId();
+        }
+
+        session.setAttribute("url", url);
         return "layout/users/user_list";
     }
 
     @GetMapping("create")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewCreateUsers(Model model) {
-        model.addAttribute("user", UserDtoRequest.builder().build());
+    public String viewCreateUsers(
+            Model model,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Long positionId
+    ) {
+        UserDtoRequest user = UserDtoRequest.builder().build();
+        if(departmentId != null) user.setDepartmentId(departmentId);
+        if(positionId != null) user.setJobPositionId(positionId);
+
+        model.addAttribute("user", user);
         setInfoSelectionOption(model);
         return "layout/users/user_create";
     }

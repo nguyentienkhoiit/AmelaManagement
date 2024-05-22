@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class PermissionMessages {
         } else {
             return messageSchedule.getUserMessageSchedules()
                     .stream()
-                    .anyMatch(userMessageSchedule -> userMessageSchedule.getUser().equals(userLoggedIn));
+                    .anyMatch(userMessageSchedule -> Objects.equals(userMessageSchedule.getUser().getId(), userLoggedIn.getId()));
         }
     }
 }

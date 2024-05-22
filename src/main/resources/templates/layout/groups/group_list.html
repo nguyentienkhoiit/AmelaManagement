@@ -33,6 +33,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Group name <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
+                    <th scope="col">Member <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a></th>
                     <th scope="col">Created At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
                     <th scope="col">Update At <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
@@ -45,6 +46,7 @@
                 <tbody>
                 <tr th:each="group: ${groups}">
                     <td th:text="${group.name}">Human resources</td>
+                    <td th:text="${group.member}">Human resources</td>
                     <td th:text="${group.createdAt}">20:11:00 12/12/2024</td>
                     <td th:text="${group.updateAt}">20:11:00 12/12/2024</td>
                     <td>
@@ -95,6 +97,11 @@
                                 </div>
                             </div>
                         </div>
+                        <a class="ms-2" data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/users(groupId=${group.id})}"
+                           title="Detail">
+                            <i class="fa-solid fa-circle-info text-success"></i>
+                        </a>
                     </td>
                 </tr>
                 </tbody>

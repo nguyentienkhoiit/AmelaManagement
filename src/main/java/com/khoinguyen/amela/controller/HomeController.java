@@ -100,30 +100,35 @@ public class HomeController {
     }
 
     @GetMapping("notFound")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String notFound404() {
         session.setAttribute("active", "error");
         return "layout/errorPages/not_found_404";
     }
 
     @GetMapping("forbidden")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String forbidden403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/forbidden_403";
     }
 
     @GetMapping("badRequest")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String badRequest400() {
         session.setAttribute("active", "error");
         return "layout/errorPages/bad_request_400";
     }
 
     @GetMapping("methodNotAllowed")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String methodNotAllowed403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/method_not_allow_405";
     }
 
     @GetMapping("internalServerError")
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String internalServerError500() {
         session.setAttribute("active", "error");
         return "layout/errorPages/internal_server_error_500";
