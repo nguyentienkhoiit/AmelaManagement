@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,27 +33,27 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileHelper {
 
-    public String uploadFile(MultipartFile file, User user) throws IOException {
+    public String uploadFile(MultipartFile file, User user) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        String extension = getFileExtension(fileName);
+        log.info("Uploading file {} to {}", fileName, extension);
+        if(!List.of("jpeg", "png", "jpg").contains(extension.toLowerCase())) return null;
 
-//        String fileExtension = getFileExtension(fileName);
         String newFileName = AttributeGenerator.generatorUsername(user, user.getId()) + ".jpg";
 
         String uploadDir = "./upload";
         Path uploadPath = Paths.get(uploadDir);
 
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
         try (InputStream inputStream = file.getInputStream()) {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
             Path filePath = uploadPath.resolve(newFileName);
             Files.copy(inputStream, filePath, REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (MaxUploadSizeExceededException | IOException e) {
             log.error(e.getMessage());
             return null;
         }
-
         return newFileName;
     }
 

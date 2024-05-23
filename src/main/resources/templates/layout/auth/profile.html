@@ -26,10 +26,15 @@
                         <img alt="preview"
                              class="img-account-profile rounded-circle mb-2" id="thumbnail"
                              style="height: 180px; width: 180px;" th:src="@{/users/avatar}">
-                        <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                        <div class="small font-italic text-muted mb-4">JPG or PNG or JPEG no larger than 5 MB</div>
                         <input accept="image/png, image/jpeg, image/jpg" class="form-control" id="fileImage"
                                name="fileImage"
                                type="file">
+                        <ul class="errors mt-3"
+                            th:if="${errors != null and !#lists.isEmpty(errors['avatar'])}">
+                            <li class="text-danger h6 mt-1" th:each="error : ${errors['avatar']}"
+                                th:text="${error}"></li>
+                        </ul>
                     </div>
                 </div>
             </div>

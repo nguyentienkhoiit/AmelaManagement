@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +70,9 @@ public class HomeController {
         session.setAttribute("active", "profile");
 
         var user = userService.getProfile();
-        model.addAttribute("user", user);
+        if(!model.containsAttribute("user")) {
+            model.addAttribute("user", user);
+        }
         return "layout/auth/profile";
     }
 
@@ -79,10 +82,12 @@ public class HomeController {
             @RequestParam(value = "fileImage", required = false) MultipartFile fileImage,
             @Valid @ModelAttribute("user") ProfileDtoRequest request,
             BindingResult result,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         User userLoggedIn = userHelper.getUserLogin();
         ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, userLoggedIn);
-        model.addAttribute("user", response);
+        redirectAttributes.addFlashAttribute("user", response);
 
         // check validate
         Map<String, List<String>> errors = new HashMap<>();
@@ -92,8 +97,8 @@ public class HomeController {
 
         userService.updateProfile(request, fileImage, errors);
         if (!errors.isEmpty()) {
-            model.addAttribute("errors", errors);
-            return "layout/auth/profile";
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/profile";
         }
 
         return "redirect:/profile";

@@ -146,16 +146,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!fileImage.isEmpty()) {
-            try {
                 String fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
                 if (fileName == null) {
-                    validationService.updateErrors("avatar", "Something went wrong", errors);
+                    validationService.updateErrors("avatar", "Only JPG or PNG or JPEG uploads are allowed", errors);
                 }
-                userLoggedIn.setAvatar(fileName);
-            } catch (IOException e) {
-                log.error("Failed to upload file {}", e.getMessage());
-                throw new RuntimeException(e);
-            }
+                else userLoggedIn.setAvatar(fileName);
         }
 
         if (!errors.isEmpty()) return;
