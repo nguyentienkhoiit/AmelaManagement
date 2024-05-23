@@ -4,6 +4,7 @@ import com.khoinguyen.amela.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -27,4 +28,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.username = ?1 or u.email = ?1 and u.activated = true and u.enabled = true")
     Optional<User> findByUsernameOrEmail(String username);
+
+    @Query("select u from User u where u.enabled = true and u.activated = true")
+    List<User> findAllUser();
+
+    @Query("select u from User u where u.activated = true and u.enabled = true and u.id = ?1")
+    Optional<User> findByIdAndActive(Long id);
 }

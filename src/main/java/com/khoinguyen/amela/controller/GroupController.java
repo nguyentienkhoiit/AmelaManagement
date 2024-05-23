@@ -5,12 +5,14 @@ import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.mapper.GroupMapper;
 import com.khoinguyen.amela.service.GroupService;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/groups")
@@ -30,6 +33,7 @@ public class GroupController {
     HttpSession session;
     GroupService groupService;
     ValidationService validationService;
+    OptionalValidator optionalValidator;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -59,6 +63,7 @@ public class GroupController {
     public String viewCreateGroups(Model model) {
         session.setAttribute("active", "group");
 
+        model.addAttribute("users", optionalValidator.findAllUser());
         model.addAttribute("group", new GroupDtoRequest());
         return "layout/groups/group_create";
     }
@@ -70,7 +75,9 @@ public class GroupController {
             BindingResult result,
             Model model
     ) {
+        log.info("usersIds: {}", request.getUsersIds());
         //check validate
+        model.addAttribute("users", optionalValidator.findAllUser());
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -96,6 +103,7 @@ public class GroupController {
     ) {
         session.setAttribute("active", "group");
 
+        model.addAttribute("users", optionalValidator.findAllUser());
         if (!model.containsAttribute("group")) {
             GroupDtoResponse response = groupService.getGroupById(id);
             model.addAttribute("group", response);

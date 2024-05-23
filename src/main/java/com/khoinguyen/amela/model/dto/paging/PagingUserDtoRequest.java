@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @ToString
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class PagingUserDtoRequest extends PagingDtoRequest{
+public class PagingUserDtoRequest extends PagingDtoRequest {
     Long departmentId;
     Long positionId;
     Long groupId;

@@ -1,7 +1,6 @@
 package com.khoinguyen.amela.repository.criteria;
 
 import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
@@ -27,17 +26,16 @@ public class UserCriteria {
     EntityManager em;
     UserHelper userHelper;
 
-//    @org.springframework.data.jpa.repository.Query("select u from User u join u.userGroups ug join ug.group g where g.id = 1")
+    //    @org.springframework.data.jpa.repository.Query("select u from User u join u.userGroups ug join ug.group g where g.id = 1")
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder("select u from User u ");
 
-        if(request.getGroupId() != null) {
+        if (request.getGroupId() != null) {
             sql.append(" join u.userGroups ug join ug.group g where g.id = :groupId ");
             params.put("groupId", request.getGroupId());
-        }
-        else sql.append(" where 1 = 1 ");
+        } else sql.append(" where 1 = 1 ");
 
         if (request.getText() != null) {
             sql.append(" and  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName " +

@@ -3,6 +3,8 @@ package com.khoinguyen.amela.model.dto.group;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -14,7 +16,7 @@ public class GroupDtoResponse {
     Long id;
     String name;
     String description;
-    String listMail;
+    List<Long> usersIds;
     String createdAt;
     String updateAt;
     boolean status;

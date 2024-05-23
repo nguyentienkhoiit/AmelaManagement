@@ -2,7 +2,6 @@ package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.entity.UserGroup;
 import com.khoinguyen.amela.entity.UserMessageSchedule;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
@@ -16,22 +15,20 @@ import com.khoinguyen.amela.repository.UserMessageScheduleRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.MessageScheduleCriteria;
 import com.khoinguyen.amela.service.MessageScheduleService;
-import com.khoinguyen.amela.util.*;
-import jakarta.mail.MessagingException;
+import com.khoinguyen.amela.util.StringUtil;
+import com.khoinguyen.amela.util.UserHelper;
+import com.khoinguyen.amela.util.ValidationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.stream.Collectors;
 
 import static com.khoinguyen.amela.util.Constant.ADMIN_NAME;
 
@@ -46,47 +43,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserRepository userRepository;
     GroupRepository groupRepository;
     UserMessageScheduleRepository userMessageScheduleRepository;
-    EmailHandler emailHandler;
-    ThreadPoolTaskScheduler taskScheduler;
-    Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
-    FileHelper fileHelper;
     ValidationService validationService;
-
-    private List<User> getUsersFromSchedule(MessageSchedule messageSchedule) {
-        if (messageSchedule.getGroup() != null) {
-            return messageSchedule.getGroup().getUserGroups().stream()
-                    .map(UserGroup::getUser)
-                    .toList();
-        } else if (messageSchedule.getUserMessageSchedules() != null) {
-            return messageSchedule.getUserMessageSchedules().stream()
-                    .map(UserMessageSchedule::getUser)
-                    .toList();
-        }
-        return Collections.emptyList();
-    }
-
-    private void setSchedulePublishMessage(MessageSchedule messageSchedule) {
-        // Cancel existing task if it exists
-        ScheduledFuture<?> existingTask = scheduledTasks.get(messageSchedule.getId());
-        if (existingTask != null) {
-            existingTask.cancel(false);
-        }
-
-        // Schedule new task
-        List<User> users = getUsersFromSchedule(messageSchedule);
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(messageSchedule.getPublishAt(), ZoneId.systemDefault());
-        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(() -> {
-            try {
-                emailHandler.sendNotificationMessage(messageSchedule, users);
-            } catch (MessagingException | UnsupportedEncodingException e) {
-                log.error("Failed to send notification message: {}", e.getMessage(), e);
-                throw new RuntimeException("Failed to send notification message", e);
-            }
-        }, zonedDateTime.toInstant());
-
-        // Save the new task in the map
-        scheduledTasks.put(messageSchedule.getId(), scheduledFuture);
-    }
 
     @Transactional
     @Override
@@ -96,11 +53,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         if (request.getSenderName().isEmpty()) {
             request.setSenderName("Administrator");
         }
-
-//        var listBannedWords = fileHelper.getListBannedWord(request.getMessage());
-//        if (!listBannedWords.isEmpty()) {
-//            validationService.updateErrors("message", "Messages contains invalid words like " + listBannedWords, errors);
-//        }
 
         if (request.getPublishAt() != null && request.getPublishAt().isBefore(LocalDateTime.now())) {
             validationService.updateErrors("publishAt", "The publish at must be in the future", errors);
@@ -120,46 +72,22 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .build();
 
         if (request.isChoice()) {
-            if (request.getGroupId() == 0) {
-                validationService.updateErrors("groupId", "Please choose a group", errors);
-            } else {
+            if (request.getGroupId() != 0) {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule.setUserMessageSchedules(null);
-                messageSchedule = messageScheduleRepository.save(messageSchedule);
+                messageScheduleRepository.save(messageSchedule);
             }
-
-            if (!errors.isEmpty()) return;
+            else validationService.updateErrors("groupId", "Please choose a group", errors);
         } else {
-            //cut email to list
-            Set<String> listEmail = Arrays.stream(request.getListMail()
-                            .split(","))
-                    .map(String::trim)
-                    .map(String::toLowerCase)
-                    .filter(s -> !s.isEmpty())
-                    .filter(s -> s.contains("@"))
-                    .collect(Collectors.toSet());
-
-            //check validate email exist in database
-            StringBuilder messages = new StringBuilder();
-            List<User> listUsers = new ArrayList<>();
-            for (var email : listEmail) {
-                var userOptional = userRepository
-                        .findByEmail(email)
-                        .filter(u -> !u.getRole().getName().equals(ADMIN_NAME));
-                if (userOptional.isEmpty()) {
-                    messages.append(email).append(", ");
-                } else listUsers.add(userOptional.get());
-            }
-
-            //list of mail is not exist
-            if (!messages.isEmpty()) {
-                String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-                validationService.updateErrors("listMail", msg, errors);
-            }
+            List<User> listUsers = request.getUsersIds().stream()
+                    .map(id -> userRepository.findByIdAndActive(id).orElse(null))
+                    .filter(Objects::nonNull)
+                    .toList();
 
             if (listUsers.isEmpty()) {
-                validationService.updateErrors("listMail", "Please input at least one email", errors);
+                validationService.updateErrors("usersIds", "Please choose at least one user", errors);
             }
+
 
             if (!errors.isEmpty()) return;
 
@@ -168,6 +96,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
             Set<UserMessageSchedule> userMessageScheduleList = new HashSet<>();
             for (var user : listUsers) {
+
                 UserMessageSchedule userMessageSchedule = UserMessageSchedule.builder()
                         .messageSchedule(messageSchedule)
                         .user(user)
@@ -176,9 +105,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             }
             var ums = userMessageScheduleRepository.saveAll(userMessageScheduleList);
             messageSchedule.setUserMessageSchedules(ums);
-            messageSchedule = messageScheduleRepository.save(messageSchedule);
+            messageScheduleRepository.save(messageSchedule);
         }
-        setSchedulePublishMessage(messageSchedule);
     }
 
     @Override
@@ -288,56 +216,40 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
             if (!errors.isEmpty()) return;
         } else {
-            //cut email to list
-            Set<String> listEmail = Arrays.stream(request.getListMail()
-                            .split(","))
-                    .map(String::trim)
-                    .map(String::toLowerCase)
-                    .filter(s -> !s.isEmpty())
-                    .filter(s -> s.contains("@"))
-                    .collect(Collectors.toSet());
-
-            //check validate email exist in database
-            StringBuilder messages = new StringBuilder();
-            List<User> listUsers = new ArrayList<>();
-            for (var email : listEmail) {
-                var userOptional = userRepository.findByEmail(email);
-                if (userOptional.isEmpty()) {
-                    messages.append(email).append(", ");
-                } else listUsers.add(userOptional.get());
-            }
-
-            //list of mail is not exist
-            if (!messages.isEmpty()) {
-                String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-                validationService.updateErrors("listMail", msg, errors);
-            }
+            List<User> listUsers = request.getUsersIds().stream()
+                    .map(id -> userRepository.findByIdAndActive(id).orElse(null))
+                    .filter(Objects::nonNull)
+                    .toList();
 
             if (listUsers.isEmpty()) {
-                validationService.updateErrors("listMail", "Please input at least one email", errors);
+                validationService.updateErrors("usersIds", "Please choose at least one user", errors);
             }
 
             if (!errors.isEmpty()) return;
 
             messageSchedule = messageScheduleRepository.save(messageSchedule);
 
-            if (!MessageScheduleMapper.getListMailString(messageSchedule).equalsIgnoreCase(listEmail.toString())) {
-                userMessageScheduleRepository.deleteAll(userMessageScheduleRepository.findByMessageScheduleId(messageSchedule.getId()));
-            }
+            List<Long> userIds = messageSchedule.getUserMessageSchedules()
+                    .stream()
+                    .map(u -> u.getUser().getId())
+                    .toList();
 
-            Set<UserMessageSchedule> userMessageScheduleList = new HashSet<>();
-            for (var user : listUsers) {
-                UserMessageSchedule userMessageSchedule = UserMessageSchedule.builder()
-                        .messageSchedule(messageSchedule)
-                        .user(user)
-                        .build();
-                userMessageScheduleList.add(userMessageSchedule);
+            log.info("result: {}", request.getUsersIds().equals(userIds));
+            if (!request.getUsersIds().equals(userIds)) {
+                userMessageScheduleRepository.deleteByMessageScheduleId(messageSchedule.getId());
+                List<UserMessageSchedule> userMessageScheduleList = new ArrayList<>();
+                for (var user : listUsers) {
+                    UserMessageSchedule userMessageSchedule = UserMessageSchedule.builder()
+                            .messageSchedule(messageSchedule)
+                            .user(user)
+                            .build();
+                    userMessageScheduleList.add(userMessageSchedule);
+                }
+                var ums = userMessageScheduleRepository.saveAll(userMessageScheduleList);
+                messageSchedule.setUserMessageSchedules(ums);
+                messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
-            var ums = userMessageScheduleRepository.saveAll(userMessageScheduleList);
-            messageSchedule.setUserMessageSchedules(ums);
-            messageSchedule = messageScheduleRepository.save(messageSchedule);
         }
-        setSchedulePublishMessage(messageSchedule);
     }
 
     @Override
@@ -352,16 +264,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         var messageScheduleOptional = messageScheduleRepository.findById(id);
         if (messageScheduleOptional.isPresent()) {
             var messageSchedule = messageScheduleOptional.get();
-            //delete schedule
-            if (messageSchedule.isStatus()) {
-                ScheduledFuture<?> existingTask = scheduledTasks.get(messageSchedule.getId());
-                if (existingTask != null) {
-                    existingTask.cancel(false);
-                }
-            }
-            //open schedule
-            else setSchedulePublishMessage(messageSchedule);
-
             messageSchedule.setUpdateAt(LocalDateTime.now());
             messageSchedule.setUpdateBy(userLoggedIn.getId());
             messageSchedule.setStatus(!messageSchedule.isStatus());

@@ -39,6 +39,11 @@ public class MessageScheduleMapper {
     }
 
     public static MessageScheduleUpdateResponse toMessageScheduleUpdateResponse(MessageSchedule request) {
+        var usersIds = request.getUserMessageSchedules()
+                .stream()
+                .map(m -> m.getUser().getId())
+                .toList();
+
         return MessageScheduleUpdateResponse.builder()
                 .id(request.getId())
                 .publishAt(request.getPublishAt())
@@ -48,7 +53,7 @@ public class MessageScheduleMapper {
                 .isPublished(request.getPublishAt().isBefore(LocalDateTime.now()))
                 .groupId(request.getGroup() != null ? request.getGroup().getId() : null)
                 .choice(request.getGroup() != null)
-                .listMail(getListMailString(request))
+                .usersIds(usersIds)
                 .build();
     }
 
@@ -62,8 +67,8 @@ public class MessageScheduleMapper {
                 .senderName(request.getSenderName())
                 .isPublished(isPublished)
                 .groupId(request.getGroupId())
-                .choice(request.getListMail() == null)
-                .listMail(request.getListMail())
+                .choice(request.getUsersIds() == null)
+                .usersIds(request.getUsersIds())
                 .build();
     }
 
@@ -75,7 +80,7 @@ public class MessageScheduleMapper {
                 .subject(response.getSubject())
                 .senderName(response.getSenderName())
                 .groupId(response.getGroupId())
-                .listMail(response.getListMail())
+                .usersIds(response.getUsersIds())
                 .choice(response.isChoice())
                 .build();
     }

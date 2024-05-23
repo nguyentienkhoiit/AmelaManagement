@@ -37,7 +37,7 @@ public class FileHelper {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = getFileExtension(fileName);
         log.info("Uploading file {} to {}", fileName, extension);
-        if(!List.of("jpeg", "png", "jpg").contains(extension.toLowerCase())) return null;
+        if (!List.of("jpeg", "png", "jpg").contains(extension.toLowerCase())) return null;
 
         String newFileName = AttributeGenerator.generatorUsername(user, user.getId()) + ".jpg";
 

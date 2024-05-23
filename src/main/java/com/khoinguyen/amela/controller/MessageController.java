@@ -7,6 +7,7 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.mapper.MessageScheduleMapper;
 import com.khoinguyen.amela.service.GroupService;
 import com.khoinguyen.amela.service.MessageScheduleService;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.PermissionMessages;
 import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +39,7 @@ public class MessageController {
     GroupService groupService;
     PermissionMessages permissionMessages;
     ValidationService validationService;
+    OptionalValidator optionalValidator;
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -86,6 +88,7 @@ public class MessageController {
             Model model,
             @PathVariable(required = false) Long messageId
     ) {
+        model.addAttribute("users", optionalValidator.findAllUser());
         model.addAttribute("groups", groupService.getAll());
         var request = MessageScheduleDtoRequest.builder().build();
 
@@ -104,6 +107,8 @@ public class MessageController {
             BindingResult result,
             Model model
     ) {
+        log.info("list users: {}", request.getUsersIds());
+        model.addAttribute("users", optionalValidator.findAllUser());
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -131,6 +136,7 @@ public class MessageController {
     @GetMapping("update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewUpdateMessages(Model model, @PathVariable Long id) {
+        model.addAttribute("users", optionalValidator.findAllUser());
         if (!model.containsAttribute("message")) {
             MessageScheduleUpdateResponse messageScheduleDtoResponse = messageScheduleService
                     .getByMessageScheduleId(id, "id");
@@ -155,6 +161,7 @@ public class MessageController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
+        log.info("list users: {}", request.getUsersIds());
         //check time publish at in the past
         if (checkPublishAtInThePast(request.getPublishAt()))
             return "redirect:/forbidden";

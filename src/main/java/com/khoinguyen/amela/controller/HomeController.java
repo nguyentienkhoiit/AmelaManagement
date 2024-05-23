@@ -70,7 +70,7 @@ public class HomeController {
         session.setAttribute("active", "profile");
 
         var user = userService.getProfile();
-        if(!model.containsAttribute("user")) {
+        if (!model.containsAttribute("user")) {
             model.addAttribute("user", user);
         }
         return "layout/auth/profile";

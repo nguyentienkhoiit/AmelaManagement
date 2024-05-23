@@ -1,6 +1,5 @@
 package com.khoinguyen.amela.service;
 
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;

@@ -7,14 +7,12 @@ import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.model.mapper.GroupMapper;
 import com.khoinguyen.amela.repository.GroupRepository;
 import com.khoinguyen.amela.repository.UserGroupRepository;
 import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.repository.criteria.GroupCriteria;
 import com.khoinguyen.amela.service.GroupService;
-import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
@@ -25,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,41 +45,22 @@ public class GroupServiceImpl implements GroupService {
     public void createGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        //cut email to list
-        Set<String> listEmail = Arrays.stream(request.getListMail()
-                        .split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .filter(s -> !s.isEmpty())
-                .filter(s -> s.contains("@"))
-                .collect(Collectors.toSet());
-
-        //list of email empty
-        if (listEmail.isEmpty()) {
-            validationService.updateErrors("listMail", "List of email must be at least one", errors);
-        }
-
-        //check validate email exist in database
-        StringBuilder messages = new StringBuilder();
-        for (var email : listEmail) {
-            var userOptional = userRepository
-                    .findByEmail(email)
-                    .filter(u -> !u.getRole().getName().equals(Constant.ADMIN_NAME));
-            if (userOptional.isEmpty()) {
-                messages.append(email).append(", ");
-            }
-        }
-
         //check group name duplicate
         var groupOptional = optionalValidator.findByGroupName(request.getName(), 0L);
         if (groupOptional.isPresent()) {
             validationService.updateErrors("name", "Group name already exists", errors);
         }
 
-        //mail is not exist
+        //check validate email exist in database
+        String messages = request.getUsersIds().stream()
+                .filter(id -> userRepository.findByIdAndActive(id)
+                        .isEmpty())
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
+
+        // Mail is not exist
         if (!messages.isEmpty()) {
-            String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-            validationService.updateErrors("listMail", msg, errors);
+            validationService.updateErrors("usersIds", "Something went wrong", errors);
         }
 
         if (!errors.isEmpty()) return;
@@ -94,12 +75,13 @@ public class GroupServiceImpl implements GroupService {
                 .updateAt(LocalDateTime.now())
                 .updateBy(userLoggedIn.getId())
                 .build();
+
         group = groupRepository.save(group);
 
         //create user group
         List<UserGroup> userGroups = new ArrayList<>();
-        for (var email : listEmail) {
-            User user = userRepository.findByEmail(email).orElse(null);
+        for (var id : request.getUsersIds()) {
+            User user = userRepository.findById(id).orElse(null);
             UserGroup userGroup = UserGroup.builder()
                     .group(group)
                     .user(user)
@@ -113,21 +95,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void updateGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         Group groupExist = groupRepository.findById(request.getId()).orElse(null);
         if (groupExist == null) {
             validationService.updateErrors("id", "Group not found: " + request.getId(), errors);
         }
-
-        //cut email to list
-        Set<String> listEmail = Arrays.stream(request.getListMail()
-                        .split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .filter(s -> !s.isEmpty())
-                .filter(s -> s.contains("@"))
-                .collect(Collectors.toSet());
 
         //check group name duplicate
         var groupOptional = optionalValidator.findByGroupName(request.getName(), request.getId());
@@ -135,24 +107,16 @@ public class GroupServiceImpl implements GroupService {
             validationService.updateErrors("name", "Group name already exists", errors);
         }
 
-        //list of email empty
-        if (listEmail.isEmpty()) {
-            validationService.updateErrors("listMail", "List of email must be at least one", errors);
-        }
-
         //check validate email exist in database
-        StringBuilder messages = new StringBuilder();
-        for (var email : listEmail) {
-            var userOptional = userRepository.findByEmail(email);
-            if (userOptional.isEmpty()) {
-                messages.append(email).append(", ");
-            }
-        }
+        String messages = request.getUsersIds().stream()
+                .filter(id -> userRepository.findByIdAndActive(id)
+                        .isEmpty())
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));
 
-        //list of mail is not exist
+        // Mail is not exist
         if (!messages.isEmpty()) {
-            String msg = messages.toString().trim().substring(0, messages.length() - 2).concat(" is not existed");
-            validationService.updateErrors("listMail", msg, errors);
+            validationService.updateErrors("usersIds", "Something went wrong", errors);
         }
 
         if (!errors.isEmpty()) return;
@@ -166,8 +130,8 @@ public class GroupServiceImpl implements GroupService {
                 .toList();
 
         //user request
-        var userRequestList = listEmail.stream()
-                .map(u -> userRepository.findByEmail(u).orElseThrow())
+        var userRequestList = request.getUsersIds().stream()
+                .map(id -> userRepository.findById(id).orElseThrow())
                 .map(User::getId)
                 .toList();
 

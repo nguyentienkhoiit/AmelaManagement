@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -53,5 +54,9 @@ public class OptionalValidator {
 
     public Optional<JobPosition> findByJobPositionId(long jobPositionId) {
         return jobPositionRepository.findById(jobPositionId);
+    }
+
+    public List<User> findAllUser() {
+        return userRepository.findAllUser();
     }
 }

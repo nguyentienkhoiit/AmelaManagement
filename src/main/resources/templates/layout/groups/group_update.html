@@ -2,13 +2,17 @@
 <html lang="en" th:replace="~{layout/main-layout:: main-fragment(
     ~{::title},
     ~{::main},
-    ~{},
-    ~{}
+    ~{::#css-static-resource},
+    ~{::#js-static-resource}
 )}" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <title>Group</title>
+    <th:block id="css-static-resource">
+        <link href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css"
+              rel="stylesheet">
+    </th:block>
 </head>
 
 <body>
@@ -44,14 +48,18 @@
 
         <div class="row">
             <div class="mb-3 col-md-12">
-                <label class="form-label" for="listMail">List mail</label>
-                <textarea class="form-control" id="listMail" name="listMail" placeholder="List mail"
-                          th:field="*{listMail}"></textarea>
-                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['listMail'])}">
-                    <li class="text-danger h6 mt-1" th:each="error : ${errors['listMail']}" th:text="${error}"></li>
+                <label class="form-label" for="usersIds">List Users</label>
+                <select id="usersIds" multiple name="usersIds" th:field="*{usersIds}">
+                    <option th:each="user: ${users}" th:selected="${group.usersIds.contains(user.id)}"
+                            th:text="${user.firstname +' '+ user.lastname+' ('+user.department.name+')' }"
+                            th:value="${user.id}"></option>
+                </select>
+                <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['usersIds'])}">
+                    <li class="text-danger h6 mt-1" th:each="error : ${errors['usersIds']}" th:text="${error}"></li>
                 </ul>
             </div>
         </div>
+
         <div class="row">
             <div class="mb-3 col-md-12">
                 <input name="id" th:value="${group.id}" type="hidden">
@@ -60,4 +68,10 @@
         </div>
     </form>
 </main>
+<th:block id="js-static-resource">
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/js/multi-select-tag.js"></script>
+    <script type="application/javascript">
+        new MultiSelectTag('usersIds')  // id
+    </script>
+</th:block>
 </body>

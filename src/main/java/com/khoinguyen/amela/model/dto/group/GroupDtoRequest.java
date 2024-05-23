@@ -1,9 +1,12 @@
 package com.khoinguyen.amela.model.dto.group;
 
 import com.khoinguyen.amela.util.StringUtil;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Builder
 @Getter
@@ -20,8 +23,8 @@ public class GroupDtoRequest {
 
     String description;
 
-    @Size(min = 10, message = "{validation.length.min}")
-    String listMail;
+    @NotEmpty(message = "{validation.required}")
+    List<Long> usersIds;
 
     public String getName() {
         return StringUtil.formatString(name, true);

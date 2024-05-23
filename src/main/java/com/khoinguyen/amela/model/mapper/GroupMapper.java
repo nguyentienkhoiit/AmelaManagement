@@ -5,21 +5,22 @@ import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
+import java.util.List;
+
 public class GroupMapper {
     public static GroupDtoResponse toGroupDtoResponse(Group request) {
         long count = request.getUserGroups()
                 .stream()
                 .filter(x -> x.getUser().isActivated() && x.getUser().isEnabled())
                 .count();
-        String listMail = request.getUserGroups().stream()
-                .map(e -> e.getUser().getEmail())
-                .toList()
-                .toString();
+        List<Long> userIds = request.getUserGroups().stream()
+                .map(e -> e.getUser().getId())
+                .toList();
         return GroupDtoResponse.builder()
                 .id(request.getId())
                 .name(request.getName())
                 .description(request.getDescription())
-                .listMail(listMail.substring(1, listMail.length() - 1))
+                .usersIds(userIds)
                 .createdAt(DateTimeHelper.formatLocalDateTimeFullText(request.getCreatedAt()))
                 .updateAt(DateTimeHelper.formatLocalDateTimeFullText(request.getUpdateAt()))
                 .status(request.isStatus())
@@ -32,7 +33,7 @@ public class GroupMapper {
                 .id(request.getId())
                 .name(request.getName())
                 .description(request.getDescription())
-                .listMail(request.getListMail())
+                .usersIds(request.getUsersIds())
                 .build();
     }
 }

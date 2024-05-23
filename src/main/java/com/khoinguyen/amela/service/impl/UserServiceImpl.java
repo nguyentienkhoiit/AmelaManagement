@@ -2,7 +2,6 @@ package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -146,11 +144,10 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!fileImage.isEmpty()) {
-                String fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
-                if (fileName == null) {
-                    validationService.updateErrors("avatar", "Only JPG or PNG or JPEG uploads are allowed", errors);
-                }
-                else userLoggedIn.setAvatar(fileName);
+            String fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
+            if (fileName == null) {
+                validationService.updateErrors("avatar", "Only JPG or PNG or JPEG uploads are allowed", errors);
+            } else userLoggedIn.setAvatar(fileName);
         }
 
         if (!errors.isEmpty()) return;
