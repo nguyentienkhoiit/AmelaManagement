@@ -6,6 +6,7 @@ import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.MessageScheduleMapper;
+import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UserHelper;
 import jakarta.persistence.EntityManager;
@@ -28,6 +29,7 @@ import static com.khoinguyen.amela.util.Constant.PAGE_SIZE_MESSAGE_USER;
 public class MessageScheduleCriteria {
     EntityManager em;
     UserHelper userHelper;
+    UserRepository userRepository;
 
     public PagingDtoResponse<MessageScheduleDtoResponse> getAllMessages(PagingDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();

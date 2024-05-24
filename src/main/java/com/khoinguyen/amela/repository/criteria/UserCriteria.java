@@ -26,7 +26,6 @@ public class UserCriteria {
     EntityManager em;
     UserHelper userHelper;
 
-    //    @org.springframework.data.jpa.repository.Query("select u from User u join u.userGroups ug join ug.group g where g.id = 1")
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
         User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();

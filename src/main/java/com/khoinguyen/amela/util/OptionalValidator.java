@@ -20,6 +20,10 @@ public class OptionalValidator {
     JobPositionRepository jobPositionRepository;
     GroupRepository groupRepository;
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<Group> findByGroupName(String name, Long groupId) {
         return groupRepository.findByName(name, groupId);
     }

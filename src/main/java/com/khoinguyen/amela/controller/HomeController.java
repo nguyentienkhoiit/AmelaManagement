@@ -7,6 +7,7 @@ import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.service.UserService;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
@@ -36,6 +37,7 @@ public class HomeController {
     UserHelper userHelper;
     MessageScheduleService messageScheduleService;
     ValidationService validationService;
+    OptionalValidator optionalValidator;
 
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
@@ -86,7 +88,8 @@ public class HomeController {
             RedirectAttributes redirectAttributes
     ) {
         User userLoggedIn = userHelper.getUserLogin();
-        ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, userLoggedIn);
+        User user = optionalValidator.findById(userLoggedIn.getId()).orElseThrow();
+        ProfileDtoResponse response = UserMapper.toProfileUserDtoResponse(request, user);
         redirectAttributes.addFlashAttribute("user", response);
 
         // check validate
@@ -105,35 +108,30 @@ public class HomeController {
     }
 
     @GetMapping("notFound")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String notFound404() {
         session.setAttribute("active", "error");
         return "layout/errorPages/not_found_404";
     }
 
     @GetMapping("forbidden")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String forbidden403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/forbidden_403";
     }
 
     @GetMapping("badRequest")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String badRequest400() {
         session.setAttribute("active", "error");
         return "layout/errorPages/bad_request_400";
     }
 
     @GetMapping("methodNotAllowed")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String methodNotAllowed403() {
         session.setAttribute("active", "error");
         return "layout/errorPages/method_not_allow_405";
     }
 
     @GetMapping("internalServerError")
-//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String internalServerError500() {
         session.setAttribute("active", "error");
         return "layout/errorPages/internal_server_error_500";

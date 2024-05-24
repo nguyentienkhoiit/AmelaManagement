@@ -93,15 +93,15 @@ public class UserMapper {
     }
 
 
-    public static ProfileDtoResponse toProfileUserDtoResponse(ProfileDtoRequest request, User userLoggedIn) {
+    public static ProfileDtoResponse toProfileUserDtoResponse(ProfileDtoRequest request, User user) {
         String dateOfBirth = request.getDateOfBirth() == null ? null : request.getDateOfBirth().toString();
-        var profileDtoResponse = toProfileDtoResponse(userLoggedIn);
+        var profileDtoResponse = toProfileDtoResponse(user);
         profileDtoResponse.setUsername(request.getUsername());
         profileDtoResponse.setFirstname(request.getFirstname());
         profileDtoResponse.setLastname(request.getLastname());
         profileDtoResponse.setGender(request.getGender());
         profileDtoResponse.setAddress(request.getAddress());
-        profileDtoResponse.setEditUsername(userLoggedIn.isEditUsername());
+        profileDtoResponse.setEditUsername(user.isEditUsername());
         profileDtoResponse.setPhone(request.getPhone());
         profileDtoResponse.setDateOfBirth(dateOfBirth);
         profileDtoResponse.setAvatar(request.getAvatar());

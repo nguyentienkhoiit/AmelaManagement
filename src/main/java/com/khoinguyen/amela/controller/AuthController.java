@@ -65,7 +65,6 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = authenticationService.loginOauth2(authentication);
         if (user == null) {
-
             return "redirect:/login?fault";
         }
         if (user.getRole().getName().equalsIgnoreCase(Constant.ADMIN_NAME)) {

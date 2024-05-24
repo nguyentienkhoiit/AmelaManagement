@@ -116,6 +116,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
     public MessageScheduleUpdateResponse setMessage(MessageScheduleUpdateResponse response) {
         User userLoggedIn = userHelper.getUserLogin();
+        User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
         String messages = response.getMessage();
 
         Map<String, String> placeholders = new HashMap<>();
@@ -124,15 +125,15 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         int age = Period.between(userLoggedIn.getDateOfBirth(), LocalDate.now()).getYears();
         placeholders.put("{{age}}", Integer.toString(age));
 
-        placeholders.put("{{address}}", userLoggedIn.getAddress());
-        placeholders.put("{{code}}", userLoggedIn.getCode());
-        placeholders.put("{{email}}", userLoggedIn.getEmail());
-        placeholders.put("{{phone}}", userLoggedIn.getPhone());
-        placeholders.put("{{username}}", userLoggedIn.getUsername());
-        placeholders.put("{{department}}", userLoggedIn.getDepartment().getName());
-        placeholders.put("{{position}}", userLoggedIn.getJobPosition().getName());
+        placeholders.put("{{address}}", user.getAddress());
+        placeholders.put("{{code}}", user.getCode());
+        placeholders.put("{{email}}", user.getEmail());
+        placeholders.put("{{phone}}", user.getPhone());
+        placeholders.put("{{username}}", user.getUsername());
+        placeholders.put("{{department}}", user.getDepartment().getName());
+        placeholders.put("{{position}}", user.getJobPosition().getName());
 
-        if (userLoggedIn.getRole().getName().equalsIgnoreCase(ADMIN_NAME)) {
+        if (user.getRole().getName().equalsIgnoreCase(ADMIN_NAME)) {
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 entry.setValue(entry.getKey());
             }

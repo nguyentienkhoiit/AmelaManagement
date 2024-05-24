@@ -20,11 +20,12 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.khoinguyen.amela.util.Constant.ALLOWED_EXTENSIONS;
+import static com.khoinguyen.amela.util.Constant.UPLOAD_DIR;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Slf4j
@@ -36,13 +37,11 @@ public class FileHelper {
     public String uploadFile(MultipartFile file, User user) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = getFileExtension(fileName);
-        log.info("Uploading file {} to {}", fileName, extension);
-        if (!List.of("jpeg", "png", "jpg").contains(extension.toLowerCase())) return null;
+        if (!ALLOWED_EXTENSIONS.contains(extension.toLowerCase())) return null;
 
         String newFileName = AttributeGenerator.generatorUsername(user, user.getId()) + ".jpg";
 
-        String uploadDir = "./upload";
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(Constant.UPLOAD_DIR);
 
         try (InputStream inputStream = file.getInputStream()) {
             if (!Files.exists(uploadPath)) {
@@ -50,31 +49,37 @@ public class FileHelper {
             }
             Path filePath = uploadPath.resolve(newFileName);
             Files.copy(inputStream, filePath, REPLACE_EXISTING);
-        } catch (MaxUploadSizeExceededException | IOException e) {
-            log.error(e.getMessage());
+        } catch (MaxUploadSizeExceededException e) {
+            log.error("Max upload size exceeded: {}", e.getMessage());
+            return null;
+        } catch (IOException e) {
+            log.error("Failed to upload file: {}", e.getMessage());
             return null;
         }
         return newFileName;
     }
 
     private String getFileExtension(String fileName) {
-        int i = fileName.lastIndexOf('.');
-        return i > 0 ? fileName.substring(i + 1) : "";
+        if (fileName == null) return "";
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
     public Resource load(String filename) {
-        Path root = Paths.get("./upload");
+        Path root = Paths.get(UPLOAD_DIR);
         try {
             Path file = root.resolve(filename);
-            Resource resource = (Resource) new UrlResource(file.toUri());
+            Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("Could not read the file!");
+                log.error("Could not read the file!");
+                return null;
             }
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
+            log.error(e.getMessage());
+            return null;
         }
     }
 

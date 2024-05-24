@@ -48,6 +48,9 @@
                     </th>
                     <th scope="col">Work time <a class="text-secondary" href="#"><i class="fa fa-sort"></i></a>
                     </th>
+                    <th scope="col" sec:authorize="hasAuthority('ADMIN')">Expire <a class="text-secondary" href="#"><i
+                            class="fa fa-sort"></i></a>
+                    </th>
                     <th scope="col" sec:authorize="hasAuthority('ADMIN')">Active <a class="text-secondary" href="#"><i
                             class="fa fa-sort"></i></a>
                     </th>
@@ -68,12 +71,20 @@
                         <i class="fa-solid fa-circle-check"
                            data-bs-placement="left"
                            data-bs-toggle="tooltip"
+                           th:classappend="${attendance.isExpired ? 'text-success' : 'text-danger'}"
+                           th:title="${attendance.isExpired ? 'Active' : 'Deactive'}"
+                        ></i>
+                    </td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
                            th:classappend="${attendance.status ? 'text-success' : 'text-danger'}"
                            th:title="${attendance.status ? 'Active' : 'Deactive'}"
                         ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
-                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                        <a data-bs-placement="left" th:if="${attendance.isExpired}" data-bs-toggle="tooltip"
                            th:href="@{/attendances/update/{id}(id=${attendance.id})}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>

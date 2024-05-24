@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.khoinguyen.amela.util.Constant.DEFAULT_AVATAR;
+
 @Slf4j
 @Controller
 @RequestMapping("/users")
@@ -241,7 +243,6 @@ public class UserController {
     public ResponseEntity<Resource> getImage() {
         User user = userHelper.getUserLogin();
         Resource file = fileHelper.load(user.getAvatar());
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getAvatar() + "\"").body(file);
     }

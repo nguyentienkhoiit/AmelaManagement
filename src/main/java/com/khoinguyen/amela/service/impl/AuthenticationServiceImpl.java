@@ -127,7 +127,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void submitChangePassword(ChangePasswordDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        if (!passwordEncoder.matches(request.getOldPassword(), userLoggedIn.getPassword())) {
+        User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             validationService.updateErrors("oldPassword", "Password is not correct", errors);
         }
 
@@ -138,8 +139,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!errors.isEmpty()) return;
 
         //update password
-        userLoggedIn.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
-        userRepository.save(userLoggedIn);
+        user.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
+        userRepository.save(user);
 
         //set security context holder
         userHelper.setSecurityContext(request.getConfirmPassword(), null);

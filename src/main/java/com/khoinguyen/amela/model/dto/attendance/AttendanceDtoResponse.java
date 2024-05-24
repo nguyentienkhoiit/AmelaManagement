@@ -28,4 +28,5 @@ public class AttendanceDtoResponse {
     LocalDateTime updateAt;
     Long updateBy;
     String note;
+    boolean isExpired;
 }

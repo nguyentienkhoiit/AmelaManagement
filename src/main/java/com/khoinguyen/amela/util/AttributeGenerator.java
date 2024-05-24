@@ -19,13 +19,14 @@ public class AttributeGenerator {
     }
 
     public static String sanitizeFileName(String fileName) {
+        final String DEFAULT_REPLACEMENT = "_";
+        final String FILENAME_REGEX = "[^\\w\\s.-]+";
+
         String normalized = Normalizer.normalize(fileName, Normalizer.Form.NFKD);
+        String sanitized = normalized.replaceAll(FILENAME_REGEX, DEFAULT_REPLACEMENT);
 
-        Pattern pattern = Pattern.compile("[^\\w\\s.-]");
-        String sanitized = pattern.matcher(normalized).replaceAll("_");
-
-        sanitized = sanitized.replaceAll("\\s+", "_");
-        sanitized = sanitized.replaceAll("_+", "_");
+        // Replace consecutive spaces and underscores with a single underscore
+        sanitized = sanitized.replaceAll("[\\s_]+", DEFAULT_REPLACEMENT);
 
         return sanitized;
     }

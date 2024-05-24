@@ -21,6 +21,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
     FileHelper fileHelper;
     ValidationService validationService;
     AppConfig appConfig;
+    SessionRegistry sessionRegistry;
 
     @Override
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
@@ -121,20 +126,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProfileDtoResponse getProfile() {
         User userLoggedIn = userHelper.getUserLogin();
+        userLoggedIn = userRepository.findById(userLoggedIn.getId()).orElseThrow();
         return UserMapper.toProfileDtoResponse(userLoggedIn);
     }
 
     @Transactional
     @Override
-    public void updateProfile(ProfileDtoRequest request, MultipartFile fileImage, Map<String, List<String>> errors) {
+    public void updateProfile(
+            ProfileDtoRequest request,
+            MultipartFile fileImage,
+            Map<String, List<String>> errors
+    ) {
         User userLoggedIn = userHelper.getUserLogin();
+        User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
 
-        var userOptionalPhone = optionalValidator.findByPhoneExist(request.getPhone(), userLoggedIn.getId());
+        var userOptionalPhone = optionalValidator.findByPhoneExist(request.getPhone(), user.getId());
         if (userOptionalPhone.isPresent()) {
             validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
-        var userOptionalUsername = optionalValidator.findByUsernameExist(request.getUsername(), userLoggedIn.getId());
+        var userOptionalUsername = optionalValidator.findByUsernameExist(request.getUsername(), user.getId());
         if (userOptionalUsername.isPresent()) {
             validationService.updateErrors("username", "Username already exists", errors);
         }
@@ -144,28 +155,28 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!fileImage.isEmpty()) {
-            String fileName = fileHelper.uploadFile(fileImage, userLoggedIn);
+            String fileName = fileHelper.uploadFile(fileImage, user);
             if (fileName == null) {
                 validationService.updateErrors("avatar", "Only JPG or PNG or JPEG uploads are allowed", errors);
-            } else userLoggedIn.setAvatar(fileName);
+            } else user.setAvatar(fileName);
         }
 
         if (!errors.isEmpty()) return;
 
-        userLoggedIn.setUpdateBy(userLoggedIn.getId());
-        userLoggedIn.setPhone(request.getPhone());
-        userLoggedIn.setFirstname(request.getFirstname());
-        userLoggedIn.setLastname(request.getLastname());
-        userLoggedIn.setGender(request.getGender());
-        userLoggedIn.setAddress(request.getAddress());
-        userLoggedIn.setDateOfBirth(request.getDateOfBirth());
+        user.setUpdateBy(user.getId());
+        user.setPhone(request.getPhone());
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setGender(request.getGender());
+        user.setAddress(request.getAddress());
+        user.setDateOfBirth(request.getDateOfBirth());
 
-        if (userLoggedIn.isEditUsername()
-                && !request.getUsername().equalsIgnoreCase(userLoggedIn.getUsername())) {
-            userLoggedIn.setUsername(request.getUsername());
-            userLoggedIn.setEditUsername(false);
+        if (user.isEditUsername()
+                && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
+            user.setUsername(request.getUsername());
+            user.setEditUsername(false);
         }
-        userRepository.save(userLoggedIn);
+        userRepository.save(user);
     }
 
     @Override
@@ -191,13 +202,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserDtoUpdate request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-        ServiceResponse<String> response = new ServiceResponse<>(true, "none", null);
 
         var userOptional = userRepository.findById(request.getId());
         if (userOptional.isEmpty()) {
             validationService.updateErrors("user", "User is not exists", errors);
         }
         var user = userOptional.orElseThrow();
+        var roleIdExistDb = user.getRole().getId();
 
         if (optionalValidator.findByEmailExist(request.getEmail(), user.getId()).isPresent()) {
             validationService.updateErrors("email", "Email already exists", errors);
@@ -241,6 +252,21 @@ public class UserServiceImpl implements UserService {
         user.setRole(roleOptional.orElseThrow());
         user.setJobPosition(positionOptional.orElseThrow());
         userRepository.save(user);
+
+        if (!Objects.equals(request.getRoleId(), roleIdExistDb)) {
+            List<Object> principals = sessionRegistry.getAllPrincipals();
+            for (Object principal : principals) {
+                if (principal instanceof UserDetails) {
+                    UserDetails userDetails = (UserDetails) principal;
+                    if (userDetails.getUsername().equals(user.getEmail())) {
+                        List<SessionInformation> sessions = sessionRegistry.getAllSessions(userDetails, false);
+                        for (SessionInformation session : sessions) {
+                            session.expireNow(); // Invalidate the session
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public ServiceResponse<String> sendMailCreateUser(User user) {

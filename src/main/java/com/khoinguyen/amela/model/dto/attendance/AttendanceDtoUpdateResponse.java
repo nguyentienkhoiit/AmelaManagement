@@ -29,6 +29,7 @@ public class AttendanceDtoUpdateResponse {
     LocalTime checkOutTime;
 
     Long attendanceId;
+    boolean isExpired;
     Long userId;
     String note;
 }

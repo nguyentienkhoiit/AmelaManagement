@@ -5,12 +5,19 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
 public class DateTimeHelper {
+    public static boolean isExpiredDay(LocalDate day, int number) {
+        LocalDate today = LocalDate.now();
+        long daysDifference = ChronoUnit.DAYS.between(day, today);
+        return daysDifference >= 0 && daysDifference < number;
+    }
+
     public static String getDateFromMinus(int totalMinutes) {
         int hours = totalMinutes / 60;
         int minutes = totalMinutes % 60;

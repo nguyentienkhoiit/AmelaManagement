@@ -6,6 +6,7 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
+import com.khoinguyen.amela.repository.UserRepository;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.DateTimeHelper;
 import com.khoinguyen.amela.util.UserHelper;
@@ -28,8 +29,6 @@ public class AttendanceCriteria {
     EntityManager em;
     UserHelper userHelper;
 
-    @org.springframework.data.jpa.repository.Query
-            ("select a from Attendance a where a.status = true")
     public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(PagingDtoRequest request, Long userId) {
         User userLoggedIn = userHelper.getUserLogin();
         Map<String, Object> params = new HashMap<>();

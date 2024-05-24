@@ -3,6 +3,7 @@ package com.khoinguyen.amela.security;
 import com.khoinguyen.amela.configuration.InterceptorRequest;
 import com.khoinguyen.amela.security.custom.CustomAuthenticationFailureHandler;
 import com.khoinguyen.amela.security.custom.CustomAuthenticationSuccessHandler;
+import com.khoinguyen.amela.security.custom.CustomSessionExpiredStrategy;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,12 +15,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -63,8 +68,22 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+    @Bean
+    public SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
+        return new CustomSessionExpiredStrategy();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(s-> s
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .maximumSessions(1)
+                        .sessionRegistry(sessionRegistry())
+                        .expiredSessionStrategy(sessionInformationExpiredStrategy()))
                 .authorizeHttpRequests(
                         a -> a.requestMatchers(LIST_PERMIT_ALL)
                                 .permitAll()

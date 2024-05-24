@@ -35,6 +35,7 @@ public class AttendanceMapper {
                 .checkDay(DateTimeHelper.formatDate(request.getCheckDay(), "dd/MM/yyyy"))
                 .workTime(workTime)
                 .fullName(fullName)
+                .isExpired(DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
                 .note(request.getNote())
                 .build();
     }
@@ -46,6 +47,7 @@ public class AttendanceMapper {
                 .checkDay(request.getCheckDay())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
+                .isExpired(DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
                 .note(request.getNote())
                 .build();
     }
@@ -57,6 +59,7 @@ public class AttendanceMapper {
                 .userId(request.getUserId())
                 .checkInTime(request.getCheckInTime())
                 .checkOutTime(request.getCheckOutTime())
+                .isExpired(DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
                 .note(request.getNote())
                 .build();
     }

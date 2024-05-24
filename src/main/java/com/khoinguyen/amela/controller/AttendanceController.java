@@ -8,10 +8,7 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
-import com.khoinguyen.amela.util.Constant;
-import com.khoinguyen.amela.util.UrlUtil;
-import com.khoinguyen.amela.util.UserHelper;
-import com.khoinguyen.amela.util.ValidationService;
+import com.khoinguyen.amela.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -55,7 +52,8 @@ public class AttendanceController {
         session.setAttribute("active", "attendance");
         User userLoggedIn = userHelper.getUserLogin();
 
-        userId = (userLoggedIn.getRole().getName().equals(Constant.USER_NAME) || userId == null) ? userLoggedIn.getId() : userId;
+        userId = (userLoggedIn.getRole().getName()
+                .equals(Constant.USER_NAME) || userId == null) ? userLoggedIn.getId() : userId;
 
         var pagingDtoResponse = attendanceService.getAttendanceByUserId(pagingDtoRequest, userId);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
@@ -117,6 +115,7 @@ public class AttendanceController {
     ) {
         if (!model.containsAttribute("attendance")) {
             AttendanceDtoUpdateResponse response = attendanceService.getAttendanceById(id);
+            if (!response.isExpired()) return "redirect:/forbidden";
             model.addAttribute("attendance", response);
         }
         return "layout/attendances/attendance_update";
@@ -130,6 +129,8 @@ public class AttendanceController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
+        if (!DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
+            return "redirect:/forbidden";
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
