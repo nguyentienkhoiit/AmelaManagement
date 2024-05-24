@@ -106,34 +106,4 @@ public class HomeController {
 
         return "redirect:/profile";
     }
-
-    @GetMapping("notFound")
-    public String notFound404() {
-        session.setAttribute("active", "error");
-        return "layout/errorPages/not_found_404";
-    }
-
-    @GetMapping("forbidden")
-    public String forbidden403() {
-        session.setAttribute("active", "error");
-        return "layout/errorPages/forbidden_403";
-    }
-
-    @GetMapping("badRequest")
-    public String badRequest400() {
-        session.setAttribute("active", "error");
-        return "layout/errorPages/bad_request_400";
-    }
-
-    @GetMapping("methodNotAllowed")
-    public String methodNotAllowed403() {
-        session.setAttribute("active", "error");
-        return "layout/errorPages/method_not_allow_405";
-    }
-
-    @GetMapping("internalServerError")
-    public String internalServerError500() {
-        session.setAttribute("active", "error");
-        return "layout/errorPages/internal_server_error_500";
-    }
 }

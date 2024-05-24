@@ -84,7 +84,8 @@
                         ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">
-                        <a data-bs-placement="left" data-bs-toggle="tooltip" th:href="@{/attendances/update/{id}(id=${attendance.id})}"
+                        <a data-bs-placement="left" data-bs-toggle="tooltip"
+                           th:href="@{/attendances/update/{id}(id=${attendance.id})}"
                            th:if="${attendance.isExpired}"
                            title="Update">
                             <i class="fa-solid fa-pencil text-warning"></i>

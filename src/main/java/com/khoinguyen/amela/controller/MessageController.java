@@ -161,7 +161,6 @@ public class MessageController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
-        log.info("list users: {}", request.getUsersIds());
         //check time publish at in the past
         if (checkPublishAtInThePast(request.getPublishAt()))
             return "redirect:/forbidden";

@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.configuration;
 
+import com.khoinguyen.amela.entity.enums.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import java.io.IOException;
 
 @Slf4j
 public class InterceptorRequest implements HandlerInterceptor {
-
     @Override
     public boolean preHandle(
             @NonNull HttpServletRequest request,
@@ -21,30 +21,12 @@ public class InterceptorRequest implements HandlerInterceptor {
     ) throws IOException {
         log.info("Request URI: {}, Request method: {}, Response status code: {}",
                 request.getRequestURI(), request.getMethod(), response.getStatus());
-//        log.info("Request URI: {}", request.getRequestURI());
-//        log.info("Request method: {}", request.getMethod());
-//        log.info("Response status code: {}", response.getStatus());
-
-        if (response.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
-            response.sendRedirect("/notFound");
-            return false;
-        } else if (response.getStatus() == HttpServletResponse.SC_BAD_REQUEST) {
-            response.sendRedirect("/badRequest");
-            return false;
-        } else if (response.getStatus() == HttpServletResponse.SC_METHOD_NOT_ALLOWED) {
-            response.sendRedirect("/methodNotAllowed");
-            return false;
-        } else if (response.getStatus() == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
-            response.sendRedirect("/internalServerError");
-            return false;
-        } else if (
-                response.getStatus() == HttpServletResponse.SC_FORBIDDEN
-                        || response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED
-        ) {
-            response.sendRedirect("/forbidden");
-            return false;
+        for (ErrorResponse resp : ErrorResponse.values()) {
+            if (response.getStatus() == resp.getErrorCode()) {
+                response.sendRedirect(resp.getPath());
+                return false;
+            }
         }
-
         return true;
     }
 
@@ -55,7 +37,6 @@ public class InterceptorRequest implements HandlerInterceptor {
             @NonNull Object handler,
             @Nullable ModelAndView modelAndView
     ) {
-//        log.info("Response status code: {}", response.getStatus());
     }
 
 }
