@@ -16,6 +16,11 @@
     * [Main Feature](https://docs.google.com/spreadsheets/d/1ifc3Td_K-KKwBAwEb1ZJIKwwaASb2PdkkcUsaf5AgWI/edit#gid=365407075)
     * [Wire Frame](https://foil-pan-e92.notion.site/Wireframe-for-Idp-Project-dacf7187b5994dd7a5191f20464452e0?pvs=74)
     * [Diagram](https://github.com/nguyentienkhoiit/AmelaManagement/blob/master/diagram.pdf)
+    * [Database](https://github.com/nguyentienkhoiit/AmelaManagement/blob/master/database.sql)
+
+## How to run app
+1. Run script [database](https://github.com/nguyentienkhoiit/AmelaManagement/blob/master/database.sql) 
+2. Run [project](https://github.com/nguyentienkhoiit/AmelaManagement) in main branch
 
 ## Description system
 
