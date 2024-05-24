@@ -71,6 +71,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
+
     @Bean
     public SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
         return new CustomSessionExpiredStrategy();
@@ -79,7 +80,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(s-> s
+                .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .maximumSessions(1)
                         .sessionRegistry(sessionRegistry())

@@ -76,8 +76,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule.setUserMessageSchedules(null);
                 messageScheduleRepository.save(messageSchedule);
-            }
-            else validationService.updateErrors("groupId", "Please choose a group", errors);
+            } else validationService.updateErrors("groupId", "Please choose a group", errors);
         } else {
             List<User> listUsers = request.getUsersIds().stream()
                     .map(id -> userRepository.findByIdAndActive(id).orElse(null))

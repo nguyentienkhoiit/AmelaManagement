@@ -103,7 +103,8 @@
             <div class="mb-3 col-md-12">
                 <label class="form-label" for="usersIds">List Users</label>
                 <select id="usersIds" multiple name="usersIds" th:field="*{usersIds}">
-                    <option th:each="user: ${users}" th:text="${user.firstname +' '+ user.lastname+' ('+user.department.name+')' }"
+                    <option th:each="user: ${users}"
+                            th:text="${user.firstname +' '+ user.lastname+' ('+user.department.name+')' }"
                             th:value="${user.id}"></option>
                 </select>
                 <ul class="errors" th:if="${errors != null and !#lists.isEmpty(errors['usersIds'])}">

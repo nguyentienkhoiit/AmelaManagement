@@ -3,7 +3,6 @@ package com.khoinguyen.amela.util;
 import com.khoinguyen.amela.entity.User;
 
 import java.text.Normalizer;
-import java.util.regex.Pattern;
 
 public class AttributeGenerator {
     public static String generateNextUserCode(String currentCode) {
