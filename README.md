@@ -21,6 +21,7 @@
 ## How to run app
 1. Run script [database](https://github.com/nguyentienkhoiit/AmelaManagement/blob/master/database.sql) 
 2. Run [project](https://github.com/nguyentienkhoiit/AmelaManagement) in main branch
+3. Detail: default password any user is **1234567**
 
 ## Description system
 
