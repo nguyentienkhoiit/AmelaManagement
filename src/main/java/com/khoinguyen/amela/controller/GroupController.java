@@ -75,7 +75,6 @@ public class GroupController {
             BindingResult result,
             Model model
     ) {
-        log.info("usersIds: {}", request.getUsersIds());
         //check validate
         model.addAttribute("users", optionalValidator.findAllUser());
         Map<String, List<String>> errors = new HashMap<>();
@@ -102,7 +101,6 @@ public class GroupController {
             @PathVariable Long id
     ) {
         session.setAttribute("active", "group");
-
         model.addAttribute("users", optionalValidator.findAllUser());
         if (!model.containsAttribute("group")) {
             GroupDtoResponse response = groupService.getGroupById(id);
@@ -116,7 +114,6 @@ public class GroupController {
     public String updateGroups(
             @Valid @ModelAttribute("group") GroupDtoRequest request,
             BindingResult result,
-            Model model,
             RedirectAttributes redirectAttributes
     ) {
         //check validate
@@ -140,7 +137,7 @@ public class GroupController {
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
-        boolean rs = groupService.changeStatus(id);
+        groupService.changeStatus(id);
 
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;

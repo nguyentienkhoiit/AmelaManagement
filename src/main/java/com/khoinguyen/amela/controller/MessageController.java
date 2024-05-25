@@ -107,8 +107,7 @@ public class MessageController {
             BindingResult result,
             Model model
     ) {
-        log.info("list users: {}", request.getUsersIds());
-        model.addAttribute("users", optionalValidator.findAllUser());
+         model.addAttribute("users", optionalValidator.findAllUser());
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {

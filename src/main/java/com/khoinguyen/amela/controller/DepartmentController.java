@@ -39,7 +39,7 @@ public class DepartmentController {
     ) {
         session.setAttribute("active", "department");
 
-        var pagingDtoResponse = departmentService.getAllGroups(request);
+        var pagingDtoResponse = departmentService.getAllDepartments(request);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
         if (request.getText() != null) {
             model.addAttribute("text", request.getText());
@@ -128,7 +128,7 @@ public class DepartmentController {
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
-        boolean rs = departmentService.changeStatus(id);
+        departmentService.changeStatus(id);
 
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;

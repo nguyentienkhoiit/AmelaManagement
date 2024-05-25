@@ -17,7 +17,7 @@ public interface JobPositionService {
 
     void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors);
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
     JobPositionDtoResponse getPositionById(Long id);
 

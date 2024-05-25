@@ -9,8 +9,12 @@ import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
+import com.khoinguyen.amela.util.Constant;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import static com.khoinguyen.amela.util.Constant.DEFAULT_AVATAR;
 
 public class UserMapper {
     public static UserDtoResponse toUserDtoResponse(User user) {
@@ -46,7 +50,23 @@ public class UserMapper {
                 .gender(request.getGender())
                 .updateAt(LocalDateTime.now())
                 .enabled(true)
-                .avatar("avatar.jpg")
+                .avatar(DEFAULT_AVATAR)
+                .build();
+    }
+
+    public static User toUser(UserDtoUpdate request) {
+        return User.builder()
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .email(request.getEmail())
+                .firstname(request.getFirstname())
+                .dateOfBirth(LocalDate.parse(request.getDateOfBirth()))
+                .lastname(request.getLastname())
+                .createdAt(LocalDateTime.now())
+                .gender(request.getGender())
+                .updateAt(LocalDateTime.now())
+                .enabled(true)
+                .avatar(DEFAULT_AVATAR)
                 .build();
     }
 

@@ -45,7 +45,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public boolean changeStatus(Long id) {
+    @Transactional
+    public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
         var attendanceOptional = attendanceRepository.findById(id);
         if (attendanceOptional.isPresent()) {
@@ -54,9 +55,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setUpdateBy(userLoggedIn.getId());
             attendance.setStatus(!attendance.isStatus());
             attendanceRepository.save(attendance);
-            return true;
         }
-        return false;
     }
 
     @Transactional
@@ -120,9 +119,9 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-    //    @Transactional
+    @Transactional
     @Override
-    public boolean checkAttendance() {
+    public void checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
         Optional<Attendance> attendanceOptional = attendanceRepository
                 .findAttendanceByUserAndCheckDay(userLoggedIn.getId(), LocalDate.now());
@@ -143,6 +142,5 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setCheckOutTime(LocalTime.now());
         }
         attendanceRepository.save(attendance);
-        return true;
     }
 }

@@ -43,16 +43,18 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDtoResponse findById(Long id) {
-        return departmentRepository.findById(id).map(DepartmentMapper::toDepartmentDtoResponse).orElse(null);
+        return departmentRepository.findById(id)
+                .map(DepartmentMapper::toDepartmentDtoResponse)
+                .orElse(null);
     }
 
     @Override
-    public PagingDtoResponse<DepartmentDtoResponse> getAllGroups(PagingDtoRequest request) {
+    public PagingDtoResponse<DepartmentDtoResponse> getAllDepartments(PagingDtoRequest request) {
         return departmentCriteria.getAllDepartments(request);
     }
 
     @Override
-    public boolean changeStatus(Long id) {
+    public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
         var departmentOptional = departmentRepository.findById(id);
         if (departmentOptional.isPresent()) {
@@ -61,9 +63,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             department.setUpdateBy(userLoggedIn.getId());
             department.setStatus(!department.isStatus());
             departmentRepository.save(department);
-            return true;
         }
-        return false;
     }
 
     @Transactional
@@ -72,10 +72,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         User userLoggedIn = userHelper.getUserLogin();
 
         //check department name duplicate
-        var departmentOptional = optionalValidator.findByDepartmentName(request.getName(), 0L);
-        if (departmentOptional.isPresent()) {
-            validationService.updateErrors("name", "Department name already exists", errors);
-        }
+        optionalValidator
+                .findByDepartmentName(request.getName(), 0L)
+                .ifPresent(department -> {
+                    validationService.updateErrors("name", "Department name already exists", errors);
+                });
+
 
         if (!errors.isEmpty()) return;
 
@@ -88,13 +90,15 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .description(request.getDescription())
                 .status(true)
                 .build();
+
         departmentRepository.save(department);
     }
 
     @Override
     public DepartmentDtoResponse getDepartmentById(Long id) {
-        Optional<Department> optionalDepartment = departmentRepository.findById(id);
-        return optionalDepartment.map(DepartmentMapper::toDepartmentDtoResponse).orElse(null);
+        return departmentRepository.findById(id)
+                .map(DepartmentMapper::toDepartmentDtoResponse)
+                .orElse(null);
     }
 
     @Transactional
@@ -102,29 +106,24 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        Department departmentExist = departmentRepository.findById(request.getId()).orElse(null);
-        if (departmentExist == null) {
+        Department departmentExist = departmentRepository.findById(request.getId()).orElseGet(() -> {
             validationService.updateErrors("department", "Department not found: " + request.getId(), errors);
-        }
+            return null;
+        });
 
         //check department name duplicate
-        var departmentOptional = optionalValidator.findByDepartmentName(request.getName(), request.getId());
-        if (departmentOptional.isPresent()) {
-            validationService.updateErrors("name", "Department name already exists", errors);
-        }
+        optionalValidator.findByDepartmentName(request.getName(), request.getId())
+                .ifPresent(department -> {
+                    validationService.updateErrors("name", "Department name already exists", errors);
+                });
 
         if (!errors.isEmpty()) return;
 
-        Department department = Department.builder()
-                .id(request.getId())
-                .createdBy(userLoggedIn.getId())
-                .name(request.getName())
-                .createdAt(LocalDateTime.now())
-                .updateBy(userLoggedIn.getId())
-                .updateAt(LocalDateTime.now())
-                .description(request.getDescription())
-                .status(true)
-                .build();
-        departmentRepository.save(department);
+        assert departmentExist != null;
+        departmentExist.setUpdateBy(userLoggedIn.getId());
+        departmentExist.setUpdateAt(LocalDateTime.now());
+        departmentExist.setName(request.getName());
+        departmentExist.setDescription(request.getDescription());
+        departmentRepository.save(departmentExist);
     }
 }

@@ -1,6 +1,9 @@
 package com.khoinguyen.amela.service.impl;
 
 import com.khoinguyen.amela.configuration.AppConfig;
+import com.khoinguyen.amela.entity.Department;
+import com.khoinguyen.amela.entity.JobPosition;
+import com.khoinguyen.amela.entity.Role;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
@@ -31,11 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
+import static com.khoinguyen.amela.util.Constant.FIRST_CODE;
 import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
 
 @Service
@@ -64,16 +65,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findTopByOrderByIdDesc().orElse(null);
     }
 
-    @Transactional
-    @Override
-    public void createUser(UserDtoRequest request, Map<String, List<String>> errors) {
-        User userLoggedIn = userHelper.getUserLogin();
+    private void validateInput(
+            User request,
+            Map<String, List<String>> errors,
+            Optional<JobPosition> positionOptional,
+            Optional<Department> departmentOptional,
+            Optional<Role> roleOptional,
+            Optional<User> userOptional
+    ) {
+        Long userId = userOptional.map(User::getId).orElse(0L);
 
-        if (optionalValidator.findByEmailExist(request.getEmail(), 0L).isPresent()) {
+        if (optionalValidator.findByEmailExist(request.getEmail(), userId).isPresent()) {
             validationService.updateErrors("email", "Email already exists", errors);
         }
 
-        if (optionalValidator.findByPhoneExist(request.getPhone(), 0L).isPresent()) {
+        if (optionalValidator.findByPhoneExist(request.getPhone(), userId).isPresent()) {
             validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
@@ -82,24 +88,36 @@ public class UserServiceImpl implements UserService {
             validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
         }
 
-        var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
         if (positionOptional.isEmpty()) {
             validationService.updateErrors("position", "Position is not found", errors);
         }
 
-        var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         if (departmentOptional.isEmpty()) {
             validationService.updateErrors("department", "Department is not found", errors);
         }
 
-        var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
         if (roleOptional.isEmpty()) {
             validationService.updateErrors("role", "Role is not found", errors);
         }
+    }
+
+    @Transactional
+    @Override
+    public void createUser(UserDtoRequest request, Map<String, List<String>> errors) {
+        User userLoggedIn = userHelper.getUserLogin();
+
+        var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
+        var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
+        var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
+        validateInput(
+                UserMapper.toUser(request), errors,
+                positionOptional, departmentOptional,
+                roleOptional, Optional.empty()
+        );
 
         if (!errors.isEmpty()) return;
 
-        String latestCde = getUserLatest() != null ? getUserLatest().getCode() : "000001";
+        String latestCde = getUserLatest() != null ? getUserLatest().getCode() : FIRST_CODE;
 
         String code = AttributeGenerator.generateNextUserCode(latestCde);
 
@@ -186,16 +204,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean resetPassword(Long id) {
+    public void resetPassword(Long id) {
         var userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getRole().getName().equals(Constant.ADMIN_NAME)) return false;
+            if (user.getRole().getName().equals(Constant.ADMIN_NAME)) return;
             user.setPassword(passwordEncoder.encode(PASSWORD_DEFAULT));
             userRepository.save(user);
-            return true;
         }
-        return false;
     }
 
     @Transactional
@@ -210,33 +226,14 @@ public class UserServiceImpl implements UserService {
         var user = userOptional.orElseThrow();
         var roleIdExistDb = user.getRole().getId();
 
-        if (optionalValidator.findByEmailExist(request.getEmail(), user.getId()).isPresent()) {
-            validationService.updateErrors("email", "Email already exists", errors);
-        }
-
-        if (optionalValidator.findByPhoneExist(request.getPhone(), user.getId()).isPresent()) {
-            validationService.updateErrors("phone", "Phone already exists", errors);
-        }
-
-        //check date of birth is greater than 18 ???
-        if (DateTimeHelper.compareDateGreaterThan(DateTimeHelper.parseStringToDate(request.getDateOfBirth()), 18L)) {
-            validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
-        }
-
         var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
-        if (positionOptional.isEmpty()) {
-            validationService.updateErrors("position", "Position is not found", errors);
-        }
-
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
-        if (departmentOptional.isEmpty()) {
-            validationService.updateErrors("department", "Department is not found", errors);
-        }
-
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
-        if (roleOptional.isEmpty()) {
-            validationService.updateErrors("role", "Role is not found", errors);
-        }
+        validateInput(
+                UserMapper.toUser(request), errors,
+                positionOptional, departmentOptional,
+                roleOptional, userOptional
+        );
 
         if (!errors.isEmpty()) return;
 
@@ -269,7 +266,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public ServiceResponse<String> sendMailCreateUser(User user) {
+    public void sendMailCreateUser(User user) {
         String token = UUID.randomUUID().toString();
         //send password reset verification email to the user
         String url = appConfig.HOST + "user-new-password?token=" + token;
@@ -278,31 +275,26 @@ public class UserServiceImpl implements UserService {
         try {
             emailHandler.sendTokenCreateUser(user, url);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            return new ServiceResponse<>(false, "error", "Something is went wrong");
+            throw new RuntimeException(e);
         }
-        return new ServiceResponse<>(true, "success", "User created");
+        new ServiceResponse<>(true, "success", "User created");
     }
 
     @Override
-    public boolean changeStatus(Long id) {
-        User userLoggedIn = userHelper.getUserLogin();
+    public void changeStatus(Long id) {
         var userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            var user = userOptional.get();
-            user.setUpdateAt(LocalDateTime.now());
-            user.setUpdateBy(userLoggedIn.getId());
+            User user = userOptional.get();
+            if (id.equals(user.getId())) return;
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public boolean sendTokenAgain(Long id) {
+    public void sendTokenAgain(Long id) {
         var user = userRepository.findById(id).orElse(null);
-        if (user == null || user.isActivated()) return false;
-        ServiceResponse<String> response = sendMailCreateUser(user);
-        return true;
+        if (user == null || user.isActivated()) return;
+        sendMailCreateUser(user);
     }
 }

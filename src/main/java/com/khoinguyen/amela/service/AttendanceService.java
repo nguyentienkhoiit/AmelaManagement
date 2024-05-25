@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface AttendanceService {
-    boolean checkAttendance();
+    void checkAttendance();
 
     PagingDtoResponse<AttendanceDtoResponse>
     getAttendanceByUserId(PagingDtoRequest pagingDtoRequest, Long userId);
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
     void createAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors);
 

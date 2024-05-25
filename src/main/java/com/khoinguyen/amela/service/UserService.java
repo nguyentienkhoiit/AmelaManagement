@@ -25,10 +25,10 @@ public interface UserService {
 
     UserDtoResponse getUserById(Long id);
 
-    boolean resetPassword(Long id);
+    void resetPassword(Long id);
 
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
-    boolean sendTokenAgain(Long id);
+    void sendTokenAgain(Long id);
 }

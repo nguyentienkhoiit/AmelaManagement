@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.khoinguyen.amela.util.Constant.USER_NAME;
+
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class AttendanceCriteria {
         StringBuilder sql = new StringBuilder("select a from Attendance a where a.user.id = :userId");
         params.put("userId", userId);
 
-        if (userLoggedIn.getRole().getName().equals(Constant.USER_NAME)) {
+        if (userLoggedIn.getRole().getName().equals(USER_NAME)) {
             sql.append(" and a.status = :status");
             params.put("status", true);
         }

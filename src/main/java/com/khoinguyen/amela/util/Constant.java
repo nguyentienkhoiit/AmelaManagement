@@ -10,6 +10,7 @@ public class Constant {
     public static final Long PAGE_SIZE_MESSAGE_USER = 6L;
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PREFIX = "A";
+    public static final String FIRST_CODE = "000001";
     public static final String[] LIST_PERMIT_ALL = new String[]{
             "/forgot-password",
             "/new-password",
@@ -23,7 +24,11 @@ public class Constant {
             "/notFound",
             "/forbidden",
             "/methodNotAllowed",
-            "/internalServerError"
+            "/internalServerError",
+            "/badGateway",
+            "/tooManyRequests",
+            "/requestsTimeout",
+            "/unauthorized"
     };
     public static final Collection<String> LIST_ATTRIBUTE_NAME = List.of(
             "{{name}}", "{{age}}", "{{address}}",
@@ -36,4 +41,5 @@ public class Constant {
     public static final List<String> ALLOWED_EXTENSIONS = List.of("jpeg", "png", "jpg");
     public static final String UPLOAD_DIR = "./upload";
     public static final String DEFAULT_AVATAR = "avatar.jpg";
+    public static final int IN_DAY_EDITED = 3;
 }

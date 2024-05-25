@@ -1,5 +1,6 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
+import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.validator.CheckDayNotInFuture;
 import com.khoinguyen.amela.validator.ValidTimeOrder;
 import com.khoinguyen.amela.validator.WithinDeadline;
@@ -10,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
 
 @Getter
 @Setter
@@ -22,7 +25,7 @@ import java.time.LocalTime;
 public class AttendanceDtoRequest {
     Long attendanceId;
 
-    @WithinDeadline(message = "{validation.withinDeadline}", days = 3)
+    @WithinDeadline(message = "{validation.withinDeadline}", days = IN_DAY_EDITED)
     @CheckDayNotInFuture
     @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

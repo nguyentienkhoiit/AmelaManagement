@@ -17,7 +17,7 @@ public interface GroupService {
 
     PagingDtoResponse<GroupDtoResponse> getAllGroups(PagingDtoRequest request);
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
     List<GroupDtoResponse> getAll();
 }

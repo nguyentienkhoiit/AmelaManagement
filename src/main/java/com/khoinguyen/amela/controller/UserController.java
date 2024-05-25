@@ -142,7 +142,7 @@ public class UserController {
     public String viewUpdateUsers(Model model, @PathVariable Long id) {
         setInfoSelectionOption(model);
         var userDtoResponse = userService.getUserById(id);
-        if (userDtoResponse == null) return "redirect:/error-page";
+        if (userDtoResponse == null) return "redirect:/notFound";
 
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", userDtoResponse);
@@ -150,7 +150,7 @@ public class UserController {
         return "layout/users/user_update";
     }
 
-    public void setObjectUserUpdate(Model model, RedirectAttributes redirectAttributes, UserDtoUpdate request) {
+    public void setObjectUserUpdate(RedirectAttributes redirectAttributes, UserDtoUpdate request) {
         JobPositionDtoResponse jobPositionDtoResponse = jobPositionService
                 .findById(request.getJobPositionId());
         DepartmentDtoResponse departmentDtoResponse = departmentService
@@ -177,7 +177,7 @@ public class UserController {
             RedirectAttributes redirectAttributes
     ) {
         setInfoSelectionOption(model);
-        setObjectUserUpdate(model, redirectAttributes, request);
+        setObjectUserUpdate(redirectAttributes, request);
 
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
@@ -200,7 +200,7 @@ public class UserController {
     @GetMapping("reset-password/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String resetPassword(@PathVariable Long id) {
-        boolean rs = userService.resetPassword(id);
+        userService.resetPassword(id);
         return "redirect:/users/update/" + id;
     }
 
@@ -211,7 +211,7 @@ public class UserController {
         if (Objects.equals(userLoggedIn.getId(), id))
             return "redirect:/forbidden";
 
-        boolean rs = userService.changeStatus(id);
+        userService.changeStatus(id);
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
@@ -232,7 +232,7 @@ public class UserController {
             Model model,
             @PathVariable Long id
     ) {
-        boolean rs = userService.sendTokenAgain(id);
+        userService.sendTokenAgain(id);
         return "redirect:/users/update/" + id;
     }
 

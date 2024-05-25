@@ -30,7 +30,6 @@ public class DepartmentCriteria {
             sql.append(" where d.name like :name");
             params.put("name", "%" + request.getText().trim() + "%");
         }
-        //filter search
         Query countQuery = em.createQuery(sql.toString()
                 .replace("select d", "select count(d.id)"));
 

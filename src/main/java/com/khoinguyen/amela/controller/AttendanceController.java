@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
+
 @Slf4j
 @Controller
 @RequestMapping("/attendances")
@@ -83,7 +85,6 @@ public class AttendanceController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String createAttendances(
-            Model model,
             @Valid @ModelAttribute AttendanceDtoRequest request,
             BindingResult result,
             RedirectAttributes redirectAttributes
@@ -129,7 +130,7 @@ public class AttendanceController {
             BindingResult result,
             RedirectAttributes redirectAttributes
     ) {
-        if (!DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
+        if (!DateTimeHelper.isExpiredDay(request.getCheckDay(), IN_DAY_EDITED))
             return "redirect:/forbidden";
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
@@ -152,7 +153,7 @@ public class AttendanceController {
     @GetMapping("/checkin")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public String checkAttendance(HttpServletRequest request) {
-        boolean rs = attendanceService.checkAttendance();
+        attendanceService.checkAttendance();
         return "redirect:/" + UrlUtil.getReferer(request, appConfig.HOST);
     }
 
@@ -161,7 +162,7 @@ public class AttendanceController {
     public String changeStatus(
             @PathVariable Long id
     ) {
-        boolean rs = attendanceService.changeStatus(id);
+        attendanceService.changeStatus(id);
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
@@ -179,7 +180,7 @@ public class AttendanceController {
         response.setHeader(headerKey, headerValue);
 
         PagingDtoRequest request = PagingDtoRequest.builder()
-                .pageIndex("1")
+                .pageIndex(Constant.PAGE_INDEX.toString())
                 .pageSize(String.valueOf(Integer.MAX_VALUE))
                 .text(text)
                 .build();

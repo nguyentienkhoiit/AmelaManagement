@@ -34,6 +34,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileHelper {
 
+
     public String uploadFile(MultipartFile file, User user) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = getFileExtension(fileName);

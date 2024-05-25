@@ -42,8 +42,6 @@ public class AuthController {
     AuthenticationService authenticationService;
     VerificationService verificationService;
     ValidationService validationService;
-    OptionalValidator optionalValidator;
-    HttpSession session;
 
     @GetMapping("/login")
     public String login(Model model) {

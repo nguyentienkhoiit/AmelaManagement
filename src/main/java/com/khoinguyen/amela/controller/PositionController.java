@@ -129,7 +129,7 @@ public class PositionController {
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
-        boolean rs = positionService.changeStatus(id);
+        positionService.changeStatus(id);
 
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;

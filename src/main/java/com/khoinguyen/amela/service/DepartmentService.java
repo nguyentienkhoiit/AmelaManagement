@@ -13,9 +13,9 @@ public interface DepartmentService {
 
     DepartmentDtoResponse findById(Long id);
 
-    PagingDtoResponse<DepartmentDtoResponse> getAllGroups(PagingDtoRequest request);
+    PagingDtoResponse<DepartmentDtoResponse> getAllDepartments(PagingDtoRequest request);
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
     void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors);
 

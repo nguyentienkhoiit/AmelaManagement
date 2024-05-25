@@ -77,7 +77,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     }
 
     @Override
-    public boolean changeStatus(Long id) {
+    public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
         var positionOptional = jobPositionRepository.findById(id);
         if (positionOptional.isPresent()) {
@@ -86,15 +86,14 @@ public class JobPositionServiceImpl implements JobPositionService {
             position.setUpdateBy(userLoggedIn.getId());
             position.setStatus(!position.isStatus());
             jobPositionRepository.save(position);
-            return true;
         }
-        return false;
     }
 
     @Override
     public JobPositionDtoResponse getPositionById(Long id) {
-        Optional<JobPosition> optionalDepartment = jobPositionRepository.findById(id);
-        return optionalDepartment.map(JobPositionMapper::toJobPositionDtoResponse).orElse(null);
+        return jobPositionRepository.findById(id)
+                .map(JobPositionMapper::toJobPositionDtoResponse)
+                .orElse(null);
     }
 
     @Transactional
@@ -115,16 +114,11 @@ public class JobPositionServiceImpl implements JobPositionService {
 
         if (!errors.isEmpty()) return;
 
-        JobPosition jobPosition = JobPosition.builder()
-                .id(request.getId())
-                .name(request.getName())
-                .description(request.getDescription())
-                .createdAt(LocalDateTime.now())
-                .createdBy(userLoggedIn.getId())
-                .updateAt(LocalDateTime.now())
-                .updateBy(userLoggedIn.getId())
-                .status(true)
-                .build();
-        jobPositionRepository.save(jobPosition);
+        assert positionExist != null;
+        positionExist.setUpdateAt(LocalDateTime.now());
+        positionExist.setUpdateBy(userLoggedIn.getId());
+        positionExist.setName(request.getName());
+        positionExist.setDescription(request.getDescription());
+        jobPositionRepository.save(positionExist);
     }
 }
