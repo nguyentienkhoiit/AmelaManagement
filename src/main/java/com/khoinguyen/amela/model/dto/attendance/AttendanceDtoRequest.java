@@ -1,6 +1,5 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
-import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.validator.CheckDayNotInFuture;
 import com.khoinguyen.amela.validator.ValidTimeOrder;
 import com.khoinguyen.amela.validator.WithinDeadline;

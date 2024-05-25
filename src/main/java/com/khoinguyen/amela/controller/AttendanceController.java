@@ -48,8 +48,7 @@ public class AttendanceController {
     public String viewAttendances(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest,
-            @PathVariable(required = false) Long userId,
-            HttpServletRequest request
+            @PathVariable(required = false) Long userId
     ) {
         session.setAttribute("active", "attendance");
         User userLoggedIn = userHelper.getUserLogin();
@@ -125,7 +124,6 @@ public class AttendanceController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String updateAttendances(
-            Model model,
             @Valid @ModelAttribute AttendanceDtoRequest request,
             BindingResult result,
             RedirectAttributes redirectAttributes

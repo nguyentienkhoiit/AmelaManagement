@@ -258,7 +258,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     }
 
     @Override
-    public boolean changeStatus(Long id) {
+    public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
 
         var messageScheduleOptional = messageScheduleRepository.findById(id);
@@ -268,14 +268,12 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             messageSchedule.setUpdateBy(userLoggedIn.getId());
             messageSchedule.setStatus(!messageSchedule.isStatus());
             messageScheduleRepository.save(messageSchedule);
-
-            return true;
         }
-        return false;
     }
 
     @Override
     public List<MessageScheduleDtoResponse> getTopMessagesScheduleForUser(Long topElement, Long id) {
+        topElement += 1;
         PagingDtoRequest pagingDtoRequest = PagingDtoRequest.builder()
                 .pageIndex("1")
                 .pageSize(topElement.toString())

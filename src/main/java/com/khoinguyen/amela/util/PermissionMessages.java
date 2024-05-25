@@ -21,9 +21,8 @@ public class PermissionMessages {
     UserRepository userRepository;
 
     public boolean checkPermission(Long id) {
-        MessageSchedule messageSchedule = messageScheduleRepository.findById(id).orElse(null);
+        MessageSchedule messageSchedule = messageScheduleRepository.findByIdAndStatusTrue(id).orElse(null);
         if (messageSchedule == null) return false;
-
 
         //là admin
         User userLoggedIn = userHelper.getUserLogin();

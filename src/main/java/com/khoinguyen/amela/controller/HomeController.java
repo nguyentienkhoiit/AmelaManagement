@@ -84,7 +84,6 @@ public class HomeController {
             @RequestParam(value = "fileImage", required = false) MultipartFile fileImage,
             @Valid @ModelAttribute("user") ProfileDtoRequest request,
             BindingResult result,
-            Model model,
             RedirectAttributes redirectAttributes
     ) {
         User userLoggedIn = userHelper.getUserLogin();

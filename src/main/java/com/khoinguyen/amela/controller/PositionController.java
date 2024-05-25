@@ -105,7 +105,6 @@ public class PositionController {
     public String updatePositions(
             @Valid @ModelAttribute("position") JobPositionDtoRequest request,
             BindingResult result,
-            Model model,
             RedirectAttributes redirectAttributes
     ) {
         //check validate

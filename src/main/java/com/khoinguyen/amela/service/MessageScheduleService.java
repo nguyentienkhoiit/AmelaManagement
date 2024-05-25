@@ -20,7 +20,7 @@ public interface MessageScheduleService {
 
     PagingDtoResponse<MessageScheduleDtoResponse> getAllMessagesUser(PagingDtoRequest pagingDtoRequest);
 
-    boolean changeStatus(Long id);
+    void changeStatus(Long id);
 
     List<MessageScheduleDtoResponse> getTopMessagesScheduleForUser(Long topElement, Long id);
 

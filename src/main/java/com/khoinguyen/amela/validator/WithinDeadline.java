@@ -1,6 +1,5 @@
 package com.khoinguyen.amela.validator;
 
-import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.validator.impl.WithinDeadlineValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -16,7 +15,7 @@ import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WithinDeadline {
-    String message() default "Check day cannot be more than "+IN_DAY_EDITED+" days before today";
+    String message() default "Check day cannot be more than " + IN_DAY_EDITED + " days before today";
 
     Class<?>[] groups() default {};
 

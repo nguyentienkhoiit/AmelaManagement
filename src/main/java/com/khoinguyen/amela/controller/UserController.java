@@ -229,7 +229,6 @@ public class UserController {
     @GetMapping("/send-token-again/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String sendTokenAgain(
-            Model model,
             @PathVariable Long id
     ) {
         userService.sendTokenAgain(id);

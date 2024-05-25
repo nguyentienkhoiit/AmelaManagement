@@ -104,7 +104,6 @@ public class DepartmentController {
     public String updateDepartments(
             @Valid @ModelAttribute("department") DepartmentDtoRequest request,
             BindingResult result,
-            Model model,
             RedirectAttributes redirectAttributes
     ) {
         //check validate

@@ -3,15 +3,12 @@ package com.khoinguyen.amela.controller;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
-import com.khoinguyen.amela.model.dto.authentication.LoginDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.service.AuthenticationService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.Constant;
-import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.ValidationService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +42,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        model.addAttribute("login", new LoginDtoRequest());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
@@ -59,7 +55,7 @@ public class AuthController {
     }
 
     @GetMapping("/oauth2")
-    public String auth() {
+    public String oauth2() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = authenticationService.loginOauth2(authentication);
         if (user == null) {
@@ -73,11 +69,6 @@ public class AuthController {
         return "redirect:/login";
     }
 
-    @GetMapping("/register")
-    public String register() {
-        return "layout/auth/register";
-    }
-
     @GetMapping("/forgot-password")
     public String forgotPassword(Model model) {
         if (!model.containsAttribute("emailDto")) {
@@ -89,7 +80,6 @@ public class AuthController {
     /**
      * Forgot password
      *
-     * @param model              model
      * @param redirectAttributes redirect
      * @param request            request
      * @param result             result
@@ -97,7 +87,6 @@ public class AuthController {
      */
     @PostMapping("/forgot-password")
     public String submitForgotPassword(
-            Model model,
             RedirectAttributes redirectAttributes,
             @Valid @ModelAttribute("emailDto") EmailDtoRequest request,
             BindingResult result

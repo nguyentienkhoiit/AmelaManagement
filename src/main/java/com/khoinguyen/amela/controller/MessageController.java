@@ -107,7 +107,7 @@ public class MessageController {
             BindingResult result,
             Model model
     ) {
-         model.addAttribute("users", optionalValidator.findAllUser());
+        model.addAttribute("users", optionalValidator.findAllUser());
         //check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -155,7 +155,6 @@ public class MessageController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String updateMessages(
-            Model model,
             @Valid @ModelAttribute("message") MessageScheduleDtoRequest request,
             BindingResult result,
             RedirectAttributes redirectAttributes
@@ -186,10 +185,9 @@ public class MessageController {
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(
-            Model model,
             @PathVariable Long id
     ) {
-        boolean rs = messageScheduleService.changeStatus(id);
+        messageScheduleService.changeStatus(id);
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
     }
