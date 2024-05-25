@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
     FileHelper fileHelper;
     ValidationService validationService;
     AppConfig appConfig;
-    SessionRegistry sessionRegistry;
 
     @Override
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest request) {
@@ -250,19 +249,9 @@ public class UserServiceImpl implements UserService {
         user.setJobPosition(positionOptional.orElseThrow());
         userRepository.save(user);
 
+        //push session expired
         if (!Objects.equals(request.getRoleId(), roleIdExistDb)) {
-            List<Object> principals = sessionRegistry.getAllPrincipals();
-            for (Object principal : principals) {
-                if (principal instanceof UserDetails) {
-                    UserDetails userDetails = (UserDetails) principal;
-                    if (userDetails.getUsername().equals(user.getEmail())) {
-                        List<SessionInformation> sessions = sessionRegistry.getAllSessions(userDetails, false);
-                        for (SessionInformation session : sessions) {
-                            session.expireNow(); // Invalidate the session
-                        }
-                    }
-                }
-            }
+            userHelper.pushSessionExpired(user);
         }
     }
 
@@ -285,9 +274,10 @@ public class UserServiceImpl implements UserService {
         var userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (id.equals(user.getId())) return;
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
+            //push session expired
+            userHelper.pushSessionExpired(user);
         }
     }
 

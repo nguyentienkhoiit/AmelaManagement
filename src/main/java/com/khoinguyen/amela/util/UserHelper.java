@@ -8,16 +8,20 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserHelper {
     HttpSession session;
+    SessionRegistry sessionRegistry;
 
     public User getUserLogin() {
         return (User) session.getAttribute("userLoggedIn");
@@ -35,5 +39,19 @@ public class UserHelper {
                         authorities == null ? userDetails.getAuthorities() : authorities
                 )
         );
+    }
+
+    public void pushSessionExpired(User user) {
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+        for (Object principal : principals) {
+            if (principal instanceof UserDetails userDetails) {
+                if (userDetails.getUsername().equals(user.getEmail())) {
+                    List<SessionInformation> sessions = sessionRegistry.getAllSessions(userDetails, false);
+                    for (SessionInformation session : sessions) {
+                        session.expireNow(); // Invalidate the session
+                    }
+                }
+            }
+        }
     }
 }
