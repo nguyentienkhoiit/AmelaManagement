@@ -23,8 +23,6 @@ public class AttributeGenerator {
 
         String normalized = Normalizer.normalize(fileName, Normalizer.Form.NFKD);
         String sanitized = normalized.replaceAll(FILENAME_REGEX, DEFAULT_REPLACEMENT);
-
-        // Replace consecutive spaces and underscores with a single underscore
         sanitized = sanitized.replaceAll("[\\s_]+", DEFAULT_REPLACEMENT);
 
         return sanitized;

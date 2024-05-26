@@ -105,6 +105,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .oauth2Login(
                         l -> l.loginPage("/login")
                                 .defaultSuccessUrl("/oauth2", true)
+                                .failureUrl("/login?fault=true")
                 )
                 .exceptionHandling(e -> e.accessDeniedPage("/forbidden"));
         return http.build();

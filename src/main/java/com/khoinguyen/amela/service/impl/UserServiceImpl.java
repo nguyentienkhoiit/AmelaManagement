@@ -24,9 +24,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +101,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
-
         var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());

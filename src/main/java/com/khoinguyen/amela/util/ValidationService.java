@@ -1,9 +1,7 @@
 package com.khoinguyen.amela.util;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,7 +13,6 @@ import java.util.Map;
 @Getter
 @Setter
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ValidationService {
     public void updateErrors(String key, String value, Map<String, List<String>> errors) {
         errors.computeIfAbsent(key, k -> new ArrayList<>()).add(value);

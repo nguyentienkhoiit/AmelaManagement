@@ -1,15 +1,11 @@
 package com.khoinguyen.amela.util;
 
-import com.khoinguyen.amela.configuration.AppConfig;
-import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.entity.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -17,17 +13,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmailHandler {
-    private static final Logger log = LoggerFactory.getLogger(EmailHandler.class);
     final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     String email;
-    AppConfig appConfig;
 
     @Async
     public void sendTokenForgotPassword(User user, String url) throws MessagingException, UnsupportedEncodingException {
@@ -59,26 +52,26 @@ public class EmailHandler {
         mailSender.send(message);
     }
 
-    // send multiple mail
-    @Async
-    public void sendNotificationMessage(MessageSchedule messageSchedule, List<User> users) throws MessagingException, UnsupportedEncodingException {
-        String subject = "Notification New Messages";
-        String senderName = "Users Notification Service";
-        String url = appConfig.HOST + "messages/detail/" + messageSchedule.getId();
-        String mailContent = TemplateEmailGenerate.getHtmlNotificationMessages(url);
-        String[] emails = users.stream().map(User::getEmail).toArray(String[]::new);
-        emailListMessage(subject, senderName, mailContent, javaMailSender, emails);
-    }
-
-    @Async
-    public void emailListMessage(String subject, String senderName, String mailContent,
-                                 JavaMailSender mailSender, String[] emails) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        var messageHelper = new MimeMessageHelper(message);
-        messageHelper.setFrom(email, senderName);
-        messageHelper.setTo(emails);
-        messageHelper.setSubject(subject);
-        messageHelper.setText(mailContent, true);
-        mailSender.send(message);
-    }
+//    send multiple mail
+//    @Async
+//    public void sendNotificationMessage(MessageSchedule messageSchedule, List<User> users) throws MessagingException, UnsupportedEncodingException {
+//        String subject = "Notification New Messages";
+//        String senderName = "Users Notification Service";
+//        String url = appConfig.HOST + "messages/detail/" + messageSchedule.getId();
+//        String mailContent = TemplateEmailGenerate.getHtmlNotificationMessages(url);
+//        String[] emails = users.stream().map(User::getEmail).toArray(String[]::new);
+//        emailListMessage(subject, senderName, mailContent, javaMailSender, emails);
+//    }
+//
+//    @Async
+//    public void emailListMessage(String subject, String senderName, String mailContent,
+//                                 JavaMailSender mailSender, String[] emails) throws MessagingException, UnsupportedEncodingException {
+//        MimeMessage message = mailSender.createMimeMessage();
+//        var messageHelper = new MimeMessageHelper(message);
+//        messageHelper.setFrom(email, senderName);
+//        messageHelper.setTo(emails);
+//        messageHelper.setSubject(subject);
+//        messageHelper.setText(mailContent, true);
+//        mailSender.send(message);
+//    }
 }
