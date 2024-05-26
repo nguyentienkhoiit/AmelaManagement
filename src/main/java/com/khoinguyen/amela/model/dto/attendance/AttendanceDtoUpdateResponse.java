@@ -16,15 +16,15 @@ import java.time.LocalTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 public class AttendanceDtoUpdateResponse {
-    @NotNull(message = "Check day is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate checkDay;
 
-    @NotNull(message = "Check in time is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "HH:mm")
     LocalTime checkInTime;
 
-    @NotNull(message = "Check out time is required")
+    @NotNull(message = "{validation.required}")
     @DateTimeFormat(pattern = "HH:mm")
     LocalTime checkOutTime;
 

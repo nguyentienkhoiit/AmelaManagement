@@ -72,7 +72,7 @@
                            data-bs-placement="left"
                            data-bs-toggle="tooltip"
                            th:classappend="${attendance.isExpired ? 'text-success' : 'text-danger'}"
-                           th:title="${attendance.isExpired ? 'Active' : 'Deactive'}"
+                           th:title="${attendance.isExpired ? 'Non-expired' : 'Expired'}"
                         ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">

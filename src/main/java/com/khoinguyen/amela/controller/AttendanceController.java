@@ -6,8 +6,10 @@ import com.khoinguyen.amela.excel.AttendanceExcel;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
+import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +46,7 @@ public class AttendanceController {
     UserHelper userHelper;
     AppConfig appConfig;
     ValidationService validationService;
+    UserService userService;
 
     @GetMapping(value = {"", "/{userId}"})
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -172,10 +177,16 @@ public class AttendanceController {
             @PathVariable Long userId,
             @RequestParam(name = "text") String text
     ) throws IOException {
-        response.setContentType("application/octet-stream");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=attendances.xlsx";
-        response.setHeader(headerKey, headerValue);
+        UserDtoResponse user = userService.getUserById(userId);
+        if (user == null) return;
+
+        String fileName = String.format("%s - %s %s.xlsx",
+                user.getDepartment().getName(),
+                user.getFirstname(),
+                user.getLastname()
+        );
+
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
 
         PagingDtoRequest request = PagingDtoRequest.builder()
                 .pageIndex(Constant.PAGE_INDEX.toString())
@@ -184,6 +195,12 @@ public class AttendanceController {
                 .build();
 
         var attendanceDtoResponses = attendanceService.getAttendanceByUserId(request, userId).data();
+
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=%s", encodedFileName);
+        response.setHeader(headerKey, headerValue);
+
         AttendanceExcel attendanceExcel = new AttendanceExcel(attendanceDtoResponses);
         attendanceExcel.export(response);
     }
