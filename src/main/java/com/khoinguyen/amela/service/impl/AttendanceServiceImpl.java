@@ -98,8 +98,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         return AttendanceMapper.toAttendanceDtoUpdateResponse(attendance);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateAttendances(AttendanceDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -119,8 +119,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendanceRepository.save(attendance);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
         Optional<Attendance> attendanceOptional = attendanceRepository

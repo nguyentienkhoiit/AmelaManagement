@@ -45,8 +45,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     UserMessageScheduleRepository userMessageScheduleRepository;
     ValidationService validationService;
 
-    @Transactional
     @Override
+    @Transactional
     public void createMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -151,8 +151,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         return message;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type) {
         return messageScheduleRepository.findById(id)
                 .map(messageSchedule -> {
@@ -174,8 +174,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .orElse(null);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -285,8 +285,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .toList();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public MessageScheduleDtoRequest getMessageRequestById(Long messageId) {
         var mes = getByMessageScheduleId(messageId, "");
         mes.setPublishAt(LocalDateTime.now().plusMinutes(1L));

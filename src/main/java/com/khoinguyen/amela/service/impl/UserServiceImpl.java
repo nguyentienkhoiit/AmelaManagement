@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void createUser(UserDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
         var positionOptional = optionalValidator.findByJobPositionId(request.getJobPositionId());
@@ -143,8 +143,8 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toProfileDtoResponse(userLoggedIn);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateProfile(
             ProfileDtoRequest request,
             MultipartFile fileImage,
@@ -209,8 +209,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateUser(UserDtoUpdate request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 

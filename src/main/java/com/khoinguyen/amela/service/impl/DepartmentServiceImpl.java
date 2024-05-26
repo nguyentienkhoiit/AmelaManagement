@@ -65,8 +65,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -100,8 +100,8 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .orElse(null);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 

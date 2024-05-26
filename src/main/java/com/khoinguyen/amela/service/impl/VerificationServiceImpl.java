@@ -32,8 +32,8 @@ public class VerificationServiceImpl implements VerificationService {
         verificationRepository.save(verification);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ServiceResponse<String> validateToken(String token, boolean isCreated) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "valid", null);
 

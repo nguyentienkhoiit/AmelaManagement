@@ -50,8 +50,8 @@ public class JobPositionServiceImpl implements JobPositionService {
         return jobPositionCriteria.getAllPositions(request);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -76,6 +76,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     }
 
     @Override
+    @Transactional
     public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
         var positionOptional = jobPositionRepository.findById(id);
@@ -95,8 +96,8 @@ public class JobPositionServiceImpl implements JobPositionService {
                 .orElse(null);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updatePositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 

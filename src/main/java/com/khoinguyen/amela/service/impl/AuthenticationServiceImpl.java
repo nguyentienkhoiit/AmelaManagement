@@ -50,8 +50,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     AppConfig appConfig;
     HttpSession session;
 
-    @Transactional
     @Override
+    @Transactional
     public ServiceResponse<String> submitForgotPassword(EmailDtoRequest request) {
         ServiceResponse<String> response = new ServiceResponse<>(true, "success",
                 "We have just sent a verification link to your email, the link will be expired in 1h");
@@ -75,8 +75,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return response;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ServiceResponse<String> submitNewPassword(PasswordDtoRequest request) {
         ServiceResponse<String> response;
 
@@ -98,8 +98,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new ServiceResponse<>(false, "error", "Something is went wrong");
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ServiceResponse<String> submitCreateNewPassword(PasswordDtoRequest request) {
         ServiceResponse<String> response;
 
@@ -123,8 +123,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new ServiceResponse<>(false, "error", "Something is went wrong");
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void submitChangePassword(ChangePasswordDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
         User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();

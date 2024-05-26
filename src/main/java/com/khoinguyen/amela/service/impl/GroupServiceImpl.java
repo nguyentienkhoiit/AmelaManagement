@@ -40,8 +40,8 @@ public class GroupServiceImpl implements GroupService {
     OptionalValidator optionalValidator;
     ValidationService validationService;
 
-    @Transactional
     @Override
+    @Transactional
     public void createGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -82,8 +82,8 @@ public class GroupServiceImpl implements GroupService {
         userGroupRepository.saveAll(userGroups);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateGroups(GroupDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
@@ -162,6 +162,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void changeStatus(Long id) {
         User userLoggedIn = userHelper.getUserLogin();
         var groupOptional = groupRepository.findById(id);
