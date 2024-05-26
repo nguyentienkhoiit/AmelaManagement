@@ -180,8 +180,9 @@ public class AttendanceController {
         UserDtoResponse user = userService.getUserById(userId);
         if (user == null) return;
 
-        String fileName = String.format("%s - %s %s.xlsx",
+        String fileName = String.format("%s - %s - %s %s.xlsx",
                 user.getDepartment().getName(),
+                user.getCode(),
                 user.getFirstname(),
                 user.getLastname()
         );
