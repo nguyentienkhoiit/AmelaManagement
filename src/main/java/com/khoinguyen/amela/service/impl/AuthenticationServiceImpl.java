@@ -141,9 +141,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         //update password
         user.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
         userRepository.save(user);
-
-        //set security context holder
-        userHelper.setSecurityContext(request.getConfirmPassword(), null);
     }
 
     @Override
