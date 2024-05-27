@@ -27,7 +27,7 @@ public class PermissionMessages {
         User userLoggedIn = userHelper.getUserLogin();
         User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
         if (Constant.ADMIN_NAME.equalsIgnoreCase(userLoggedIn.getRole().getName())) {
-            messageSchedule = messageScheduleRepository.findById(id).orElse(null);
+            return true;
         }
         else {
             messageSchedule = messageScheduleRepository.findByIdAndStatusTrue(id).orElse(null);
