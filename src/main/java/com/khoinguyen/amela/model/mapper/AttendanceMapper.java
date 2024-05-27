@@ -5,6 +5,7 @@ import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
+import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
 import java.time.Duration;
@@ -35,7 +36,7 @@ public class AttendanceMapper {
                 .checkDay(DateTimeHelper.formatDate(request.getCheckDay(), "dd/MM/yyyy"))
                 .workTime(workTime)
                 .fullName(fullName)
-                .isExpired(DateTimeHelper.isExpiredDay(request.getCheckDay(), 3))
+                .isExpired(DateTimeHelper.isExpiredDay(request.getCheckDay(), Constant.IN_DAY_EDITED))
                 .note(request.getNote())
                 .build();
     }

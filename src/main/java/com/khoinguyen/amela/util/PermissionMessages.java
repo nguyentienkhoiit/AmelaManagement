@@ -21,15 +21,19 @@ public class PermissionMessages {
     UserRepository userRepository;
 
     public boolean checkPermission(Long id) {
-        MessageSchedule messageSchedule = messageScheduleRepository.findByIdAndStatusTrue(id).orElse(null);
-        if (messageSchedule == null) return false;
+        MessageSchedule messageSchedule = new MessageSchedule();
 
         //is admin
         User userLoggedIn = userHelper.getUserLogin();
         User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
         if (Constant.ADMIN_NAME.equalsIgnoreCase(userLoggedIn.getRole().getName())) {
-            return true;
+            messageSchedule = messageScheduleRepository.findById(id).orElse(null);
         }
+        else {
+            messageSchedule = messageScheduleRepository.findByIdAndStatusTrue(id).orElse(null);
+        }
+
+        if(messageSchedule == null) return false;
 
         //chưa đến hạn
         if (messageSchedule.getPublishAt().isAfter(LocalDateTime.now())) return false;

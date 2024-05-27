@@ -75,7 +75,14 @@
                            th:title="${message.isPublished ? 'Published' : 'Unpublished'}"
                         ></i>
                     </td>
-                    <td th:text="${message.status ? 'Active': 'Deactive'}">Active</td>
+                    <td>
+                        <i class="fa-solid fa-circle-check"
+                           data-bs-placement="left"
+                           data-bs-toggle="tooltip"
+                           th:classappend="${message.status ? 'text-success' : 'text-danger'}"
+                           th:title="${message.status ? 'Active' : 'Deactive'}"
+                        ></i>
+                    </td>
                     <td>
                         <a data-bs-placement="left" data-bs-toggle="tooltip"
                            th:href="@{/messages/update/{id}(id=${message.id})}"
