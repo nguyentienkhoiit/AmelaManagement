@@ -13,6 +13,7 @@ import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.service.RoleService;
 import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.util.FileHelper;
+import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
@@ -31,10 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -50,6 +48,7 @@ public class UserController {
     UserHelper userHelper;
     FileHelper fileHelper;
     ValidationService validationService;
+    OptionalValidator optionalValidator;
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -239,6 +238,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<Resource> getImage() {
         User user = userHelper.getUserLogin();
+        user = optionalValidator.findById(user.getId()).orElse(user);
         Resource file = fileHelper.load(user.getAvatar());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getAvatar() + "\"").body(file);
