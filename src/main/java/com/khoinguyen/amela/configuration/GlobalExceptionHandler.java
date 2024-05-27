@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,5 +20,13 @@ public class GlobalExceptionHandler {
         errors.put("avatar", List.of(e.getMessage()));
         redirectAttributes.addFlashAttribute("errors", errors);
         return "redirect:/profile";
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(
+            RedirectAttributes redirectAttributes,
+            AccessDeniedException ex
+    ) {
+        return "redirect:/forbidden";
     }
 }

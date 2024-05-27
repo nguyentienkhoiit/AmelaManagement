@@ -6,7 +6,6 @@ import com.khoinguyen.amela.excel.AttendanceExcel;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.service.UserService;
@@ -19,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +47,7 @@ public class AttendanceController {
     AppConfig appConfig;
     ValidationService validationService;
     UserService userService;
+    PermissionResources permissionResources;
 
     @GetMapping(value = {"", "/{userId}"})
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -171,14 +172,16 @@ public class AttendanceController {
     }
 
     @GetMapping("/exports/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public void exportAttendances(
             HttpServletResponse response,
             @PathVariable Long userId,
             @RequestParam(name = "text") String text
     ) throws IOException {
-        UserDtoResponse user = userService.getUserById(userId);
-        if (user == null) return;
+        User user = permissionResources.checkPermissionExport(userId);
+        if (user == null) {
+            throw new AccessDeniedException("Forbidden");
+        }
 
         String fileName = String.format("%s - %s - %s %s.xlsx",
                 user.getDepartment().getName(),

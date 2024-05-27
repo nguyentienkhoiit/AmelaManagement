@@ -28,7 +28,7 @@ public class PagingDtoRequest {
         return parseLongOrDefault(pageSize, PAGE_SIZE);
     }
 
-    private long parseLongOrDefault(String value, long defaultValue) {
+    protected long parseLongOrDefault(String value, long defaultValue) {
         try {
             long index = Long.parseLong(value);
             return index > 0 ? index : defaultValue;

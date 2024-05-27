@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PermissionMessages {
+public class PermissionResources {
     UserHelper userHelper;
     MessageScheduleRepository messageScheduleRepository;
     UserRepository userRepository;
@@ -28,12 +29,11 @@ public class PermissionMessages {
         User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
         if (Constant.ADMIN_NAME.equalsIgnoreCase(userLoggedIn.getRole().getName())) {
             return true;
-        }
-        else {
+        } else {
             messageSchedule = messageScheduleRepository.findByIdAndStatusTrue(id).orElse(null);
         }
 
-        if(messageSchedule == null) return false;
+        if (messageSchedule == null) return false;
 
         //chưa đến hạn
         if (messageSchedule.getPublishAt().isAfter(LocalDateTime.now())) return false;
@@ -51,4 +51,24 @@ public class PermissionMessages {
                     .anyMatch(userMessageSchedule -> Objects.equals(userMessageSchedule.getUser().getId(), user.getId()));
         }
     }
+
+    public User checkPermissionExport(Long userId) {
+        User userLoggedIn = userHelper.getUserLogin();
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isEmpty()) {
+            return null;
+        }
+
+        User user = userOptional.get();
+        String roleName = userLoggedIn.getRole().getName();
+
+        if (Constant.ADMIN_NAME.equalsIgnoreCase(roleName) ||
+                (userLoggedIn.getId().equals(user.getId()) && Constant.USER_NAME.equals(roleName))) {
+            return user;
+        }
+
+        return null;
+    }
+
 }

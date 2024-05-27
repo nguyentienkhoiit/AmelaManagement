@@ -8,7 +8,7 @@ import com.khoinguyen.amela.model.mapper.MessageScheduleMapper;
 import com.khoinguyen.amela.service.GroupService;
 import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.util.OptionalValidator;
-import com.khoinguyen.amela.util.PermissionMessages;
+import com.khoinguyen.amela.util.PermissionResources;
 import com.khoinguyen.amela.util.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -37,7 +37,7 @@ public class MessageController {
     HttpSession session;
     MessageScheduleService messageScheduleService;
     GroupService groupService;
-    PermissionMessages permissionMessages;
+    PermissionResources permissionResources;
     ValidationService validationService;
     OptionalValidator optionalValidator;
 
@@ -70,7 +70,7 @@ public class MessageController {
             @PathVariable long id
     ) {
         //check permission
-        if (!permissionMessages.checkPermission(id)) {
+        if (!permissionResources.checkPermission(id)) {
             return "redirect:/notFound";
         }
         List<MessageScheduleDtoResponse> topMessages = messageScheduleService
