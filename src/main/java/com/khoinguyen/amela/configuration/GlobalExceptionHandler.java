@@ -1,15 +1,16 @@
 package com.khoinguyen.amela.configuration;
 
-import lombok.extern.slf4j.Slf4j;
+import java.nio.file.AccessDeniedException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.nio.file.AccessDeniedException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ControllerAdvice
@@ -23,10 +24,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDeniedException(
-            RedirectAttributes redirectAttributes,
-            AccessDeniedException ex
-    ) {
+    public String handleAccessDeniedException(RedirectAttributes redirectAttributes, AccessDeniedException ex) {
         return "redirect:/forbidden";
     }
 }

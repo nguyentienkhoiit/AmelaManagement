@@ -1,9 +1,10 @@
 package com.khoinguyen.amela.repository;
 
-import com.khoinguyen.amela.entity.UserGroup;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.khoinguyen.amela.entity.UserGroup;
 
 public interface UserGroupRepository extends JpaRepository<UserGroup, Long> {
     Optional<UserGroup> findByUserIdAndGroupId(Long u, Long id);

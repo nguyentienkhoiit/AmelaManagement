@@ -1,5 +1,27 @@
 package com.khoinguyen.amela.controller;
 
+import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.excel.AttendanceExcel;
@@ -10,30 +32,11 @@ import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.util.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
 
 @Slf4j
 @Controller
@@ -54,13 +57,13 @@ public class AttendanceController {
     public String viewAttendances(
             Model model,
             @ModelAttribute PagingDtoRequest pagingDtoRequest,
-            @PathVariable(required = false) Long userId
-    ) {
+            @PathVariable(required = false) Long userId) {
         session.setAttribute("active", "attendance");
         User userLoggedIn = userHelper.getUserLogin();
 
-        userId = (userLoggedIn.getRole().getName()
-                .equals(Constant.USER_NAME) || userId == null) ? userLoggedIn.getId() : userId;
+        userId = (userLoggedIn.getRole().getName().equals(Constant.USER_NAME) || userId == null)
+                ? userLoggedIn.getId()
+                : userId;
 
         var pagingDtoResponse = attendanceService.getAttendanceByUserId(pagingDtoRequest, userId);
         var totalPage = pagingDtoResponse.getTotalPageList(pagingDtoResponse.data());
@@ -72,8 +75,10 @@ public class AttendanceController {
         model.addAttribute("currentPage", pagingDtoRequest.getPageIndex());
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("userId", userId);
-        session.setAttribute("url", "/attendances/" + userId + "?pageIndex=" + pagingDtoRequest.getPageIndex() +
-                "&text=" + pagingDtoRequest.getText());
+        session.setAttribute(
+                "url",
+                "/attendances/" + userId + "?pageIndex=" + pagingDtoRequest.getPageIndex() + "&text="
+                        + pagingDtoRequest.getText());
 
         return "layout/attendances/attendance_list";
     }
@@ -82,7 +87,8 @@ public class AttendanceController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String viewCreateAttendances(Model model, @PathVariable Long userId) {
         if (!model.containsAttribute("attendance")) {
-            model.addAttribute("attendance", AttendanceDtoRequest.builder().userId(userId).build());
+            model.addAttribute(
+                    "attendance", AttendanceDtoRequest.builder().userId(userId).build());
         }
         return "layout/attendances/attendance_create";
     }
@@ -92,11 +98,10 @@ public class AttendanceController {
     public String createAttendances(
             @Valid @ModelAttribute AttendanceDtoRequest request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("attendance", request);
 
-        //check validate
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -115,10 +120,7 @@ public class AttendanceController {
 
     @GetMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewUpdateAttendances(
-            Model model,
-            @PathVariable Long id
-    ) {
+    public String viewUpdateAttendances(Model model, @PathVariable Long id) {
         if (!model.containsAttribute("attendance")) {
             AttendanceDtoUpdateResponse response = attendanceService.getAttendanceById(id);
             if (!response.isExpired()) return "redirect:/forbidden";
@@ -132,11 +134,9 @@ public class AttendanceController {
     public String updateAttendances(
             @Valid @ModelAttribute AttendanceDtoRequest request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
-        if (!DateTimeHelper.isExpiredDay(request.getCheckDay(), IN_DAY_EDITED))
-            return "redirect:/forbidden";
-        //check validate
+            RedirectAttributes redirectAttributes) {
+        if (!DateTimeHelper.isExpiredDay(request.getCheckDay(), IN_DAY_EDITED)) return "redirect:/forbidden";
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -163,9 +163,7 @@ public class AttendanceController {
 
     @GetMapping("/change-status/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String changeStatus(
-            @PathVariable Long id
-    ) {
+    public String changeStatus(@PathVariable Long id) {
         attendanceService.changeStatus(id);
         String url = (String) session.getAttribute("url");
         return "redirect:" + url;
@@ -174,23 +172,19 @@ public class AttendanceController {
     @GetMapping("/exports/{userId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public void exportAttendances(
-            HttpServletResponse response,
-            @PathVariable Long userId,
-            @RequestParam(name = "text") String text
-    ) throws IOException {
+            HttpServletResponse response, @PathVariable Long userId, @RequestParam(name = "text") String text)
+            throws IOException {
         User user = permissionResources.checkPermissionExport(userId);
         if (user == null) {
             throw new AccessDeniedException("Forbidden");
         }
 
-        String fileName = String.format("%s - %s - %s %s.xlsx",
-                user.getDepartment().getName(),
-                user.getCode(),
-                user.getFirstname(),
-                user.getLastname()
-        );
+        String fileName = String.format(
+                "%s - %s - %s %s.xlsx",
+                user.getDepartment().getName(), user.getCode(), user.getFirstname(), user.getLastname());
 
-        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
+        String encodedFileName =
+                URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
 
         PagingDtoRequest request = PagingDtoRequest.builder()
                 .pageIndex(Constant.PAGE_INDEX.toString())
@@ -198,7 +192,8 @@ public class AttendanceController {
                 .text(text)
                 .build();
 
-        var attendanceDtoResponses = attendanceService.getAttendanceByUserId(request, userId).data();
+        var attendanceDtoResponses =
+                attendanceService.getAttendanceByUserId(request, userId).data();
 
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";

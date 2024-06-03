@@ -1,21 +1,24 @@
 package com.khoinguyen.amela.repository.criteria;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+
 import com.khoinguyen.amela.entity.JobPosition;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
 import com.khoinguyen.amela.model.mapper.JobPositionMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,9 +33,8 @@ public class JobPositionCriteria {
             sql.append(" where p.name like :name");
             params.put("name", "%" + request.getText().trim() + "%");
         }
-        //filter search
-        Query countQuery = em.createQuery(sql.toString()
-                .replace("select p", "select count(p.id)"));
+        // filter search
+        Query countQuery = em.createQuery(sql.toString().replace("select p", "select count(p.id)"));
 
         sql.append(" order by p.updateAt desc");
 
@@ -45,7 +47,7 @@ public class JobPositionCriteria {
             countQuery.setParameter(k, v);
         });
 
-        //paging
+        // paging
         positionTypedQuery.setFirstResult((int) ((pageIndex - 1) * pageSize));
         positionTypedQuery.setMaxResults(Math.toIntExact(pageSize));
         List<JobPosition> positions = positionTypedQuery.getResultList();

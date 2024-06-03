@@ -1,15 +1,17 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.mapper.RoleMapper;
 import com.khoinguyen.amela.repository.RoleRepository;
 import com.khoinguyen.amela.service.RoleService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

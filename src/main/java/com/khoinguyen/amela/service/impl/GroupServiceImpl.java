@@ -1,5 +1,14 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.Group;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.entity.UserGroup;
@@ -16,17 +25,10 @@ import com.khoinguyen.amela.service.GroupService;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,17 +48,19 @@ public class GroupServiceImpl implements GroupService {
         User userLoggedIn = userHelper.getUserLogin();
 
         // Check for duplicate group name
-        optionalValidator.findByGroupName(request.getName(), 0L)
+        optionalValidator
+                .findByGroupName(request.getName(), 0L)
                 .ifPresent(group -> validationService.updateErrors("name", "Group name already exists", errors));
 
         // Check if any user IDs in the request do not exist in the database
-        if (request.getUsersIds().stream().anyMatch(id -> userRepository.findByIdAndActive(id).isEmpty())) {
+        if (request.getUsersIds().stream()
+                .anyMatch(id -> userRepository.findByIdAndActive(id).isEmpty())) {
             validationService.updateErrors("usersIds", "Invalid user IDs", errors);
         }
 
         if (!errors.isEmpty()) return;
 
-        //create group
+        // create group
         Group group = Group.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -69,14 +73,11 @@ public class GroupServiceImpl implements GroupService {
 
         group = groupRepository.save(group);
 
-        //create user group
+        // create user group
         List<UserGroup> userGroups = new ArrayList<>();
         for (var id : request.getUsersIds()) {
             User user = userRepository.findById(id).orElseThrow();
-            UserGroup userGroup = UserGroup.builder()
-                    .group(group)
-                    .user(user)
-                    .build();
+            UserGroup userGroup = UserGroup.builder().group(group).user(user).build();
             userGroups.add(userGroup);
         }
         userGroupRepository.saveAll(userGroups);
@@ -92,11 +93,11 @@ public class GroupServiceImpl implements GroupService {
             return null;
         });
 
-        optionalValidator.findByGroupName(request.getName(), request.getId()).ifPresent(group ->
-                validationService.updateErrors("name", "Group name already exists", errors)
-        );
+        optionalValidator
+                .findByGroupName(request.getName(), request.getId())
+                .ifPresent(group -> validationService.updateErrors("name", "Group name already exists", errors));
 
-        //check validate email exist in database
+        // check validate email exist in database
         // Check if any user IDs in the request do not exist in the database
         String invalidUserIds = request.getUsersIds().stream()
                 .filter(id -> userRepository.findByIdAndActive(id).isEmpty())
@@ -121,7 +122,9 @@ public class GroupServiceImpl implements GroupService {
         // Identify users to delete
         List<UserGroup> userGroupsToDelete = existingUserIds.stream()
                 .filter(userId -> !requestedUserIds.contains(userId))
-                .map(userId -> userGroupRepository.findByUserIdAndGroupId(userId, groupExist.getId()).orElseThrow())
+                .map(userId -> userGroupRepository
+                        .findByUserIdAndGroupId(userId, groupExist.getId())
+                        .orElseThrow())
                 .collect(Collectors.toList());
 
         if (!userGroupsToDelete.isEmpty()) {
@@ -151,9 +154,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDtoResponse getGroupById(Long id) {
-        return groupRepository.findById(id)
-                .map(GroupMapper::toGroupDtoResponse)
-                .orElse(null);
+        return groupRepository.findById(id).map(GroupMapper::toGroupDtoResponse).orElse(null);
     }
 
     @Override

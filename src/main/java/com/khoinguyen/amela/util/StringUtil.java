@@ -1,12 +1,12 @@
 package com.khoinguyen.amela.util;
 
+import static com.khoinguyen.amela.util.Constant.LIST_ATTRIBUTE_NAME;
+
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.khoinguyen.amela.util.Constant.LIST_ATTRIBUTE_NAME;
 
 public class StringUtil {
     public static String formatString(String request, boolean isUpperCaseFirst) {
@@ -30,14 +30,15 @@ public class StringUtil {
         String regex = "[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?~`”“-]";
         return input.replaceAll(regex, " ")
                 .replaceAll("\\s+", " ")
-                .toLowerCase().trim();
+                .toLowerCase()
+                .trim();
     }
 
     public static String removeDiacritics(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        String result = pattern.matcher(normalized).replaceAll("")
-                .replace("Đ", "D").replace("đ", "d");
+        String result =
+                pattern.matcher(normalized).replaceAll("").replace("Đ", "D").replace("đ", "d");
         return replaceSpecialChars(result);
     }
 

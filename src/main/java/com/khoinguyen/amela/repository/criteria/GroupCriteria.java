@@ -1,21 +1,24 @@
 package com.khoinguyen.amela.repository.criteria;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+
 import com.khoinguyen.amela.entity.Group;
 import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.GroupMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,9 +33,8 @@ public class GroupCriteria {
             sql.append(" where g.name like :name");
             params.put("name", "%" + request.getText().trim() + "%");
         }
-        //filter search
-        Query countQuery = em.createQuery(sql.toString()
-                .replace("select g", "select count(g.id)"));
+        // filter search
+        Query countQuery = em.createQuery(sql.toString().replace("select g", "select count(g.id)"));
 
         sql.append(" order by g.updateAt desc");
 
@@ -45,7 +47,7 @@ public class GroupCriteria {
             countQuery.setParameter(k, v);
         });
 
-        //paging
+        // paging
         groupTypedQuery.setFirstResult((int) ((pageIndex - 1) * pageSize));
         groupTypedQuery.setMaxResults(Math.toIntExact(pageSize));
         List<Group> groupList = groupTypedQuery.getResultList();
@@ -56,9 +58,8 @@ public class GroupCriteria {
             totalPage++;
         }
 
-        List<GroupDtoResponse> groupDtoResponses = groupList.stream()
-                .map(GroupMapper::toGroupDtoResponse)
-                .toList();
+        List<GroupDtoResponse> groupDtoResponses =
+                groupList.stream().map(GroupMapper::toGroupDtoResponse).toList();
         return new PagingDtoResponse<>(totalPage, totalGroup, groupDtoResponses);
     }
 }

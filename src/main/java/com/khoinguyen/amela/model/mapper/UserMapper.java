@@ -1,5 +1,10 @@
 package com.khoinguyen.amela.model.mapper;
 
+import static com.khoinguyen.amela.util.Constant.DEFAULT_AVATAR;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
@@ -9,11 +14,6 @@ import com.khoinguyen.amela.model.dto.role.RoleDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import static com.khoinguyen.amela.util.Constant.DEFAULT_AVATAR;
 
 public class UserMapper {
     public static UserDtoResponse toUserDtoResponse(User user) {
@@ -73,8 +73,7 @@ public class UserMapper {
             UserDtoUpdate request,
             DepartmentDtoResponse department,
             RoleDtoResponse role,
-            JobPositionDtoResponse jobPosition
-    ) {
+            JobPositionDtoResponse jobPosition) {
         return UserDtoResponse.builder()
                 .id(request.getId())
                 .code(request.getCode())
@@ -111,9 +110,10 @@ public class UserMapper {
                 .build();
     }
 
-
     public static ProfileDtoResponse toProfileUserDtoResponse(ProfileDtoRequest request, User user) {
-        String dateOfBirth = request.getDateOfBirth() == null ? null : request.getDateOfBirth().toString();
+        String dateOfBirth = request.getDateOfBirth() == null
+                ? null
+                : request.getDateOfBirth().toString();
         var profileDtoResponse = toProfileDtoResponse(user);
         profileDtoResponse.setUsername(request.getUsername());
         profileDtoResponse.setFirstname(request.getFirstname());

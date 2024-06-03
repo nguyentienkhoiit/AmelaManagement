@@ -1,5 +1,17 @@
 package com.khoinguyen.amela.repository.criteria;
 
+import static com.khoinguyen.amela.util.Constant.USER_NAME;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+
 import com.khoinguyen.amela.entity.Attendance;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
@@ -8,19 +20,10 @@ import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.AttendanceMapper;
 import com.khoinguyen.amela.util.DateTimeHelper;
 import com.khoinguyen.amela.util.UserHelper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.khoinguyen.amela.util.Constant.USER_NAME;
 
 @Repository
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -48,9 +51,8 @@ public class AttendanceCriteria {
         }
         sql.append(" order by a.checkDay asc");
 
-        //filter search
-        Query countQuery = em.createQuery(sql.toString()
-                .replace("select a", "select count(a.id)"));
+        // filter search
+        Query countQuery = em.createQuery(sql.toString().replace("select a", "select count(a.id)"));
         long pageIndex = request.getPageIndex();
         long pageSize = request.getPageSize();
 
@@ -60,7 +62,7 @@ public class AttendanceCriteria {
             countQuery.setParameter(k, v);
         });
 
-        //paging
+        // paging
         userTypedQuery.setFirstResult((int) ((pageIndex - 1) * pageSize));
         userTypedQuery.setMaxResults(Math.toIntExact(pageSize));
         List<Attendance> attendances = userTypedQuery.getResultList();

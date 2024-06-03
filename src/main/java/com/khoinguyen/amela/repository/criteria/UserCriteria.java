@@ -1,5 +1,15 @@
 package com.khoinguyen.amela.repository.criteria;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
@@ -7,17 +17,10 @@ import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.mapper.UserMapper;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.UserHelper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,9 +40,9 @@ public class UserCriteria {
         } else sql.append(" where 1 = 1 ");
 
         if (request.getText() != null) {
-            sql.append(" and  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName " +
-                    "or u.code like :code or u.department.name like :department or u.role.name like :role " +
-                    "or u.jobPosition.name like :position) ");
+            sql.append(" and  (u.email like :email or u.firstname like :firstName or u.lastname like :lastName "
+                    + "or u.code like :code or u.department.name like :department or u.role.name like :role "
+                    + "or u.jobPosition.name like :position) ");
             params.put("email", "%" + request.getText().trim() + "%");
             params.put("firstName", "%" + request.getText().trim() + "%");
             params.put("lastName", "%" + request.getText().trim() + "%");
@@ -63,9 +66,8 @@ public class UserCriteria {
             params.put("jobPosition", request.getPositionId());
         }
 
-        //filter search
-        Query countQuery = em.createQuery(sql.toString()
-                .replace("select u", "select count(u.id)"));
+        // filter search
+        Query countQuery = em.createQuery(sql.toString().replace("select u", "select count(u.id)"));
 
         sql.append(" order by u.code asc");
 
@@ -78,7 +80,7 @@ public class UserCriteria {
             countQuery.setParameter(k, v);
         });
 
-        //paging
+        // paging
         userTypedQuery.setFirstResult((int) ((pageIndex - 1) * pageSize));
         userTypedQuery.setMaxResults(Math.toIntExact(pageSize));
         List<User> userList = userTypedQuery.getResultList();
@@ -89,9 +91,8 @@ public class UserCriteria {
             totalPage++;
         }
 
-        List<UserDtoResponse> userDtoResponses = userList.stream()
-                .map(UserMapper::toUserDtoResponse)
-                .toList();
+        List<UserDtoResponse> userDtoResponses =
+                userList.stream().map(UserMapper::toUserDtoResponse).toList();
         return new PagingDtoResponse<>(totalPage, totalUser, userDtoResponses);
     }
 }

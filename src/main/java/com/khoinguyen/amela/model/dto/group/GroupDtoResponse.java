@@ -1,9 +1,9 @@
 package com.khoinguyen.amela.model.dto.group;
 
+import java.util.List;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Builder
 @Getter

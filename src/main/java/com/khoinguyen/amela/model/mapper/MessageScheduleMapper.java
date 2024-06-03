@@ -1,12 +1,12 @@
 package com.khoinguyen.amela.model.mapper;
 
+import java.time.LocalDateTime;
+
 import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoRequest;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleDtoResponse;
 import com.khoinguyen.amela.model.dto.messages.MessageScheduleUpdateResponse;
 import com.khoinguyen.amela.util.DateTimeHelper;
-
-import java.time.LocalDateTime;
 
 public class MessageScheduleMapper {
     public static MessageScheduleDtoResponse toMessageScheduleDtoResponse(MessageSchedule request) {
@@ -33,14 +33,14 @@ public class MessageScheduleMapper {
             for (var ums : request.getUserMessageSchedules()) {
                 listMail.append(ums.getUser().getEmail()).append(", ");
             }
-            listMail = new StringBuilder(listMail.substring(0, listMail.toString().length() - 2));
+            listMail =
+                    new StringBuilder(listMail.substring(0, listMail.toString().length() - 2));
         }
         return listMail.toString();
     }
 
     public static MessageScheduleUpdateResponse toMessageScheduleUpdateResponse(MessageSchedule request) {
-        var usersIds = request.getUserMessageSchedules()
-                .stream()
+        var usersIds = request.getUserMessageSchedules().stream()
                 .map(m -> m.getUser().getId())
                 .toList();
 
@@ -58,7 +58,8 @@ public class MessageScheduleMapper {
     }
 
     public static MessageScheduleUpdateResponse toMessageScheduleUpdateResponse(MessageScheduleDtoRequest request) {
-        boolean isPublished = request.getPublishAt() == null || request.getPublishAt().isBefore(LocalDateTime.now());
+        boolean isPublished =
+                request.getPublishAt() == null || request.getPublishAt().isBefore(LocalDateTime.now());
         return MessageScheduleUpdateResponse.builder()
                 .id(request.getId())
                 .publishAt(request.getPublishAt())

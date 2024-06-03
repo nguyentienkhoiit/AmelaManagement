@@ -1,19 +1,12 @@
 package com.khoinguyen.amela.controller;
 
-import com.khoinguyen.amela.entity.User;
-import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
-import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
-import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
-import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import com.khoinguyen.amela.service.AuthenticationService;
-import com.khoinguyen.amela.service.VerificationService;
-import com.khoinguyen.amela.util.Constant;
-import com.khoinguyen.amela.util.ValidationService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,10 +19,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.khoinguyen.amela.entity.User;
+import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
+import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
+import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
+import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
+import com.khoinguyen.amela.service.AuthenticationService;
+import com.khoinguyen.amela.service.VerificationService;
+import com.khoinguyen.amela.util.Constant;
+import com.khoinguyen.amela.util.ValidationService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequiredArgsConstructor
@@ -89,8 +92,7 @@ public class AuthController {
     public String submitForgotPassword(
             RedirectAttributes redirectAttributes,
             @Valid @ModelAttribute("emailDto") EmailDtoRequest request,
-            BindingResult result
-    ) {
+            BindingResult result) {
         if (result.hasErrors()) {
             return "layout/auth/forgot-password";
         }
@@ -102,14 +104,10 @@ public class AuthController {
     }
 
     @GetMapping("/new-password")
-    public String newPassword(
-            @RequestParam("token") String token,
-            Model model
-    ) {
+    public String newPassword(@RequestParam("token") String token, Model model) {
         if (!model.containsAttribute("passwordDto")) {
-            PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
-                    .token(token)
-                    .build();
+            PasswordDtoRequest passwordDtoRequest =
+                    PasswordDtoRequest.builder().token(token).build();
             model.addAttribute("passwordDto", passwordDtoRequest);
         }
 
@@ -122,15 +120,12 @@ public class AuthController {
 
     @PostMapping("/new-password")
     public String submitNewPassword(
-            Model model,
-            @Valid @ModelAttribute("passwordDto") PasswordDtoRequest request,
-            BindingResult result
-    ) {
+            Model model, @Valid @ModelAttribute("passwordDto") PasswordDtoRequest request, BindingResult result) {
         if (result.hasErrors()) {
             return "layout/auth/new-password";
         }
 
-        //submit new password
+        // submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitNewPassword(request);
         if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
@@ -147,19 +142,15 @@ public class AuthController {
      * @return "/layout/users/user_new_password"
      */
     @GetMapping("/user-new-password")
-    public String createNewPassword(
-            @RequestParam("token") String token,
-            Model model
-    ) {
+    public String createNewPassword(@RequestParam("token") String token, Model model) {
         ServiceResponse<String> serviceResponse = verificationService.validateToken(token, false);
         if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
         }
 
         if (!model.containsAttribute("passwordDto")) {
-            PasswordDtoRequest passwordDtoRequest = PasswordDtoRequest.builder()
-                    .token(token)
-                    .build();
+            PasswordDtoRequest passwordDtoRequest =
+                    PasswordDtoRequest.builder().token(token).build();
             model.addAttribute("passwordDto", passwordDtoRequest);
         }
         return "/layout/users/user_new_password";
@@ -167,15 +158,12 @@ public class AuthController {
 
     @PostMapping("/user-new-password")
     public String submitCreateNewPassword(
-            Model model,
-            @Valid @ModelAttribute("passwordDto") PasswordDtoRequest request,
-            BindingResult result
-    ) {
+            Model model, @Valid @ModelAttribute("passwordDto") PasswordDtoRequest request, BindingResult result) {
         if (result.hasErrors()) {
             return "layout/users/user_new_password";
         }
 
-        //submit new password
+        // submit new password
         ServiceResponse<String> serviceResponse = authenticationService.submitCreateNewPassword(request);
         if (!serviceResponse.status()) {
             model.addAttribute(serviceResponse.column(), serviceResponse.data());
@@ -200,10 +188,7 @@ public class AuthController {
 
     @PostMapping("/change-password")
     public String submitChangePassword(
-            Model model,
-            @Valid @ModelAttribute("user") ChangePasswordDtoRequest request,
-            BindingResult result
-    ) {
+            Model model, @Valid @ModelAttribute("user") ChangePasswordDtoRequest request, BindingResult result) {
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);

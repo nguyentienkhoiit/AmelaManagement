@@ -1,16 +1,12 @@
 package com.khoinguyen.amela.controller;
 
-import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
-import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.mapper.DepartmentMapper;
-import com.khoinguyen.amela.service.DepartmentService;
-import com.khoinguyen.amela.util.ValidationService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +14,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
+import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.mapper.DepartmentMapper;
+import com.khoinguyen.amela.service.DepartmentService;
+import com.khoinguyen.amela.util.ValidationService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,10 +36,7 @@ public class DepartmentController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewDepartments(
-            Model model,
-            @ModelAttribute PagingDtoRequest request
-    ) {
+    public String viewDepartments(Model model, @ModelAttribute PagingDtoRequest request) {
         session.setAttribute("active", "department");
 
         var pagingDtoResponse = departmentService.getAllDepartments(request);
@@ -48,8 +48,7 @@ public class DepartmentController {
         model.addAttribute("currentPage", request.getPageIndex());
         model.addAttribute("totalPage", totalPage);
 
-        session.setAttribute("url", "/departments?pageIndex=" + request.getPageIndex() +
-                "&text=" + request.getText());
+        session.setAttribute("url", "/departments?pageIndex=" + request.getPageIndex() + "&text=" + request.getText());
         return "layout/departments/department_list";
     }
 
@@ -63,11 +62,8 @@ public class DepartmentController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String createDepartments(
-            @Valid @ModelAttribute("department") DepartmentDtoRequest request,
-            BindingResult result,
-            Model model
-    ) {
-        //check validate
+            @Valid @ModelAttribute("department") DepartmentDtoRequest request, BindingResult result, Model model) {
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -86,10 +82,7 @@ public class DepartmentController {
 
     @GetMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewUpdateDepartments(
-            Model model,
-            @PathVariable Long id
-    ) {
+    public String viewUpdateDepartments(Model model, @PathVariable Long id) {
         session.setAttribute("active", "department");
 
         if (!model.containsAttribute("department")) {
@@ -104,9 +97,8 @@ public class DepartmentController {
     public String updateDepartments(
             @Valid @ModelAttribute("department") DepartmentDtoRequest request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
-        //check validate
+            RedirectAttributes redirectAttributes) {
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);

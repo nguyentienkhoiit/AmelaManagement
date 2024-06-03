@@ -1,15 +1,16 @@
 package com.khoinguyen.amela.validator;
 
-import com.khoinguyen.amela.validator.impl.WithinDeadlineValidator;
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
+import com.khoinguyen.amela.validator.impl.WithinDeadlineValidator;
 
 @Constraint(validatedBy = WithinDeadlineValidator.class)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})

@@ -1,5 +1,15 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.Attendance;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
@@ -14,19 +24,11 @@ import com.khoinguyen.amela.repository.criteria.AttendanceCriteria;
 import com.khoinguyen.amela.service.AttendanceService;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -40,7 +42,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     ValidationService validationService;
 
     @Override
-    public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(PagingDtoRequest pagingDtoRequest, Long userId) {
+    public PagingDtoResponse<AttendanceDtoResponse> getAttendanceByUserId(
+            PagingDtoRequest pagingDtoRequest, Long userId) {
         return attendanceCriteria.getAttendanceByUserId(pagingDtoRequest, userId);
     }
 
@@ -68,8 +71,8 @@ public class AttendanceServiceImpl implements AttendanceService {
             validationService.updateErrors("error", "User is not found", errors);
         }
 
-        Optional<Attendance> attendanceOptional = attendanceRepository
-                .findAttendanceByUserAndCheckDay(request.getUserId(), request.getCheckDay());
+        Optional<Attendance> attendanceOptional =
+                attendanceRepository.findAttendanceByUserAndCheckDay(request.getUserId(), request.getCheckDay());
         if (attendanceOptional.isPresent()) {
             validationService.updateErrors("error", "Check day has already been checked in", errors);
         }
@@ -123,8 +126,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Transactional
     public void checkAttendance() {
         User userLoggedIn = userHelper.getUserLogin();
-        Optional<Attendance> attendanceOptional = attendanceRepository
-                .findAttendanceByUserAndCheckDay(userLoggedIn.getId(), LocalDate.now());
+        Optional<Attendance> attendanceOptional =
+                attendanceRepository.findAttendanceByUserAndCheckDay(userLoggedIn.getId(), LocalDate.now());
         Attendance attendance;
         if (attendanceOptional.isEmpty()) {
             attendance = Attendance.builder()

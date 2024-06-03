@@ -94,7 +94,7 @@
                            data-bs-placement="left"
                            data-bs-toggle="tooltip"
                            th:classappend="${user.enabled ? 'text-success' : 'text-danger'}"
-                           th:title="${user.activated ? 'Active' : 'Deactive'}"
+                           th:title="${user.enabled ? 'Active' : 'Deactive'}"
                         ></i>
                     </td>
                     <td sec:authorize="hasAuthority('ADMIN')">

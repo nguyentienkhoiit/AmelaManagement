@@ -87,7 +87,8 @@ public class DateTimeHelper {
     }
 
     public static LocalDateTime toDateTime(long unix) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(unix), TimeZone.getDefault().toZoneId());
+        return LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(unix), TimeZone.getDefault().toZoneId());
     }
 
     public static Map<String, Integer> getYearMonthDetail(String dateStr) {

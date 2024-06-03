@@ -1,7 +1,9 @@
 package com.khoinguyen.amela.model.dto.department;
 
-import com.khoinguyen.amela.util.StringUtil;
 import jakarta.validation.constraints.Size;
+
+import com.khoinguyen.amela.util.StringUtil;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

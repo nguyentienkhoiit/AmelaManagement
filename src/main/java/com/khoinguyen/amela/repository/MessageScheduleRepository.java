@@ -1,9 +1,10 @@
 package com.khoinguyen.amela.repository;
 
-import com.khoinguyen.amela.entity.MessageSchedule;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.khoinguyen.amela.entity.MessageSchedule;
 
 public interface MessageScheduleRepository extends JpaRepository<MessageSchedule, Long> {
     Optional<MessageSchedule> findByIdAndStatusTrue(Long id);

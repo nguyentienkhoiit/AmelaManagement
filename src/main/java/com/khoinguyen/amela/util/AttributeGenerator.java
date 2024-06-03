@@ -1,8 +1,8 @@
 package com.khoinguyen.amela.util;
 
-import com.khoinguyen.amela.entity.User;
-
 import java.text.Normalizer;
+
+import com.khoinguyen.amela.entity.User;
 
 public class AttributeGenerator {
     public static String generateNextUserCode(String currentCode) {

@@ -1,14 +1,15 @@
 package com.khoinguyen.amela.security.custom;
 
+import java.io.IOException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
-
-import java.io.IOException;
 
 public class CustomSessionExpiredStrategy implements SessionInformationExpiredStrategy {
 

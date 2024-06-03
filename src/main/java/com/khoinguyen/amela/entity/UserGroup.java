@@ -1,6 +1,7 @@
 package com.khoinguyen.amela.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

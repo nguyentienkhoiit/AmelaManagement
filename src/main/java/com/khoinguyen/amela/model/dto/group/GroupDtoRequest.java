@@ -1,12 +1,14 @@
 package com.khoinguyen.amela.model.dto.group;
 
-import com.khoinguyen.amela.util.StringUtil;
+import java.util.List;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+
+import com.khoinguyen.amela.util.StringUtil;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Builder
 @Getter

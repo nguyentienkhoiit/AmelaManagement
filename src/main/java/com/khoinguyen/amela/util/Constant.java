@@ -11,31 +11,37 @@ public class Constant {
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PREFIX = "A";
     public static final String FIRST_CODE = "000001";
-    public static final String[] LIST_PERMIT_ALL = new String[]{
-            "/forgot-password",
-            "/new-password",
-            "/user-new-password",
-            "/register/**",
-            "/login",
-            "/css/**",
-            "/image/**",
-            "js/**",
-            "/badRequest",
-            "/notFound",
-            "/forbidden",
-            "/methodNotAllowed",
-            "/internalServerError",
-            "/badGateway",
-            "/tooManyRequests",
-            "/requestsTimeout",
-            "/unauthorized"
+    public static final String[] LIST_PERMIT_ALL = new String[] {
+        "/forgot-password",
+        "/new-password",
+        "/user-new-password",
+        "/register/**",
+        "/login",
+        "/css/**",
+        "/image/**",
+        "js/**",
+        "/badRequest",
+        "/notFound",
+        "/forbidden",
+        "/methodNotAllowed",
+        "/internalServerError",
+        "/badGateway",
+        "/tooManyRequests",
+        "/requestsTimeout",
+        "/unauthorized"
     };
     public static final Collection<String> LIST_ATTRIBUTE_NAME = List.of(
-            "{{name}}", "{{age}}", "{{address}}",
-            "{{code}}", "{{email}}", "{{phone}}",
-            "{{username}}", "{{username}}", "{{username}}",
-            "{{department}}", "{{position}}"
-    );
+            "{{name}}",
+            "{{age}}",
+            "{{address}}",
+            "{{code}}",
+            "{{email}}",
+            "{{phone}}",
+            "{{username}}",
+            "{{username}}",
+            "{{username}}",
+            "{{department}}",
+            "{{position}}");
     public static final String ADMIN_NAME = "ADMIN";
     public static final String USER_NAME = "USER";
     public static final List<String> ALLOWED_EXTENSIONS = List.of("jpeg", "png", "jpg");

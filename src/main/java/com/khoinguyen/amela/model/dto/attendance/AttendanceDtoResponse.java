@@ -1,10 +1,11 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
+import java.time.LocalDateTime;
+
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Builder
 @Getter

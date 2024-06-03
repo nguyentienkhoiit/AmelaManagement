@@ -1,5 +1,12 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.JobPosition;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
@@ -13,15 +20,10 @@ import com.khoinguyen.amela.service.JobPositionService;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,10 @@ public class JobPositionServiceImpl implements JobPositionService {
 
     @Override
     public JobPositionDtoResponse findById(long id) {
-        return jobPositionRepository.findById(id).map(JobPositionMapper::toJobPositionDtoResponse).orElse(null);
+        return jobPositionRepository
+                .findById(id)
+                .map(JobPositionMapper::toJobPositionDtoResponse)
+                .orElse(null);
     }
 
     @Override
@@ -55,7 +60,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     public void createPositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        //check position name duplicate
+        // check position name duplicate
         var positionOptional = optionalValidator.findByPositionName(request.getName(), 0L);
         if (positionOptional.isPresent()) {
             validationService.updateErrors("name", "Position name already exists", errors);
@@ -91,7 +96,8 @@ public class JobPositionServiceImpl implements JobPositionService {
 
     @Override
     public JobPositionDtoResponse getPositionById(Long id) {
-        return jobPositionRepository.findById(id)
+        return jobPositionRepository
+                .findById(id)
                 .map(JobPositionMapper::toJobPositionDtoResponse)
                 .orElse(null);
     }
@@ -101,12 +107,13 @@ public class JobPositionServiceImpl implements JobPositionService {
     public void updatePositions(JobPositionDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        JobPosition positionExist = jobPositionRepository.findById(request.getId()).orElse(null);
+        JobPosition positionExist =
+                jobPositionRepository.findById(request.getId()).orElse(null);
         if (positionExist == null) {
             validationService.updateErrors("position", "Position not found: " + request.getId(), errors);
         }
 
-        //check department name duplicate
+        // check department name duplicate
         var positionOptional = optionalValidator.findByPositionName(request.getName(), request.getId());
         if (positionOptional.isPresent()) {
             validationService.updateErrors("name", "Position name already exists", errors);

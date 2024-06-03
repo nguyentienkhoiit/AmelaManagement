@@ -1,5 +1,19 @@
 package com.khoinguyen.amela.service.impl;
 
+import static com.khoinguyen.amela.util.Constant.FIRST_CODE;
+import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
+
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import jakarta.mail.MessagingException;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.khoinguyen.amela.configuration.AppConfig;
 import com.khoinguyen.amela.entity.Department;
 import com.khoinguyen.amela.entity.JobPosition;
@@ -19,22 +33,11 @@ import com.khoinguyen.amela.repository.criteria.UserCriteria;
 import com.khoinguyen.amela.service.UserService;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.*;
-import jakarta.mail.MessagingException;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.khoinguyen.amela.util.Constant.FIRST_CODE;
-import static com.khoinguyen.amela.util.Constant.PASSWORD_DEFAULT;
 
 @Service
 @Slf4j
@@ -67,8 +70,7 @@ public class UserServiceImpl implements UserService {
             Optional<JobPosition> positionOptional,
             Optional<Department> departmentOptional,
             Optional<Role> roleOptional,
-            Optional<User> userOptional
-    ) {
+            Optional<User> userOptional) {
         Long userId = userOptional.map(User::getId).orElse(0L);
 
         if (optionalValidator.findByEmailExist(request.getEmail(), userId).isPresent()) {
@@ -79,7 +81,7 @@ public class UserServiceImpl implements UserService {
             validationService.updateErrors("phone", "Phone already exists", errors);
         }
 
-        //check date of birth is greater than 18 ???
+        // check date of birth is greater than 18 ???
         if (DateTimeHelper.compareDateGreaterThan(request.getDateOfBirth(), 18L)) {
             validationService.updateErrors("dateOfBirth", "Date of birth must be greater than 18", errors);
         }
@@ -105,10 +107,12 @@ public class UserServiceImpl implements UserService {
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
         validateInput(
-                UserMapper.toUser(request), errors,
-                positionOptional, departmentOptional,
-                roleOptional, Optional.empty()
-        );
+                UserMapper.toUser(request),
+                errors,
+                positionOptional,
+                departmentOptional,
+                roleOptional,
+                Optional.empty());
 
         if (!errors.isEmpty()) return;
 
@@ -117,7 +121,8 @@ public class UserServiceImpl implements UserService {
         String code = AttributeGenerator.generateNextUserCode(latestCde);
 
         User user = UserMapper.toUser(request);
-        String username = AttributeGenerator.generatorUsername(user, getUserLatest().getId() + 1);
+        String username =
+                AttributeGenerator.generatorUsername(user, getUserLatest().getId() + 1);
         user.setCreatedBy(userLoggedIn.getId());
         user.setUsername(username);
         user.setUpdateBy(userLoggedIn.getId());
@@ -132,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
         user = userRepository.save(user);
 
-        //Send mail
+        // Send mail
         sendMailCreateUser(user);
     }
 
@@ -145,11 +150,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfile(
-            ProfileDtoRequest request,
-            MultipartFile fileImage,
-            Map<String, List<String>> errors
-    ) {
+    public void updateProfile(ProfileDtoRequest request, MultipartFile fileImage, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
         User user = userRepository.findById(userLoggedIn.getId()).orElseThrow();
 
@@ -184,8 +185,7 @@ public class UserServiceImpl implements UserService {
         user.setAddress(request.getAddress());
         user.setDateOfBirth(request.getDateOfBirth());
 
-        if (user.isEditUsername()
-                && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
+        if (user.isEditUsername() && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
             user.setUsername(request.getUsername());
             user.setEditUsername(false);
         }
@@ -225,10 +225,7 @@ public class UserServiceImpl implements UserService {
         var departmentOptional = optionalValidator.findByDepartmentId(request.getDepartmentId());
         var roleOptional = optionalValidator.findByRoleId(request.getRoleId());
         validateInput(
-                UserMapper.toUser(request), errors,
-                positionOptional, departmentOptional,
-                roleOptional, userOptional
-        );
+                UserMapper.toUser(request), errors, positionOptional, departmentOptional, roleOptional, userOptional);
 
         if (!errors.isEmpty()) return;
 
@@ -245,7 +242,7 @@ public class UserServiceImpl implements UserService {
         user.setJobPosition(positionOptional.orElseThrow());
         userRepository.save(user);
 
-        //push session expired
+        // push session expired
         if (!Objects.equals(request.getRoleId(), roleIdExistDb)) {
             userHelper.pushSessionExpired(user);
         }
@@ -253,10 +250,10 @@ public class UserServiceImpl implements UserService {
 
     public void sendMailCreateUser(User user) {
         String token = UUID.randomUUID().toString();
-        //send password reset verification email to the user
+        // send password reset verification email to the user
         String url = appConfig.HOST + "user-new-password?token=" + token;
         verificationService.createTokenUser(user, token);
-        //send mail
+        // send mail
         try {
             emailHandler.sendTokenCreateUser(user, url);
         } catch (MessagingException | UnsupportedEncodingException e) {
@@ -272,7 +269,7 @@ public class UserServiceImpl implements UserService {
             User user = userOptional.get();
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
-            //push session expired
+            // push session expired
             userHelper.pushSessionExpired(user);
         }
     }

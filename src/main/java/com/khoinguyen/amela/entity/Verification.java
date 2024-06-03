@@ -1,10 +1,11 @@
 package com.khoinguyen.amela.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -18,17 +19,14 @@ public class Verification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     String token;
     LocalDateTime createdAt;
     LocalDateTime expireAt;
 
-    @ManyToOne(fetch = FetchType.EAGER,
-            cascade = {
-                    CascadeType.DETACH,
-                    CascadeType.MERGE,
-                    CascadeType.PERSIST,
-                    CascadeType.REFRESH
-            })
+    @ManyToOne(
+            fetch = FetchType.EAGER,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     User user;
 }

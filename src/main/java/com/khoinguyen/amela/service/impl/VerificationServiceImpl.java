@@ -1,19 +1,21 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.entity.Verification;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
 import com.khoinguyen.amela.repository.VerificationRepository;
 import com.khoinguyen.amela.service.VerificationService;
 import com.khoinguyen.amela.util.DateTimeHelper;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

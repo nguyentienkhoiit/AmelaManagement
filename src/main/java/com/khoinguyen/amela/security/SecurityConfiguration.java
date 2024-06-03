@@ -1,12 +1,7 @@
 package com.khoinguyen.amela.security;
 
-import com.khoinguyen.amela.configuration.InterceptorRequest;
-import com.khoinguyen.amela.security.custom.CustomAuthenticationFailureHandler;
-import com.khoinguyen.amela.security.custom.CustomAuthenticationSuccessHandler;
-import com.khoinguyen.amela.security.custom.CustomSessionExpiredStrategy;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import static com.khoinguyen.amela.util.Constant.LIST_PERMIT_ALL;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,7 +24,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import static com.khoinguyen.amela.util.Constant.LIST_PERMIT_ALL;
+import com.khoinguyen.amela.configuration.InterceptorRequest;
+import com.khoinguyen.amela.security.custom.CustomAuthenticationFailureHandler;
+import com.khoinguyen.amela.security.custom.CustomAuthenticationSuccessHandler;
+import com.khoinguyen.amela.security.custom.CustomSessionExpiredStrategy;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -80,33 +82,25 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(s -> s
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .maximumSessions(1)
                         .sessionRegistry(sessionRegistry())
                         .expiredSessionStrategy(sessionInformationExpiredStrategy()))
-                .authorizeHttpRequests(
-                        a -> a.requestMatchers(LIST_PERMIT_ALL)
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .formLogin(
-                        l -> l.loginPage("/login").usernameParameter("email")
-                                .successHandler(customAuthenticationSuccessHandler())
-                                .failureHandler(customAuthenticationFailureHandler())
-                                .permitAll()
-                )
-                .logout(
-                        l -> l.invalidateHttpSession(true).clearAuthentication(true)
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                .logoutSuccessUrl("/login")
-                )
-                .oauth2Login(
-                        l -> l.loginPage("/login")
-                                .defaultSuccessUrl("/oauth2", true)
-                                .failureUrl("/login?fault=true")
-                )
+                .authorizeHttpRequests(a -> a.requestMatchers(LIST_PERMIT_ALL)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .formLogin(l -> l.loginPage("/login")
+                        .usernameParameter("email")
+                        .successHandler(customAuthenticationSuccessHandler())
+                        .failureHandler(customAuthenticationFailureHandler())
+                        .permitAll())
+                .logout(l -> l.invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login"))
+                .oauth2Login(l ->
+                        l.loginPage("/login").defaultSuccessUrl("/oauth2", true).failureUrl("/login?fault=true"))
                 .exceptionHandling(e -> e.accessDeniedPage("/forbidden"));
         return http.build();
     }

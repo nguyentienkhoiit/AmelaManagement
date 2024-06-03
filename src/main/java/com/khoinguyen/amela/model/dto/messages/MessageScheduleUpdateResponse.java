@@ -1,10 +1,11 @@
 package com.khoinguyen.amela.model.dto.messages;
 
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.*;
 
 @Builder
 @Getter
@@ -22,6 +23,7 @@ public class MessageScheduleUpdateResponse {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     LocalDateTime publishAt;
+
     boolean isPublished = Boolean.FALSE;
     List<Long> usersIds;
     Long groupId;

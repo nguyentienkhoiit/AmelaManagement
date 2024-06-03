@@ -1,12 +1,14 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import jakarta.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Builder
 @Getter

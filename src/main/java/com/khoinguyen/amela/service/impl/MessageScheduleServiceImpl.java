@@ -1,5 +1,15 @@
 package com.khoinguyen.amela.service.impl;
 
+import static com.khoinguyen.amela.util.Constant.ADMIN_NAME;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.*;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.MessageSchedule;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.entity.UserMessageSchedule;
@@ -18,19 +28,11 @@ import com.khoinguyen.amela.service.MessageScheduleService;
 import com.khoinguyen.amela.util.StringUtil;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.*;
-
-import static com.khoinguyen.amela.util.Constant.ADMIN_NAME;
 
 @Slf4j
 @Service
@@ -73,7 +75,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
         if (request.isChoice()) {
             if (request.getGroupId() != 0) {
-                messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
+                messageSchedule.setGroup(
+                        groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule.setUserMessageSchedules(null);
                 messageScheduleRepository.save(messageSchedule);
             } else validationService.updateErrors("groupId", "Please choose a group", errors);
@@ -86,7 +89,6 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             if (listUsers.isEmpty()) {
                 validationService.updateErrors("usersIds", "Please choose at least one user", errors);
             }
-
 
             if (!errors.isEmpty()) return;
 
@@ -154,7 +156,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     @Override
     @Transactional
     public MessageScheduleUpdateResponse getByMessageScheduleId(Long id, String type) {
-        return messageScheduleRepository.findById(id)
+        return messageScheduleRepository
+                .findById(id)
                 .map(messageSchedule -> {
                     if ("detail".equalsIgnoreCase(type)) {
                         messageSchedule.setViewers(messageSchedule.getViewers() + 1);
@@ -164,7 +167,8 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                     }
                 })
                 .map(messageSchedule -> {
-                    MessageScheduleUpdateResponse response = MessageScheduleMapper.toMessageScheduleUpdateResponse(messageSchedule);
+                    MessageScheduleUpdateResponse response =
+                            MessageScheduleMapper.toMessageScheduleUpdateResponse(messageSchedule);
                     if ("detail".equalsIgnoreCase(type)) {
                         return setMessage(response);
                     } else {
@@ -179,13 +183,14 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
     public void updateMessages(MessageScheduleDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        //default sender if null
+        // default sender if null
         if (request.getSenderName().isEmpty()) {
             request.setSenderName("Administrator");
         }
 
-        //check message schedule exist
-        MessageSchedule messageSchedule = messageScheduleRepository.findById(request.getId()).orElse(null);
+        // check message schedule exist
+        MessageSchedule messageSchedule =
+                messageScheduleRepository.findById(request.getId()).orElse(null);
         if (messageSchedule == null) {
             validationService.updateErrors("message", "Message is not found", errors);
         }
@@ -195,7 +200,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
             validationService.updateErrors("message", messageInvalid + " is invalid attribute", errors);
         }
 
-        //update message schedule
+        // update message schedule
         assert messageSchedule != null;
         messageSchedule.setMessage(request.getMessage());
         messageSchedule.setPublishAt(request.getPublishAt());
@@ -204,13 +209,13 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
         messageSchedule.setSenderName(request.getSenderName());
         messageSchedule.setUpdateBy(userLoggedIn.getId());
 
-
-        //consist changing
+        // consist changing
         if (request.isChoice()) {
             if (request.getGroupId() == 0) {
                 validationService.updateErrors("groupId", "Please choose a group", errors);
             } else {
-                messageSchedule.setGroup(groupRepository.findById(request.getGroupId()).orElseThrow());
+                messageSchedule.setGroup(
+                        groupRepository.findById(request.getGroupId()).orElseThrow());
                 messageSchedule = messageScheduleRepository.save(messageSchedule);
             }
 
@@ -229,8 +234,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
 
             messageSchedule = messageScheduleRepository.save(messageSchedule);
 
-            List<Long> userIds = messageSchedule.getUserMessageSchedules()
-                    .stream()
+            List<Long> userIds = messageSchedule.getUserMessageSchedules().stream()
                     .map(u -> u.getUser().getId())
                     .toList();
 
@@ -278,9 +282,7 @@ public class MessageScheduleServiceImpl implements MessageScheduleService {
                 .pageIndex("1")
                 .pageSize(topElement.toString())
                 .build();
-        return messageScheduleCriteria
-                .getAllMessages(pagingDtoRequest).data()
-                .stream()
+        return messageScheduleCriteria.getAllMessages(pagingDtoRequest).data().stream()
                 .filter(response -> !response.getId().equals(id))
                 .toList();
     }

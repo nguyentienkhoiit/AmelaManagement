@@ -1,5 +1,7 @@
 package com.khoinguyen.amela.model.mapper;
 
+import java.time.Duration;
+
 import com.khoinguyen.amela.entity.Attendance;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
@@ -8,12 +10,11 @@ import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoUpdateResponse;
 import com.khoinguyen.amela.util.Constant;
 import com.khoinguyen.amela.util.DateTimeHelper;
 
-import java.time.Duration;
-
 public class AttendanceMapper {
     public static AttendanceDtoResponse toAttendanceDtoResponse(Attendance request) {
-        String checkoutTime = request.getCheckOutTime() != null ?
-                DateTimeHelper.formatLocalTime(request.getCheckOutTime()) : "00:00:00";
+        String checkoutTime = request.getCheckOutTime() != null
+                ? DateTimeHelper.formatLocalTime(request.getCheckOutTime())
+                : "00:00:00";
         String workTime = "00:00";
         if (request.getCheckOutTime() != null) {
             Duration duration = Duration.between(request.getCheckInTime(), request.getCheckOutTime());

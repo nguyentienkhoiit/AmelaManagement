@@ -1,10 +1,10 @@
 package com.khoinguyen.amela.model.dto.paging;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import static com.khoinguyen.amela.util.Constant.PAGE_INDEX;
 import static com.khoinguyen.amela.util.Constant.PAGE_SIZE;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @AllArgsConstructor
 @NoArgsConstructor

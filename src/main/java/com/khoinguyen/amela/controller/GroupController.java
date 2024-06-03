@@ -1,18 +1,12 @@
 package com.khoinguyen.amela.controller;
 
-import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
-import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.mapper.GroupMapper;
-import com.khoinguyen.amela.service.GroupService;
-import com.khoinguyen.amela.util.OptionalValidator;
-import com.khoinguyen.amela.util.ValidationService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +14,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.khoinguyen.amela.model.dto.group.GroupDtoRequest;
+import com.khoinguyen.amela.model.dto.group.GroupDtoResponse;
+import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.mapper.GroupMapper;
+import com.khoinguyen.amela.service.GroupService;
+import com.khoinguyen.amela.util.OptionalValidator;
+import com.khoinguyen.amela.util.ValidationService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
@@ -37,10 +40,7 @@ public class GroupController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewGroups(
-            Model model,
-            @ModelAttribute PagingDtoRequest request
-    ) {
+    public String viewGroups(Model model, @ModelAttribute PagingDtoRequest request) {
         session.setAttribute("active", "group");
 
         var pagingDtoResponse = groupService.getAllGroups(request);
@@ -52,8 +52,7 @@ public class GroupController {
         model.addAttribute("currentPage", request.getPageIndex());
         model.addAttribute("totalPage", totalPage);
 
-        session.setAttribute("url", "/groups?pageIndex=" + request.getPageIndex() +
-                "&text=" + request.getText());
+        session.setAttribute("url", "/groups?pageIndex=" + request.getPageIndex() + "&text=" + request.getText());
 
         return "layout/groups/group_list";
     }
@@ -71,11 +70,8 @@ public class GroupController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String createGroups(
-            @Valid @ModelAttribute("group") GroupDtoRequest request,
-            BindingResult result,
-            Model model
-    ) {
-        //check validate
+            @Valid @ModelAttribute("group") GroupDtoRequest request, BindingResult result, Model model) {
+        // check validate
         model.addAttribute("users", optionalValidator.findAllUser());
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -93,13 +89,9 @@ public class GroupController {
         return "redirect:" + url;
     }
 
-
     @GetMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewUpdateGroups(
-            Model model,
-            @PathVariable Long id
-    ) {
+    public String viewUpdateGroups(Model model, @PathVariable Long id) {
         session.setAttribute("active", "group");
         model.addAttribute("users", optionalValidator.findAllUser());
         if (!model.containsAttribute("group")) {
@@ -114,9 +106,8 @@ public class GroupController {
     public String updateGroups(
             @Valid @ModelAttribute("group") GroupDtoRequest request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
-        //check validate
+            RedirectAttributes redirectAttributes) {
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);

@@ -1,12 +1,13 @@
 package com.khoinguyen.amela.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import jakarta.persistence.*;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
@@ -23,10 +24,12 @@ public class Attendance {
 
     @Temporal(TemporalType.TIME)
     LocalTime checkInTime;
+
     LocalDate checkDay;
 
     @Temporal(TemporalType.TIME)
     LocalTime checkOutTime;
+
     String note;
     boolean status;
     LocalDateTime createdAt;

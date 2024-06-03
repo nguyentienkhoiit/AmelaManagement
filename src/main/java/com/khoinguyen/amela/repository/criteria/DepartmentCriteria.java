@@ -1,21 +1,24 @@
 package com.khoinguyen.amela.repository.criteria;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+
 import com.khoinguyen.amela.entity.Department;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.mapper.DepartmentMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,8 +33,7 @@ public class DepartmentCriteria {
             sql.append(" where d.name like :name");
             params.put("name", "%" + request.getText().trim() + "%");
         }
-        Query countQuery = em.createQuery(sql.toString()
-                .replace("select d", "select count(d.id)"));
+        Query countQuery = em.createQuery(sql.toString().replace("select d", "select count(d.id)"));
 
         sql.append(" order by updateAt desc");
 
@@ -44,7 +46,7 @@ public class DepartmentCriteria {
             countQuery.setParameter(k, v);
         });
 
-        //paging
+        // paging
         departmentTypedQuery.setFirstResult((int) ((pageIndex - 1) * pageSize));
         departmentTypedQuery.setMaxResults(Math.toIntExact(pageSize));
         List<Department> departments = departmentTypedQuery.getResultList();

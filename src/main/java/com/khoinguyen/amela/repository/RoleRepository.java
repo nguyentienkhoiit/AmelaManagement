@@ -1,9 +1,10 @@
 package com.khoinguyen.amela.repository;
 
-import com.khoinguyen.amela.entity.Role;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.khoinguyen.amela.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     List<Role> findByStatusTrue();

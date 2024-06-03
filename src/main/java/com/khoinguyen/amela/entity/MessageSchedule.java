@@ -1,11 +1,12 @@
 package com.khoinguyen.amela.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import jakarta.persistence.*;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
@@ -19,10 +20,12 @@ public class MessageSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     String subject;
 
     @Column(columnDefinition = "text")
     String message;
+
     String senderName;
     boolean status;
     Long viewers = 0L;

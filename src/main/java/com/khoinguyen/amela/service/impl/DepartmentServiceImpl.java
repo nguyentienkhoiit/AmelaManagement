@@ -1,5 +1,12 @@
 package com.khoinguyen.amela.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.khoinguyen.amela.entity.Department;
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
@@ -13,15 +20,10 @@ import com.khoinguyen.amela.service.DepartmentService;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDtoResponse findById(Long id) {
-        return departmentRepository.findById(id)
+        return departmentRepository
+                .findById(id)
                 .map(DepartmentMapper::toDepartmentDtoResponse)
                 .orElse(null);
     }
@@ -70,13 +73,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void createDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        //check department name duplicate
-        optionalValidator
-                .findByDepartmentName(request.getName(), 0L)
-                .ifPresent(department -> {
-                    validationService.updateErrors("name", "Department name already exists", errors);
-                });
-
+        // check department name duplicate
+        optionalValidator.findByDepartmentName(request.getName(), 0L).ifPresent(department -> {
+            validationService.updateErrors("name", "Department name already exists", errors);
+        });
 
         if (!errors.isEmpty()) return;
 
@@ -95,7 +95,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDtoResponse getDepartmentById(Long id) {
-        return departmentRepository.findById(id)
+        return departmentRepository
+                .findById(id)
                 .map(DepartmentMapper::toDepartmentDtoResponse)
                 .orElse(null);
     }
@@ -105,13 +106,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void updateDepartments(DepartmentDtoRequest request, Map<String, List<String>> errors) {
         User userLoggedIn = userHelper.getUserLogin();
 
-        Department departmentExist = departmentRepository.findById(request.getId()).orElseGet(() -> {
-            validationService.updateErrors("department", "Department not found: " + request.getId(), errors);
-            return null;
-        });
+        Department departmentExist = departmentRepository
+                .findById(request.getId())
+                .orElseGet(() -> {
+                    validationService.updateErrors("department", "Department not found: " + request.getId(), errors);
+                    return null;
+                });
 
-        //check department name duplicate
-        optionalValidator.findByDepartmentName(request.getName(), request.getId())
+        // check department name duplicate
+        optionalValidator
+                .findByDepartmentName(request.getName(), request.getId())
                 .ifPresent(department -> {
                     validationService.updateErrors("name", "Department name already exists", errors);
                 });

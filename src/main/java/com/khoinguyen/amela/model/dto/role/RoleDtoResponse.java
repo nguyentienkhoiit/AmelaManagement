@@ -1,8 +1,8 @@
 package com.khoinguyen.amela.model.dto.role;
 
-import lombok.*;
-
 import java.time.LocalDateTime;
+
+import lombok.*;
 
 @Builder
 @Getter

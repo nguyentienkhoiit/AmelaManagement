@@ -7,7 +7,9 @@ import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class DepartmentMapper {
     public static DepartmentDtoResponse toDepartmentDtoResponse(Department request) {
-        long count = request.getUsers().stream().filter(x -> x.isActivated() && x.isEnabled()).count();
+        long count = request.getUsers().stream()
+                .filter(x -> x.isActivated() && x.isEnabled())
+                .count();
         return DepartmentDtoResponse.builder()
                 .id(request.getId())
                 .name(request.getName())

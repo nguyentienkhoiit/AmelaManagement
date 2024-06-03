@@ -1,18 +1,8 @@
 package com.khoinguyen.amela.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.khoinguyen.amela.entity.User;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.multipart.MultipartFile;
+import static com.khoinguyen.amela.util.Constant.ALLOWED_EXTENSIONS;
+import static com.khoinguyen.amela.util.Constant.UPLOAD_DIR;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,16 +14,27 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.khoinguyen.amela.util.Constant.ALLOWED_EXTENSIONS;
-import static com.khoinguyen.amela.util.Constant.UPLOAD_DIR;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khoinguyen.amela.entity.User;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FileHelper {
-
 
     public String uploadFile(MultipartFile file, User user) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -86,11 +87,9 @@ public class FileHelper {
 
     public Set<String> readFile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream("file/backList.json");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("file/backList.json");
         if (inputStream == null) return null;
-        return objectMapper.readValue(inputStream, new TypeReference<Set<String>>() {
-        });
+        return objectMapper.readValue(inputStream, new TypeReference<Set<String>>() {});
     }
 
     public Set<String> getListBannedWord(String paragraph) {

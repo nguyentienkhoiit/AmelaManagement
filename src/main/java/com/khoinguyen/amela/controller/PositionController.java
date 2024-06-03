@@ -1,16 +1,12 @@
 package com.khoinguyen.amela.controller;
 
-import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
-import com.khoinguyen.amela.model.dto.position.JobPositionDtoRequest;
-import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
-import com.khoinguyen.amela.model.mapper.JobPositionMapper;
-import com.khoinguyen.amela.service.JobPositionService;
-import com.khoinguyen.amela.util.ValidationService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +14,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
+import com.khoinguyen.amela.model.dto.position.JobPositionDtoRequest;
+import com.khoinguyen.amela.model.dto.position.JobPositionDtoResponse;
+import com.khoinguyen.amela.model.mapper.JobPositionMapper;
+import com.khoinguyen.amela.service.JobPositionService;
+import com.khoinguyen.amela.util.ValidationService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,10 +36,7 @@ public class PositionController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewPositions(
-            Model model,
-            @ModelAttribute PagingDtoRequest request
-    ) {
+    public String viewPositions(Model model, @ModelAttribute PagingDtoRequest request) {
         session.setAttribute("active", "position");
 
         var pagingDtoResponse = positionService.getAllPositions(request);
@@ -48,8 +48,7 @@ public class PositionController {
         model.addAttribute("currentPage", request.getPageIndex());
         model.addAttribute("totalPage", totalPage);
 
-        session.setAttribute("url", "/positions?pageIndex=" + request.getPageIndex() +
-                "&text=" + request.getText());
+        session.setAttribute("url", "/positions?pageIndex=" + request.getPageIndex() + "&text=" + request.getText());
 
         return "layout/positions/position_list";
     }
@@ -63,11 +62,8 @@ public class PositionController {
 
     @PostMapping("/create")
     public String createPositions(
-            @Valid @ModelAttribute("position") JobPositionDtoRequest request,
-            BindingResult result,
-            Model model
-    ) {
-        //check validate
+            @Valid @ModelAttribute("position") JobPositionDtoRequest request, BindingResult result, Model model) {
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
@@ -86,10 +82,7 @@ public class PositionController {
 
     @GetMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String viewUpdatePositions(
-            Model model,
-            @PathVariable Long id
-    ) {
+    public String viewUpdatePositions(Model model, @PathVariable Long id) {
         session.setAttribute("active", "position");
 
         if (!model.containsAttribute("position")) {
@@ -105,9 +98,8 @@ public class PositionController {
     public String updatePositions(
             @Valid @ModelAttribute("position") JobPositionDtoRequest request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
-        //check validate
+            RedirectAttributes redirectAttributes) {
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);

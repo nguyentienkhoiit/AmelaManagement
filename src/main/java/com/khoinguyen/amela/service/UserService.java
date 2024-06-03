@@ -1,5 +1,10 @@
 package com.khoinguyen.amela.service;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
 import com.khoinguyen.amela.model.dto.profile.ProfileDtoRequest;
@@ -7,10 +12,6 @@ import com.khoinguyen.amela.model.dto.profile.ProfileDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoRequest;
 import com.khoinguyen.amela.model.dto.user.UserDtoResponse;
 import com.khoinguyen.amela.model.dto.user.UserDtoUpdate;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Map;
 
 public interface UserService {
     public PagingDtoResponse<UserDtoResponse> getAllUsers(PagingUserDtoRequest pagingDtoRequest);
@@ -26,7 +27,6 @@ public interface UserService {
     UserDtoResponse getUserById(Long id);
 
     void resetPassword(Long id);
-
 
     void changeStatus(Long id);
 

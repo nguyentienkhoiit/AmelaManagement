@@ -1,14 +1,15 @@
 package com.khoinguyen.amela.service;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.security.core.Authentication;
+
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.authentication.ChangePasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.EmailDtoRequest;
 import com.khoinguyen.amela.model.dto.authentication.PasswordDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.ServiceResponse;
-import org.springframework.security.core.Authentication;
-
-import java.util.List;
-import java.util.Map;
 
 public interface AuthenticationService {
     ServiceResponse<String> submitForgotPassword(EmailDtoRequest request);

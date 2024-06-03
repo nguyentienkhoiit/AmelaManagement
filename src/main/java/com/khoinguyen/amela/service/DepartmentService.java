@@ -1,12 +1,12 @@
 package com.khoinguyen.amela.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoRequest;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoRequest;
 import com.khoinguyen.amela.model.dto.paging.PagingDtoResponse;
-
-import java.util.List;
-import java.util.Map;
 
 public interface DepartmentService {
     List<DepartmentDtoResponse> findAll();

@@ -1,5 +1,20 @@
 package com.khoinguyen.amela.controller;
 
+import java.util.*;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.khoinguyen.amela.entity.User;
 import com.khoinguyen.amela.model.dto.department.DepartmentDtoResponse;
 import com.khoinguyen.amela.model.dto.paging.PagingUserDtoRequest;
@@ -16,23 +31,11 @@ import com.khoinguyen.amela.util.FileHelper;
 import com.khoinguyen.amela.util.OptionalValidator;
 import com.khoinguyen.amela.util.UserHelper;
 import com.khoinguyen.amela.util.ValidationService;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.*;
 
 @Slf4j
 @Controller
@@ -52,10 +55,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public String viewUsers(
-            Model model,
-            @ModelAttribute PagingUserDtoRequest pagingDtoRequest
-    ) {
+    public String viewUsers(Model model, @ModelAttribute PagingUserDtoRequest pagingDtoRequest) {
         session.setAttribute("active", "user");
 
         User userLoggedIn = userHelper.getUserLogin();
@@ -70,8 +70,7 @@ public class UserController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("userLoggedIn", userLoggedIn);
 
-        String url = "/users?pageIndex=" + pagingDtoRequest.getPageIndex() +
-                "&text=" + pagingDtoRequest.getText();
+        String url = "/users?pageIndex=" + pagingDtoRequest.getPageIndex() + "&text=" + pagingDtoRequest.getText();
 
         if (pagingDtoRequest.getDepartmentId() != null) {
             model.addAttribute("departmentId", pagingDtoRequest.getDepartmentId());
@@ -97,8 +96,7 @@ public class UserController {
     public String viewCreateUsers(
             Model model,
             @RequestParam(required = false) Long departmentId,
-            @RequestParam(required = false) Long positionId
-    ) {
+            @RequestParam(required = false) Long positionId) {
         UserDtoRequest user = UserDtoRequest.builder().build();
         if (departmentId != null) user.setDepartmentId(departmentId);
         if (positionId != null) user.setJobPositionId(positionId);
@@ -110,21 +108,17 @@ public class UserController {
 
     @PostMapping("create")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String createUser(
-            @Valid @ModelAttribute("user") UserDtoRequest request,
-            BindingResult result,
-            Model model
-    ) {
-        //set select option
+    public String createUser(@Valid @ModelAttribute("user") UserDtoRequest request, BindingResult result, Model model) {
+        // set select option
         setInfoSelectionOption(model);
 
-        //check validate
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
         }
 
-        //save to database
+        // save to database
         userService.createUser(request, errors);
 
         if (!errors.isEmpty()) {
@@ -150,21 +144,13 @@ public class UserController {
     }
 
     public void setObjectUserUpdate(RedirectAttributes redirectAttributes, UserDtoUpdate request) {
-        JobPositionDtoResponse jobPositionDtoResponse = jobPositionService
-                .findById(request.getJobPositionId());
-        DepartmentDtoResponse departmentDtoResponse = departmentService
-                .findById(request.getDepartmentId());
-        RoleDtoResponse roleDtoResponse = roleService
-                .findById(request.getRoleId());
+        JobPositionDtoResponse jobPositionDtoResponse = jobPositionService.findById(request.getJobPositionId());
+        DepartmentDtoResponse departmentDtoResponse = departmentService.findById(request.getDepartmentId());
+        RoleDtoResponse roleDtoResponse = roleService.findById(request.getRoleId());
 
-        redirectAttributes.addFlashAttribute("user",
-                UserMapper.toUserDtoResponse(
-                        request,
-                        departmentDtoResponse,
-                        roleDtoResponse,
-                        jobPositionDtoResponse
-                )
-        );
+        redirectAttributes.addFlashAttribute(
+                "user",
+                UserMapper.toUserDtoResponse(request, departmentDtoResponse, roleDtoResponse, jobPositionDtoResponse));
     }
 
     @PostMapping("/update")
@@ -173,18 +159,17 @@ public class UserController {
             Model model,
             @Valid @ModelAttribute("user") UserDtoUpdate request,
             BindingResult result,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         setInfoSelectionOption(model);
         setObjectUserUpdate(redirectAttributes, request);
 
-        //check validate
+        // check validate
         Map<String, List<String>> errors = new HashMap<>();
         if (result.hasErrors()) {
             validationService.getAllErrors(result, errors);
         }
 
-        //save to database
+        // save to database
         userService.updateUser(request, errors);
 
         if (!errors.isEmpty()) {
@@ -207,8 +192,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String changeStatus(@PathVariable Long id) {
         User userLoggedIn = userHelper.getUserLogin();
-        if (Objects.equals(userLoggedIn.getId(), id))
-            return "redirect:/forbidden";
+        if (Objects.equals(userLoggedIn.getId(), id)) return "redirect:/forbidden";
 
         userService.changeStatus(id);
         String url = (String) session.getAttribute("url");
@@ -227,9 +211,7 @@ public class UserController {
 
     @GetMapping("/send-token-again/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String sendTokenAgain(
-            @PathVariable Long id
-    ) {
+    public String sendTokenAgain(@PathVariable Long id) {
         userService.sendTokenAgain(id);
         return "redirect:/users/update/" + id;
     }
@@ -241,6 +223,7 @@ public class UserController {
         user = optionalValidator.findById(user.getId()).orElse(user);
         Resource file = fileHelper.load(user.getAvatar());
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getAvatar() + "\"").body(file);
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getAvatar() + "\"")
+                .body(file);
     }
 }

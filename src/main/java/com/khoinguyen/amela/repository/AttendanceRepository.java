@@ -1,11 +1,12 @@
 package com.khoinguyen.amela.repository;
 
-import com.khoinguyen.amela.entity.Attendance;
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import com.khoinguyen.amela.entity.Attendance;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 

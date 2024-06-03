@@ -1,17 +1,17 @@
 package com.khoinguyen.amela.validator.impl;
 
-import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
-import com.khoinguyen.amela.validator.ValidTimeOrder;
+import java.time.LocalTime;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.time.LocalTime;
+import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoRequest;
+import com.khoinguyen.amela.validator.ValidTimeOrder;
 
 public class ValidTimeOrderValidator implements ConstraintValidator<ValidTimeOrder, AttendanceDtoRequest> {
 
     @Override
-    public void initialize(ValidTimeOrder constraintAnnotation) {
-    }
+    public void initialize(ValidTimeOrder constraintAnnotation) {}
 
     @Override
     public boolean isValid(AttendanceDtoRequest request, ConstraintValidatorContext context) {

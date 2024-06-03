@@ -1,16 +1,18 @@
 package com.khoinguyen.amela.excel;
 
-import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
-import com.khoinguyen.amela.util.DateTimeHelper;
+import java.io.IOException;
+import java.util.List;
+
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.IOException;
-import java.util.List;
+import com.khoinguyen.amela.model.dto.attendance.AttendanceDtoResponse;
+import com.khoinguyen.amela.util.DateTimeHelper;
 
 public class AttendanceExcel {
     private final XSSFWorkbook workbook;
@@ -124,7 +126,6 @@ public class AttendanceExcel {
             cell = row.createCell(8);
             cell.setCellValue(attendance.getNote());
         }
-
 
         CellStyle headerStyle = workbook.createCellStyle();
         headerStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());

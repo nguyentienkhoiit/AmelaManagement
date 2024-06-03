@@ -1,14 +1,16 @@
 package com.khoinguyen.amela.model.dto.messages;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import lombok.*;
 
 @Builder
 @Getter
@@ -34,6 +36,7 @@ public class MessageScheduleDtoRequest {
 
     @NotEmpty(message = "{validation.required}")
     List<Long> usersIds;
+
     Long groupId;
     boolean choice;
 }

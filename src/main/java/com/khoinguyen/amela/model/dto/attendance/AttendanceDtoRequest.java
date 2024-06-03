@@ -1,17 +1,20 @@
 package com.khoinguyen.amela.model.dto.attendance;
 
-import com.khoinguyen.amela.validator.CheckDayNotInFuture;
-import com.khoinguyen.amela.validator.ValidTimeOrder;
-import com.khoinguyen.amela.validator.WithinDeadline;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
+import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static com.khoinguyen.amela.util.Constant.IN_DAY_EDITED;
+import jakarta.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.khoinguyen.amela.validator.CheckDayNotInFuture;
+import com.khoinguyen.amela.validator.ValidTimeOrder;
+import com.khoinguyen.amela.validator.WithinDeadline;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
